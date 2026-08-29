@@ -1,5 +1,6 @@
 .DS_Store
 **/.DS_Store
 node_modules/
-web/dist/
-web/src/content/*.json
+.next/
+*.tsbuildinfo
+next-env.d.ts

@@ -3,19 +3,25 @@ import GithubSlugger from 'github-slugger'
 
 const WIKILINK_RE = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
 
+interface WikilinkOptions {
+  resolve?: (pageName: string) => string | undefined
+  onBrokenLink?: (target: string) => void
+}
+
 /**
- * Transforms `[[target]]` / `[[target|label]]` text into mdast link nodes.
- * `resolve(target)` must return the destination slug, or a falsy value if unknown.
+ * Transforms `[[target]]`, `[[target|label]]`, `[[target#heading]]`, `[[#heading]]`
+ * into mdast link nodes. `resolve(pageName)` must return the destination slug,
+ * or a falsy value if unknown.
  */
-export default function remarkWikilink({ resolve, onBrokenLink } = {}) {
-  return (tree) => {
-    visit(tree, 'text', (node, index, parent) => {
+export default function remarkWikilink({ resolve, onBrokenLink }: WikilinkOptions = {}) {
+  return (tree: any) => {
+    visit(tree, 'text', (node: any, index: number | undefined, parent: any) => {
       if (!parent || index === undefined || !node.value.includes('[[')) return
 
-      const value = node.value
-      const newNodes = []
+      const value: string = node.value
+      const newNodes: any[] = []
       let lastIndex = 0
-      let match
+      let match: RegExpExecArray | null
 
       WIKILINK_RE.lastIndex = 0
       while ((match = WIKILINK_RE.exec(value)) !== null) {
@@ -29,7 +35,7 @@ export default function remarkWikilink({ resolve, onBrokenLink } = {}) {
         const anchor = anchorRaw ? `#${new GithubSlugger().slug(anchorRaw)}` : ''
         const label = (rawLabel ?? (pageName || anchorRaw)).trim()
 
-        let url
+        let url: string | undefined
         if (!pageName) {
           // same-page anchor: [[#heading]]
           url = anchor

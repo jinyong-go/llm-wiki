@@ -1,8 +1,12 @@
-import { NavLink } from 'react-router-dom'
-import type { NavNode } from '../types'
-import navTree from '../content/nav.json'
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import type { NavNode } from '@/lib/wiki-index'
 
 function NavTree({ nodes, depth }: { nodes: NavNode[]; depth: number }) {
+  const pathname = usePathname()
+
   return (
     <ul className="nav-list" style={{ '--depth': depth } as React.CSSProperties}>
       {nodes.map((node) =>
@@ -13,9 +17,9 @@ function NavTree({ nodes, depth }: { nodes: NavNode[]; depth: number }) {
           </li>
         ) : (
           <li key={node.slug} className="nav-page">
-            <NavLink to={`/${node.slug}`} className={({ isActive }) => (isActive ? 'active' : '')}>
+            <Link href={`/${node.slug}`} className={pathname === `/${node.slug}` ? 'active' : ''}>
               {node.title}
-            </NavLink>
+            </Link>
           </li>
         ),
       )}
@@ -23,13 +27,13 @@ function NavTree({ nodes, depth }: { nodes: NavNode[]; depth: number }) {
   )
 }
 
-export default function Sidebar() {
+export default function Sidebar({ navTree }: { navTree: NavNode[] }) {
   return (
     <nav className="sidebar">
-      <NavLink to="/" className="sidebar-home" end>
+      <Link href="/" className="sidebar-home">
         llm-wiki
-      </NavLink>
-      <NavTree nodes={navTree as NavNode[]} depth={0} />
+      </Link>
+      <NavTree nodes={navTree} depth={0} />
     </nav>
   )
 }
