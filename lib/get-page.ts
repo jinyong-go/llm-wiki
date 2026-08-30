@@ -24,6 +24,7 @@ export async function getPage(slug: string): Promise<RenderedPage | null> {
   const { html, headings } = await renderMarkdown(content, {
     resolve: (name) => index.basenameToSlug.get(name),
     onBrokenLink: (target) => brokenLinks.push(target),
+    collapsibleSections: slug === 'index',
   })
 
   if (brokenLinks.length) {

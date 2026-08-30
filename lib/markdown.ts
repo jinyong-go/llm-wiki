@@ -64,10 +64,55 @@ function remarkCollectHeadings() {
 interface RenderOptions {
   resolve: (pageName: string) => string | undefined
   onBrokenLink?: (target: string) => void
+  /** Wrap each top-level `## heading` + following list into a collapsible <details>. Used for the index page. */
+  collapsibleSections?: boolean
 }
 
-export async function renderMarkdown(content: string, { resolve, onBrokenLink }: RenderOptions) {
-  const file = await unified()
+interface HastNode {
+  type: string
+  tagName?: string
+  value?: string
+  properties?: Record<string, unknown>
+  children?: HastNode[]
+}
+
+const isWhitespaceText = (node: HastNode) => node.type === 'text' && (node.value ?? '').trim() === ''
+
+/** Groups each top-level h2 immediately followed by a ul/ol into `<details class="collapsible-section" open><summary>{h2}</summary>{list}</details>`. */
+function rehypeCollapsibleSections() {
+  return (tree: HastNode) => {
+    const children: HastNode[] = tree.children ?? []
+    const result: HastNode[] = []
+    let i = 0
+    while (i < children.length) {
+      const node = children[i]
+      if (node.type === 'element' && node.tagName === 'h2') {
+        let j = i + 1
+        while (j < children.length && isWhitespaceText(children[j])) j++
+        const next = children[j]
+        if (next?.type === 'element' && (next.tagName === 'ul' || next.tagName === 'ol')) {
+          result.push({
+            type: 'element',
+            tagName: 'details',
+            properties: { className: ['collapsible-section'], open: true },
+            children: [
+              { type: 'element', tagName: 'summary', properties: {}, children: [node] },
+              next,
+            ],
+          })
+          i = j + 1
+          continue
+        }
+      }
+      result.push(node)
+      i += 1
+    }
+    tree.children = result
+  }
+}
+
+export async function renderMarkdown(content: string, { resolve, onBrokenLink, collapsibleSections }: RenderOptions) {
+  const processor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -77,8 +122,10 @@ export async function renderMarkdown(content: string, { resolve, onBrokenLink }:
     .use(rehypeSlug)
     .use(rehypeKatex)
     .use(rehypeHighlight)
-    .use(rehypeStringify)
-    .process(content)
+
+  if (collapsibleSections) processor.use(rehypeCollapsibleSections)
+
+  const file = await processor.use(rehypeStringify).process(content)
 
   return {
     html: String(file),

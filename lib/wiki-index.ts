@@ -104,6 +104,15 @@ function buildIndex(): WikiIndex {
   return { basenameToSlug, pages, navTree: buildNavTree(entries) }
 }
 
+/** Walks navTree by path segments and returns the matching directory node, or null if no page lives under that path. */
+export function findDirNode(nodes: NavNode[], parts: string[]): NavDir | null {
+  if (parts.length === 0) return { type: 'dir', name: '', children: nodes }
+  const [head, ...rest] = parts
+  const match = nodes.find((n): n is NavDir => n.type === 'dir' && n.name === head)
+  if (!match) return null
+  return rest.length === 0 ? match : findDirNode(match.children, rest)
+}
+
 let cached: WikiIndex | null = null
 
 /** Lightweight index (frontmatter + slugs only, no markdown body conversion). Cached in production; rebuilt on every call in dev so md edits show up without a restart. */
