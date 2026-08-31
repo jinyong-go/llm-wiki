@@ -1,25 +1,19 @@
-import { getPage } from '@/lib/get-page'
+import { getWikiIndex } from '@/lib/wiki-index'
+import NavTree from '@/components/NavTree'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
-  const page = await getPage('index')
-
-  if (!page) {
-    return (
-      <article className="wiki-page">
-        <h1>llm-wiki</h1>
-        <p>wiki/index.md 를 찾을 수 없습니다.</p>
-      </article>
-    )
-  }
+export default function Home() {
+  const { navTree } = getWikiIndex()
 
   return (
     <article className="wiki-page">
       <header className="wiki-page-meta">
-        <h1>{page.meta.title === 'index' ? 'llm-wiki' : page.meta.title}</h1>
+        <h1>llm-wiki</h1>
       </header>
-      <div className="wiki-page-body" dangerouslySetInnerHTML={{ __html: page.html }} />
+      <div className="index-tree">
+        <NavTree nodes={navTree} path="" />
+      </div>
     </article>
   )
 }

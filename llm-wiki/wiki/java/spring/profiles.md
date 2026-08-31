@@ -1,6 +1,6 @@
 ---
 title: Profiles — Spring Boot 프로파일 활성화·그룹·Multi-Document 설정
-updated: 2026-07-14 11:26:44
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - spring-boot
@@ -9,9 +9,7 @@ tags:
 
 ## 1. 개요
 
-Spring Profile은 환경별로 설정과 빈 구성을 분리하는 메커니즘이다.
-`@Component`, `@Configuration`, `@ConfigurationProperties`에 `@Profile`을 붙여
-특정 프로파일에서만 로드되도록 제한할 수 있다.
+Spring Profile은 환경별로 설정과 빈 구성을 분리하는 메커니즘이다. `@Component`, `@Configuration`, `@ConfigurationProperties`에 `@Profile`을 붙여 특정 프로파일에서만 로드되도록 제한할 수 있다.
 
 ```java
 @Configuration(proxyBeanMethods = false)
@@ -30,16 +28,13 @@ public class ProductionConfiguration { }
 | 환경변수 | `SPRING_PROFILES_ACTIVE=dev,hsqldb` |
 | 프로그래밍 | `app.setAdditionalProfiles("dev", "hsqldb")` |
 
-`spring.profiles.active`는 [[externalized-configuration]]의 PropertySource
-우선순위를 따른다 — CLI 인수가 설정 파일 값을 대체한다.
+`spring.profiles.active`는 [[externalized-configuration]]의 PropertySource 우선순위를 따른다 — CLI 인수가 설정 파일 값을 대체한다.
 
-활성 프로파일이 없으면 `default` 프로파일이 적용되며,
-`spring.profiles.default`로 이름을 변경할 수 있다.
+활성 프로파일이 없으면 `default` 프로파일이 적용되며, `spring.profiles.default`로 이름을 변경할 수 있다.
 
 ### 2.1. spring.profiles.include
 
-활성 프로파일을 대체하지 않고 **추가**한다. include된 프로파일은
-`spring.profiles.active`보다 앞에 추가된다.
+활성 프로파일을 대체하지 않고 **추가**한다. include된 프로파일은 `spring.profiles.active`보다 앞에 추가된다.
 
 ```yaml
 spring:
@@ -49,8 +44,7 @@ spring:
       - "local"
 ```
 
-`--spring.profiles.active=production` 실행 시 활성 프로파일:
-`common`, `local`, `production`
+`--spring.profiles.active=production` 실행 시 활성 프로파일: `common`, `local`, `production`
 
 ---
 
@@ -67,15 +61,13 @@ spring:
         - "prodmq"
 ```
 
-`--spring.profiles.active=production` 실행 시
-`production`, `proddb`, `prodmq`가 모두 활성화된다.
+`--spring.profiles.active=production` 실행 시 `production`, `proddb`, `prodmq`가 모두 활성화된다.
 
 ---
 
 ## 4. Multi-Document 파일
 
-단일 물리 파일을 여러 논리 문서로 분할한다.
-문서는 위에서 아래로 처리되며 **뒤의 문서가 앞의 문서를 override**한다(last-wins).
+단일 물리 파일을 여러 논리 문서로 분할한다. 문서는 위에서 아래로 처리되며 **뒤의 문서가 앞의 문서를 override**한다(last-wins).
 
 - YAML 구분자: `---` (YAML 표준)
 - Properties 구분자: `#---` 또는 `!---` (Spring Boot 확장)
@@ -127,23 +119,18 @@ server.port=8081
 
 ### 4.2. 프로파일 표현식
 
-`on-profile`에는 논리 표현식 사용 가능: `!`(NOT), `&`(AND), `|`(OR).
-목록으로 지정하면 하나라도 매칭 시 활성(OR).
+`on-profile`에는 논리 표현식 사용 가능: `!`(NOT), `&`(AND), `|`(OR). 목록으로 지정하면 하나라도 매칭 시 활성(OR).
 
 ---
 
 ## 5. 제약사항
 
-- `spring.profiles.active` / `default` / `include` / `group`은
-  **non-profile-specific 문서에서만** 사용 가능. 다음 위치에서는 사용 불가:
+- `spring.profiles.active` / `default` / `include` / `group`은 **non-profile-specific 문서에서만** 사용 가능. 다음 위치에서는 사용 불가:
   - profile-specific 파일 (`application-prod.yaml` 등)
   - `spring.config.activate.on-profile`이 지정된 문서
-- multi-document properties 파일은 `@PropertySource`,
-  `@TestPropertySource`로 로드할 수 없다.
-- 프로파일 이름은 문자·숫자로 시작·종료해야 하며 `-`, `_`, `.`, `+`, `@` 허용
-  (`spring.profiles.validate=false`로 검증 비활성화 가능).
-- Spring Boot 2.4 이전의 `spring.profiles` 키는 deprecated —
-  `spring.config.activate.on-profile`로 대체됨.[^1]
+- multi-document properties 파일은 `@PropertySource`, `@TestPropertySource`로 로드할 수 없다.
+- 프로파일 이름은 문자·숫자로 시작·종료해야 하며 `-`, `_`, `.`, `+`, `@` 허용 (`spring.profiles.validate=false`로 검증 비활성화 가능).
+- Spring Boot 2.4 이전의 `spring.profiles` 키는 deprecated — `spring.config.activate.on-profile`로 대체됨.[^1]
 
 [^1]: 출처의 공식 문서 페이지에는 legacy 키(spring.profiles) 언급이 없다. Boot 2.4의 config data 처리 개편 사실로부터 추론한 서술임.
 

@@ -1,6 +1,6 @@
 ---
 title: JVM 실행 옵션 — java 명령어
-updated: 2026-07-08 10:32:15
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - jvm
@@ -17,8 +17,7 @@ tags:
 | `-X` | Non-Standard / Extra | HotSpot 전용, 변경 가능 |
 | `-XX` | Advanced | 하위 수준 튜닝·진단, 구현별 상이, 변경 가능 |
 
-`-XX` Boolean 옵션: `-XX:+OptionName`(활성) / `-XX:-OptionName`(비활성)  
-크기 단위: `k`/`K`(KB), `m`/`M`(MB), `g`/`G`(GB)
+`-XX` Boolean 옵션: `-XX:+OptionName`(활성) / `-XX:-OptionName`(비활성) 크기 단위: `k`/`K`(KB), `m`/`M`(MB), `g`/`G`(GB)
 
 ---
 

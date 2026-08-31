@@ -1,6 +1,6 @@
 ---
 title: JPA 엔티티 라이프사이클 콜백 & EntityListener
-updated: 2026-07-10 11:44:08
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - jpa
@@ -13,8 +13,7 @@ tags:
 
 ## 1. 개요
 
-JPA는 엔티티 상태 변화(INSERT / UPDATE / DELETE / LOAD) 시점에 메서드를 자동 호출하는 **라이프사이클 콜백** 메커니즘을 제공한다.
-적용 방식은 두 가지: 엔티티 클래스 내부 메서드에 직접 선언, 또는 별도 `EntityListener` 클래스에 위임.
+JPA는 엔티티 상태 변화(INSERT / UPDATE / DELETE / LOAD) 시점에 메서드를 자동 호출하는 **라이프사이클 콜백** 메커니즘을 제공한다. 적용 방식은 두 가지: 엔티티 클래스 내부 메서드에 직접 선언, 또는 별도 `EntityListener` 클래스에 위임.
 
 ---
 
@@ -34,8 +33,7 @@ JPA는 엔티티 상태 변화(INSERT / UPDATE / DELETE / LOAD) 시점에 메서
 
 ### 2.2. Post 계열 호출 시점
 
-`@PrePersist` / `@PreRemove`는 `persist()`·`merge()`·`remove()` 연산의 일부로 항상 동기 호출된다.
-반면 Post 계열(`@PostPersist`, `@PostUpdate`, `@PostRemove`)은 **해당 DML이 DB에서 실행된 직후** 호출된다. JPA의 쓰기 지연(write-behind)으로 DML 실행 시점 자체가 상황에 따라 달라지므로, 콜백 호출 시점도 3가지로 나뉜다.
+`@PrePersist` / `@PreRemove`는 `persist()`·`merge()`·`remove()` 연산의 일부로 항상 동기 호출된다. 반면 Post 계열(`@PostPersist`, `@PostUpdate`, `@PostRemove`)은 **해당 DML이 DB에서 실행된 직후** 호출된다. JPA의 쓰기 지연(write-behind)으로 DML 실행 시점 자체가 상황에 따라 달라지므로, 콜백 호출 시점도 3가지로 나뉜다.
 
 | DML 실행 시점 | 발생 조건 |
 |---|---|
@@ -113,8 +111,7 @@ private void beforeWrite() {
 
 ## 3. EntityListener
 
-동일 로직을 여러 엔티티에 적용할 때 `EntityListener`로 분리한다.
-엔티티에 `@EntityListeners`로 등록.
+동일 로직을 여러 엔티티에 적용할 때 `EntityListener`로 분리한다. 엔티티에 `@EntityListeners`로 등록.
 
 ```java
 public class AuditTrailListener {

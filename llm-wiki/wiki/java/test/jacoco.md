@@ -1,6 +1,6 @@
 ---
 title: JaCoCo — Java 테스트 커버리지 측정
-updated: 2026-07-23 17:58:31
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - testing
@@ -189,19 +189,15 @@ check.dependsOn jacocoTestCoverageVerification   // check에 검증 연결(기�
 
 두 태스크는 모두 `JacocoReportBase`를 상속하므로 분석 입력을 동일한 항목으로 제어한다.
 
-- `executionData` — 집계할 실행 데이터(`.exec`) 지정. 태스크를 인자로 주면 그 태스크의
-  실행 데이터를 사용한다: `executionData(test, integrationTest)`
-- `classDirectories` — 분석 대상 클래스 디렉터리. `setFrom` + `fileTree(exclude:)`
-  조합으로 측정 제외를 구현한다([§5.3](#53-측정-제외) 참고)
+- `executionData` — 집계할 실행 데이터(`.exec`) 지정. 태스크를 인자로 주면 그 태스크의 실행 데이터를 사용한다: `executionData(test, integrationTest)`
+- `classDirectories` — 분석 대상 클래스 디렉터리. `setFrom` + `fileTree(exclude:)` 조합으로 측정 제외를 구현한다([§5.3](#53-측정-제외) 참고)
 - `sourceDirectories` — 리포트에 연결할 소스 디렉터리
-- `additionalClassDirs` / `additionalSourceDirs` — 다른 모듈의 클래스·소스 병합
-  (멀티모듈 통합 리포트)
+- `additionalClassDirs` / `additionalSourceDirs` — 다른 모듈의 클래스·소스 병합 (멀티모듈 통합 리포트)
 - `sourceSets(sourceSets.main)` — 소스셋 지정으로 클래스·소스 디렉터리 일괄 설정
 
 #### jacocoTestReport 설정
 
-전용 항목은 `reports`이며, 나머지는 위 공통 설정이다. `reports`의 `html`/`xml`/`csv`
-각각에 다음을 지정한다.
+전용 항목은 `reports`이며, 나머지는 위 공통 설정이다. `reports`의 `html`/`xml`/`csv` 각각에 다음을 지정한다.
 
 - `required` — 해당 형식 생성 여부
 - `outputLocation` — 출력 경로 (기본 `build/reports/jacoco/test/`)
@@ -217,8 +213,7 @@ jacocoTestReport {
 
 #### jacocoTestCoverageVerification 설정
 
-전용 항목은 `violationRules`이며, 나머지는 위 공통 설정이다.
-계층은 `violationRules > rule > limit`이다.
+전용 항목은 `violationRules`이며, 나머지는 위 공통 설정이다. 계층은 `violationRules > rule > limit`이다.
 
 **`violationRules`** — 규칙 컨테이너 (JacocoViolationRulesContainer)
 - `failOnViolation` (기본 `true`) — `false`면 기준 미달 시 빌드 실패 대신 경고만 출력
@@ -226,22 +221,14 @@ jacocoTestReport {
 
 **`rule`** — 검증 규칙 (JacocoViolationRule)
 - `enabled` (기본 `true`) — 규칙 활성화 여부
-- `element` (기본 `BUNDLE`) — 평가 단위: `BUNDLE`(프로젝트 전체 집계) /
-  `PACKAGE`(패키지별) / `CLASS`(클래스별) / `SOURCEFILE`(소스 파일별) / `METHOD`(메서드별).
-  `BUNDLE`은 전체 평균이라 특정 클래스가 0%여도 통과할 수 있다 — 클래스 단위
-  하한이 필요하면 `CLASS`로 건다
-- `includes` (기본 `['*']`) / `excludes` (기본 빈 목록) — element 이름 패턴
-  (`*`, `?` 와일드카드)으로 규칙 적용 대상을 제한
+- `element` (기본 `BUNDLE`) — 평가 단위: `BUNDLE`(프로젝트 전체 집계) / `PACKAGE`(패키지별) / `CLASS`(클래스별) / `SOURCEFILE`(소스 파일별) / `METHOD`(메서드별). `BUNDLE`은 전체 평균이라 특정 클래스가 0%여도 통과할 수 있다 — 클래스 단위 하한이 필요하면 `CLASS`로 건다
+- `includes` (기본 `['*']`) / `excludes` (기본 빈 목록) — element 이름 패턴 (`*`, `?` 와일드카드)으로 규칙 적용 대상을 제한
 - `limit { }` — 한 규칙에 카운터별로 여러 개 정의 가능
 
 **`limit`** — 임계값 (JacocoLimit)
-- `counter` (기본 `INSTRUCTION`) — 검사할 카운터: `INSTRUCTION` / `LINE` / `BRANCH` /
-  `METHOD` / `CLASS` / `COMPLEXITY` (3장의 커버리지 카운터와 대응)
-- `value` (기본 `COVEREDRATIO`) — 측정 방식: `COVEREDRATIO`(커버 비율 0~1) /
-  `MISSEDRATIO`(미커버 비율) / `COVEREDCOUNT`(커버 절대 수) / `MISSEDCOUNT`(미커버
-  절대 수) / `TOTALCOUNT`(전체 수)
-- `minimum` / `maximum` (기본 없음) — 하한/상한. 측정값이 범위를 벗어나면 위반.
-  예: `MISSEDCOUNT` + `maximum = 0` → 하나라도 놓치면 실패
+- `counter` (기본 `INSTRUCTION`) — 검사할 카운터: `INSTRUCTION` / `LINE` / `BRANCH` / `METHOD` / `CLASS` / `COMPLEXITY` (3장의 커버리지 카운터와 대응)
+- `value` (기본 `COVEREDRATIO`) — 측정 방식: `COVEREDRATIO`(커버 비율 0~1) / `MISSEDRATIO`(미커버 비율) / `COVEREDCOUNT`(커버 절대 수) / `MISSEDCOUNT`(미커버 절대 수) / `TOTALCOUNT`(전체 수)
+- `minimum` / `maximum` (기본 없음) — 하한/상한. 측정값이 범위를 벗어나면 위반. 예: `MISSEDCOUNT` + `maximum = 0` → 하나라도 놓치면 실패
 
 ```groovy
 jacocoTestCoverageVerification {
@@ -331,14 +318,11 @@ mvn verify                              # check 골 평가 → 미달 시 빌드
 
 - **Google Testing Blog**: 60% = acceptable, 75% = commendable, 90% = exemplary
 - **SonarQube 기본 Quality Gate**(Sonar way): **신규 코드 커버리지 80% 이상**
-- 실무에서는 위 예시(`minimum = 0.80`)처럼 **라인 커버리지 80%** 를 게이트로 쓰는
-  경우가 많다.[^2]
+- 실무에서는 위 예시(`minimum = 0.80`)처럼 **라인 커버리지 80%** 를 게이트로 쓰는 경우가 많다.[^2]
 
 [^2]: SonarQube 기본 Quality Gate(신규 코드 80%)와 업계 관행에 근거한 일반화임.
 
-주의: 커버리지 수치를 목표로 강제하면 단언 없는 무의미한 테스트가 늘 수 있다.
-수치는 미검증 영역을 찾는 신호로 쓰고, 테스트 품질은 [[good-test-practices]]와
-변이 테스트(PIT)로 보완한다.
+주의: 커버리지 수치를 목표로 강제하면 단언 없는 무의미한 테스트가 늘 수 있다. 수치는 미검증 영역을 찾는 신호로 쓰고, 테스트 품질은 [[good-test-practices]]와 변이 테스트(PIT)로 보완한다.
 
 ---
 

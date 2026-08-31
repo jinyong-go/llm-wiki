@@ -1,6 +1,6 @@
 ---
 title: EntityListener 의존성 주입
-updated: 2026-07-10 14:51:34
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - jpa
@@ -12,15 +12,13 @@ tags:
 
 ## 1. 개요
 
-[[jpa-entity-lifecycle|EntityListener]]에 `@Autowired`로 빈을 주입하면 콜백 실행 시 필드가 `null`인 경우가 있다.
-원인은 리스너 인스턴스의 생성 주체(JPA 프로바이더)와 생성 시점(`EntityManagerFactory` 부트스트랩)에 있다.
+[[jpa-entity-lifecycle|EntityListener]]에 `@Autowired`로 빈을 주입하면 콜백 실행 시 필드가 `null`인 경우가 있다. 원인은 리스너 인스턴스의 생성 주체(JPA 프로바이더)와 생성 시점(`EntityManagerFactory` 부트스트랩)에 있다.
 
 ---
 
 ## 2. 리스너 인스턴스 생성 구조
 
-JPA에서 EntityListener 인스턴스는 Spring이 아닌 **영속성 프로바이더가 생성·관리**한다.
-Spring 연동 시 생성 경로:
+JPA에서 EntityListener 인스턴스는 Spring이 아닌 **영속성 프로바이더가 생성·관리**한다. Spring 연동 시 생성 경로:
 
 Hibernate `ManagedBeanRegistry` → `BeanContainer` SPI → `SpringBeanContainer` → Spring `BeanFactory`
 
@@ -90,8 +88,7 @@ public class UserCreatedEventHandler {
 
 ### 4.3. static 필드 주입 (비권장)
 
-`@Component` 설정 클래스의 `@PostConstruct`에서 리스너의 static 필드에 빈을 대입하는 방식. 동작은 하지만 초기화 순서 의존·동시성 문제가 있어 참조 기사도 비판한다.
-마커 인터페이스 + `@PostConstruct` 리플렉션으로 일괄 주입하는 체계화 변형도 같은 계열이다.
+`@Component` 설정 클래스의 `@PostConstruct`에서 리스너의 static 필드에 빈을 대입하는 방식. 동작은 하지만 초기화 순서 의존·동시성 문제가 있어 참조 기사도 비판한다. 마커 인터페이스 + `@PostConstruct` 리플렉션으로 일괄 주입하는 체계화 변형도 같은 계열이다.
 
 ---
 

@@ -7,7 +7,7 @@ import Sidebar from '@/components/Sidebar'
 import { getWikiIndex } from '@/lib/wiki-index'
 
 export const metadata: Metadata = {
-  title: 'llm-wiki',
+  title: "용's LLM Wiki",
 }
 
 const NO_FLASH_THEME_SCRIPT = `

@@ -1,18 +1,16 @@
 ---
 title: expression vs statement
-updated: 2026-07-09 08:52:49
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - language
 ---
 
-Java 코드는 **식(expression)** 과 **문(statement)** 으로 구성된다.
-식은 평가(evaluate)되어 결과를 내고, 문은 실행(execute)되어 효과를 낸다.
+Java 코드는 **식(expression)** 과 **문(statement)** 으로 구성된다. 식은 평가(evaluate)되어 결과를 내고, 문은 실행(execute)되어 효과를 낸다.
 
 ## 1. expression
 
-식은 평가되어 결과를 산출한다. `void` 메서드 호출을 제외하면 값이 있다 (JLS Ch.15).
-평가 시 다음 셋 중 하나를 지시(denote)한다 (§15.1).
+식은 평가되어 결과를 산출한다. `void` 메서드 호출을 제외하면 값이 있다 (JLS Ch.15). 평가 시 다음 셋 중 하나를 지시(denote)한다 (§15.1).
 
 - **변수** — 대입의 좌변이 될 수 있다
 
@@ -50,9 +48,7 @@ Java 코드는 **식(expression)** 과 **문(statement)** 으로 구성된다.
 
 ### 1.2. poly vs standalone
 
-타입 결정 방식 기준 분류. 문맥(대입 대상, 메서드 인자 등)이 타입에 영향을 주면
-**poly expression**, 자체로 타입이 정해지면 **standalone expression**.
-lambda, 메서드 호출, `<>` 인스턴스 생성, 삼항, switch expression이 poly가 될 수 있다.
+타입 결정 방식 기준 분류. 문맥(대입 대상, 메서드 인자 등)이 타입에 영향을 주면 **poly expression**, 자체로 타입이 정해지면 **standalone expression**. lambda, 메서드 호출, `<>` 인스턴스 생성, 삼항, switch expression이 poly가 될 수 있다.
 
 ---
 
@@ -107,15 +103,13 @@ lambda, 메서드 호출, `<>` 인스턴스 생성, 삼항, switch expression이
   } catch (IOException e) { }
   ```
 
-문은 값이 없으므로 대입·인자 등 값이 필요한 자리에 올 수 없다:
-`int y = if (x > 0) ...` 은 문법 오류다.
+문은 값이 없으므로 대입·인자 등 값이 필요한 자리에 올 수 없다: `int y = if (x > 0) ...` 은 문법 오류다.
 
 ---
 
 ## 3. expression statement
 
-모든 식이 문이 될 수는 없다. JLS §14.8은 부수효과를 갖는 **7개 형태만**
-세미콜론을 붙여 문으로 쓰도록 허용한다.
+모든 식이 문이 될 수는 없다. JLS §14.8은 부수효과를 갖는 **7개 형태만** 세미콜론을 붙여 문으로 쓰도록 허용한다.
 
 ```java
 obj = value;               // Assignment
@@ -127,10 +121,7 @@ list.add(e);               // MethodInvocation
 new Thread(r).start();     // ClassInstanceCreationExpression (예: new Foo();)
 ```
 
-`1 + 2;` 나 `(x);` 처럼 값만 계산하고 버리는 식은 컴파일 오류다.
-C/C++과 달리 괄호로 감싼 식도 문이 될 수 없다 — 효과 없는 코드를 문법 차원에서 차단한다.
-이런 "값을 버리는 식"이 허용되는 곳은 expression statement와
-lambda 본문의 단일 식(§15.27.2) 두 곳뿐이다.
+`1 + 2;` 나 `(x);` 처럼 값만 계산하고 버리는 식은 컴파일 오류다. C/C++과 달리 괄호로 감싼 식도 문이 될 수 없다 — 효과 없는 코드를 문법 차원에서 차단한다. 이런 "값을 버리는 식"이 허용되는 곳은 expression statement와 lambda 본문의 단일 식(§15.27.2) 두 곳뿐이다.
 
 ---
 
@@ -173,8 +164,7 @@ int r = switch (day) {          // switch expression
 };
 ```
 
-`yield`는 switch expression 안에서만 유효한 문이다.
-[[java17-features]](Switch Expressions), [[java21-features]](Pattern Matching for switch) 참고.
+`yield`는 switch expression 안에서만 유효한 문이다. [[java17-features]](Switch Expressions), [[java21-features]](Pattern Matching for switch) 참고.
 
 ### 4.4. void 메서드 호출은 식이지만 값이 없다
 

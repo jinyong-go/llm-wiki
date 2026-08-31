@@ -1,6 +1,6 @@
 ---
 title: JUnit 5 ParameterizedTest — 매개변수화 테스트, 인자 소스·변환·집계·표시 이름
-updated: 2026-07-08 10:32:15
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - junit
@@ -172,12 +172,9 @@ void fromFile(String country, int ref) { }
 `ArgumentsProvider`를 직접 구현해 복잡한 인자 생성 로직을 캡슐화한다.
 
 **ArgumentsProvider**는 인자 집합의 스트림을 공급하는 인터페이스다.
-- `provideArguments(...)`가 `Stream<? extends Arguments>`를 반환하며, 스트림의 각
-  `Arguments`가 한 번의 테스트 실행이 된다.
-- 인자 생성 로직이 **테스트 클래스에서 분리**되므로 여러 테스트 클래스에서 재사용할
-  수 있다. `@MethodSource` 팩토리가 커지거나 외부 자원(파일·DB) 기반 생성이 필요할 때 쓴다.
-- 구현 제약: **최상위 클래스 또는 `static` 중첩 클래스**여야 하고 **기본 생성자**가
-  필요하다.
+- `provideArguments(...)`가 `Stream<? extends Arguments>`를 반환하며, 스트림의 각 `Arguments`가 한 번의 테스트 실행이 된다.
+- 인자 생성 로직이 **테스트 클래스에서 분리**되므로 여러 테스트 클래스에서 재사용할 수 있다. `@MethodSource` 팩토리가 커지거나 외부 자원(파일·DB) 기반 생성이 필요할 때 쓴다.
+- 구현 제약: **최상위 클래스 또는 `static` 중첩 클래스**여야 하고 **기본 생성자**가 필요하다.
 - `ExtensionContext`로 실행 컨텍스트(테스트 클래스·설정 파라미터 등)에 접근할 수 있다.
 
 ```java
@@ -196,12 +193,9 @@ public class MyArgumentsProvider implements ArgumentsProvider {
 
 ### 3.9. 커스텀 소스 어노테이션
 
-`@ArgumentsSource`를 메타 어노테이션으로 붙인 **합성(composed) 어노테이션**을 만들면
-`@ValueSource`처럼 쓰이는 자체 소스 어노테이션이 된다. `@ValueSource`·`@CsvSource` 등
-내장 소스도 모두 이 구조(합성 어노테이션 + `ArgumentsProvider`)로 구현되어 있다.
+`@ArgumentsSource`를 메타 어노테이션으로 붙인 **합성(composed) 어노테이션**을 만들면 `@ValueSource`처럼 쓰이는 자체 소스 어노테이션이 된다. `@ValueSource`·`@CsvSource` 등 내장 소스도 모두 이 구조(합성 어노테이션 + `ArgumentsProvider`)로 구현되어 있다.
 
-어노테이션 속성 값은 `AnnotationBasedArgumentsProvider<A>`를 상속하면 파라미터로 받을
-수 있다.
+어노테이션 속성 값은 `AnnotationBasedArgumentsProvider<A>`를 상속하면 파라미터로 받을 수 있다.
 
 ```java
 // 1) 어노테이션 정의 — @ArgumentsSource를 메타 어노테이션으로 지정
@@ -228,8 +222,7 @@ public class IntRangeProvider extends AnnotationBasedArgumentsProvider<IntRange>
 void range(int n) { assertTrue(n < 5); }
 ```
 
-`AnnotationBasedArgumentsProvider`가 없던 5.10 이전에는 `ArgumentsProvider`와
-`AnnotationConsumer<A>`를 함께 구현해 같은 기능을 만들었다.
+`AnnotationBasedArgumentsProvider`가 없던 5.10 이전에는 `ArgumentsProvider`와 `AnnotationConsumer<A>`를 함께 구현해 같은 기능을 만들었다.
 
 ---
 
@@ -312,15 +305,12 @@ void display(String fruit, int rank) { }
 - `{index}` — 현재 실행 회차. 1부터 시작
 - `{arguments}` — 전체 인자를 콤마로 연결한 문자열
 - `{argumentsWithNames}` — 전체 인자를 `파라미터명=값` 형태로 연결
-- `{argumentSetName}` — `argumentSet(...)`으로 부여한 인자 집합 이름.
-  argumentSet을 쓴 경우에만 유효 (5.11+)
-- `{argumentSetNameOrArgumentsWithNames}` — 집합 이름이 있으면 `{argumentSetName}`,
-  없으면 `{argumentsWithNames}` (5.11+)
+- `{argumentSetName}` — `argumentSet(...)`으로 부여한 인자 집합 이름. argumentSet을 쓴 경우에만 유효 (5.11+)
+- `{argumentSetNameOrArgumentsWithNames}` — 집합 이름이 있으면 `{argumentSetName}`, 없으면 `{argumentsWithNames}` (5.11+)
 - `{0}`, `{1}`, … — 개별 인자. 0부터 시작
 
 추가 규칙:
-- 기본 표시 이름 패턴은 `[{index}] {argumentSetNameOrArgumentsWithNames}`이며,
-  설정 파라미터 `junit.jupiter.params.displayname.default`로 전역 변경할 수 있다.
+- 기본 표시 이름 패턴은 `[{index}] {argumentSetNameOrArgumentsWithNames}`이며, 설정 파라미터 `junit.jupiter.params.displayname.default`로 전역 변경할 수 있다.
 - `name`은 `MessageFormat` 패턴으로 처리되므로 작은따옴표는 `''`로 이스케이프한다.
 
 명명 인자(`Named.of`/`named`) — 이름이 표시 이름에 반영된다:

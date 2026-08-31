@@ -1,6 +1,6 @@
 ---
 title: Externalized Configuration — Spring Boot 설정값 우선순위
-updated: 2026-08-21 15:38:05
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - spring-boot
@@ -76,9 +76,7 @@ jar 외부가 내부를 override하고, profile-specific이 일반 파일을 ove
 4. `./config/`
 5. `./config/*/` (config 하위 디렉터리, 알파벳 순)
 
-파일 이름 변경: `spring.config.name=myproject`  
-경로 교체: `spring.config.location=optional:classpath:/custom/`  
-경로 추가: `spring.config.additional-location=optional:file:./custom/`
+파일 이름 변경: `spring.config.name=myproject` 경로 교체: `spring.config.location=optional:classpath:/custom/` 경로 추가: `spring.config.additional-location=optional:file:./custom/`
 
 > `spring.config.location`은 기본 경로를 **교체**하고, `spring.config.additional-location`은 기본 경로에 **추가**한다.
 

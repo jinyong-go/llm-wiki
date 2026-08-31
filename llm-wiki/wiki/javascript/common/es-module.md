@@ -1,6 +1,6 @@
 ---
 title: ES Module
-updated: 2026-08-07 13:49:17
+updated: 2026-08-31 14:25:48
 tags:
   - javascript
   - esm
@@ -94,8 +94,7 @@ CommonJS의 순환 참조 동작(미완성 exports 스냅숏 반환)은 [[common
 - 여러 모듈 스크립트가 있으면 문서에 등장한 순서대로 실행된다.
 - 교차 출처 fetch 시 CORS 프로토콜을 강제한다(classic script와 달리).
 
-**왜 이렇게 동작하는가**
-모듈은 실행 전에 `import`로 연결된 의존성 그래프 전체를 먼저 내려받아야 한다. 이 과정은 네트워크 상에서 여러 파일을 비동기로 가져오는 작업이므로 본질적으로 즉시 실행이 불가능하다. 스펙은 이 fetch-then-execute 흐름을 classic script의 `defer`와 동일한 타이밍(파싱 완료 후, `DOMContentLoaded` 이전, 문서 순서대로)에 맞춰 실행하도록 정의했다.
+**왜 이렇게 동작하는가** 모듈은 실행 전에 `import`로 연결된 의존성 그래프 전체를 먼저 내려받아야 한다. 이 과정은 네트워크 상에서 여러 파일을 비동기로 가져오는 작업이므로 본질적으로 즉시 실행이 불가능하다. 스펙은 이 fetch-then-execute 흐름을 classic script의 `defer`와 동일한 타이밍(파싱 완료 후, `DOMContentLoaded` 이전, 문서 순서대로)에 맞춰 실행하도록 정의했다.
 
 **장점**
 - **parser-blocking 회피**: `<script>` 만나는 즉시 fetch·실행하며 파싱을 멈추는 classic script와 달리, HTML 파싱이 끊기지 않는다.

@@ -1,6 +1,6 @@
 ---
 title: crontab — 리눅스 작업 스케줄러
-updated: 2026-07-21 11:07:34
+updated: 2026-08-31 14:25:48
 tags:
   - linux
   - cli
@@ -9,9 +9,7 @@ tags:
 
 ## 1. 개요
 
-crontab(cron table)은 cron(8) 데몬이 읽어 지정된 시각에 명령을 반복 실행하도록 등록하는 파일이다.
-사용자별 crontab은 `/var/spool/cron/`에, 시스템 crontab은 `/etc/crontab`과 `/etc/cron.d/`에 저장된다.
-직접 편집하지 않고 `crontab` 명령어로 관리한다.
+crontab(cron table)은 cron(8) 데몬이 읽어 지정된 시각에 명령을 반복 실행하도록 등록하는 파일이다. 사용자별 crontab은 `/var/spool/cron/`에, 시스템 crontab은 `/etc/crontab`과 `/etc/cron.d/`에 저장된다. 직접 편집하지 않고 `crontab` 명령어로 관리한다.
 
 ---
 
@@ -56,8 +54,7 @@ crontab -u www -e    # www 사용자 crontab 편집 (root 권한 필요)
 | `~` | 범위 내 무작위 값 (설치 시 1회 결정) | `6~15` |
 | 이름 | 월/요일 앞 3글자 (대소문자 무관) | `mon,wed,fri`, `jan-mar` |
 
-'일(day of month)'과 '요일(day of week)'이 모두 `*`가 아니면 OR 조건으로 매칭된다.
-예: `30 4 1,15 * 5` → 매월 1일·15일 오전 4:30 및 매주 금요일.
+'일(day of month)'과 '요일(day of week)'이 모두 `*`가 아니면 OR 조건으로 매칭된다. 예: `30 4 1,15 * 5` → 매월 1일·15일 오전 4:30 및 매주 금요일.
 
 ### 3.2 특수 닉네임
 

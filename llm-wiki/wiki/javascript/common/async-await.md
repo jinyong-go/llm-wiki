@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 async/await
-updated: 2026-08-27 17:05:57
+updated: 2026-08-31 16:55:52
 tags:
   - javascript
   - async
@@ -9,7 +9,7 @@ tags:
 
 ## 1. 개요
 
-`async`/`await`는 Promise 기반 비동기 코드를 동기 코드처럼 보이게 작성하는 문법으로, 내부적으로 여전히 [[promise|Promise]]다.
+`async`/`await`는 Promise 기반 비동기 코드를 동기 코드처럼 보이게 작성하는 문법(syntactic sugar)으로, async 함수는 여전히 [[promise|Promise]]를 반환하고 `await`는 그 Promise가 처리(settle)되기를 기다린다.
 
 `then()` 체이닝과 비교하면 여러 이점이 있다. 코드가 위에서 아래로 순차적으로 읽혀 가독성이 높고, 동기 코드와 동일한 `try`/`catch`로 에러를 처리할 수 있어 체인 곳곳에 `catch()`를 배치할 필요가 없다. 에러 발생 시 스택 트레이스에 `await`가 있던 함수가 남아 디버깅이 쉽고, 이전 단계의 결과를 지역 변수에 담아 이후 단계에서 자유롭게 재사용할 수 있다 — 체이닝에서는 이전 `then()`의 결과를 다음 `then()`에서 쓰려면 클로저나 중첩이 필요하다.
 
@@ -17,7 +17,7 @@ tags:
 
 ## 2. async 함수
 
-`async function`은 항상 **Promise를 반환**한다. 반환값이 Promise가 아니면 자동으로 `Promise.resolve()`로 감싸진다.
+`async function`은 항상 **Promise를 반환**한다. 반환값이 Promise가 아니면 자동으로`Promise.resolve()`로 감싸진다.
 
 ```javascript
 async function foo() {
@@ -40,7 +40,7 @@ console.log(bar() === p);              // false — bar()는 p를 따라가는 �
 
 ## 3. await 키워드
 
-`await`는 async 함수 안에서만(또는 모듈 최상위에서) 쓸 수 있다. Promise가 확정(settled)될 때까지 **그 함수의 실행만** 멈추고, 성공(fulfilled)하면 값을 반환하고, 실패(rejected)하면 그 자리에서 예외를 던진다.
+`await`는 모듈 최상위 또는 `async` 함수 내에서 사용할 수 있다. Promise가 확정(settled)될 때까지 **그 함수의 실행만** 멈추고, 성공(fulfilled)하면 값을 반환하고, 실패(rejected)하면 그 자리에서 예외를 던진다.
 
 ```javascript
 async function getUser(id) {

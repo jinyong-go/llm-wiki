@@ -1,6 +1,6 @@
 ---
 title: 역연산 함수 테스트 — Known Answer Test·라운드트립
-updated: 2026-08-11 17:04:12
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - testing
@@ -105,13 +105,11 @@ if (!areEqual(T, mac))
 
 ### 4.2. NIST CAVP — Known Answer Test
 
-FIPS 승인 알고리즘 검증 프로그램(CAVP)은 **KAT**를 기본 검증 수단으로 쓴다. 규격이 제공하는 정적 벡터로 S-box 등 비선형 요소를 남김없이 자극하며, 구현이 같은 결과를 내지 못하면 "벤더 구현에 문제가 있다"고 판정한다. 고정 벡터만으로는 "정답만 외운" 구현을 걸러낼 수 없어, 의사난수 데이터를 반복 적용하는 **Monte Carlo Test(MCT)**로 보완한다.
-(출처: NIST CAVP, CAVP FAQ)
+FIPS 승인 알고리즘 검증 프로그램(CAVP)은 **KAT**를 기본 검증 수단으로 쓴다. 규격이 제공하는 정적 벡터로 S-box 등 비선형 요소를 남김없이 자극하며, 구현이 같은 결과를 내지 못하면 "벤더 구현에 문제가 있다"고 판정한다. 고정 벡터만으로는 "정답만 외운" 구현을 걸러낼 수 없어, 의사난수 데이터를 반복 적용하는 **Monte Carlo Test(MCT)**로 보완한다. (출처: NIST CAVP, CAVP FAQ)
 
 ### 4.3. Project Wycheproof
 
-Google이 시작한 **구현 비종속(implementation-agnostic) 테스트 벡터** 저장소다. 실행 하니스가 아니라 **JSON 형식의 테스트 벡터**(키·IV·암호문·태그·기대 결과·`result` 등)를 배포하고, 각 라이브러리가 자기 파이프라인에서 출력과 기대값을 대조한다. AES-GCM·ECDSA·RSA·ML-KEM 등 주요 알고리즘의 **알려진 공격·규격 불일치·엣지 케이스**를 다룬다.
-(출처: C2SP/wycheproof)
+Google이 시작한 **구현 비종속(implementation-agnostic) 테스트 벡터** 저장소다. 실행 하니스가 아니라 **JSON 형식의 테스트 벡터**(키·IV·암호문·태그·기대 결과·`result` 등)를 배포하고, 각 라이브러리가 자기 파이프라인에서 출력과 기대값을 대조한다. AES-GCM·ECDSA·RSA·ML-KEM 등 주요 알고리즘의 **알려진 공격·규격 불일치·엣지 케이스**를 다룬다. (출처: C2SP/wycheproof)
 
 > 세 사례의 공통점: **정답을 SUT 밖에서(규격·독립 도구·커뮤니티) 확보해 고정값으로 박아두고 대조**한다. 이것이 §3.1 KAT의 실증이다.
 

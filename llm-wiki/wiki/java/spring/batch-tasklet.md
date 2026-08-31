@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Tasklet — 개념, 사용 시점, 예시, 장단점
-updated: 2026-07-14 11:26:44
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - spring
@@ -135,8 +135,7 @@ public MethodInvokingTaskletAdapter myTasklet() {
 - **내결함성 기능 비적용** — Chunk의 skip/retry 같은 항목 단위 내결함성 메커니즘을 쓸 수 없다.[^2]
 - **대량 처리 부적합** — 다건 반복 처리는 Chunk가 적합하며, Tasklet으로 대량 루프를 직접 구현하면 위 이점을 잃는다.
 
-[^1]: Chunk의 재시작이 ExecutionContext 기반 실패 지점 재개라는 사실과 Tasklet에 대응 메커니즘이 없다는 점으로부터 추론.
-[^2]: skip/retry가 chunk 지향 스텝 빌더(FaultTolerantStepBuilder)에만 제공되는 API 구조로부터 추론.
+[^1]: Chunk의 재시작이 ExecutionContext 기반 실패 지점 재개라는 사실과 Tasklet에 대응 메커니즘이 없다는 점으로부터 추론. [^2]: skip/retry가 chunk 지향 스텝 빌더(FaultTolerantStepBuilder)에만 제공되는 API 구조로부터 추론.
 
 ---
 

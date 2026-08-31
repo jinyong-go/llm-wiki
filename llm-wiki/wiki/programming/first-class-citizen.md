@@ -1,15 +1,13 @@
 ---
 title: 일급 객체 (First-class Citizen)
-updated: 2026-07-14 11:26:44
+updated: 2026-08-31 14:25:48
 tags:
   - programming
   - language
   - functional-programming
 ---
 
-**일급 객체(first-class citizen)** 는 언어에서 다른 개체들이 일반적으로 사용할 수 있는
-모든 연산을 지원하는 개체다. Christopher Strachey가 1960년대에 도입한 개념으로,
-ALGOL에서 실수(first-class)와 달리 프로시저는 변수나 식으로 표현될 수 없던 것을 대비한 데서 유래한다.
+**일급 객체(first-class citizen)** 는 언어에서 다른 개체들이 일반적으로 사용할 수 있는 모든 연산을 지원하는 개체다. Christopher Strachey가 1960년대에 도입한 개념으로, ALGOL에서 실수(first-class)와 달리 프로시저는 변수나 식으로 표현될 수 없던 것을 대비한 데서 유래한다.
 
 ## 1. 정의
 
@@ -22,8 +20,7 @@ Robin Popplestone이 정리한 일급 개체의 4가지 권리:
 
 ## 2. 일급 함수
 
-함수가 다른 변수와 동일하게 취급되는 언어는 **일급 함수(first-class function)** 를
-가진다고 말한다 (MDN 기준 3조건):
+함수가 다른 변수와 동일하게 취급되는 언어는 **일급 함수(first-class function)** 를 가진다고 말한다 (MDN 기준 3조건):
 
 - 변수에 대입 가능
 - 다른 함수의 인자로 전달 가능 — 이렇게 전달되는 함수가 **콜백(callback)**
@@ -51,9 +48,7 @@ Smalltalk·Ruby·Python·Common Lisp에서는 클래스도 일급이다(메타�
 
 ## 4. Java에서의 일급 함수
 
-Java의 메서드는 값이 아니므로 그 자체로는 일급이 아니다.
-Java 8+의 lambda는 "기능을 메서드 인자처럼, 코드를 데이터처럼"(Oracle Tutorial)
-다루게 하지만, 실체는 **함수형 인터페이스(단일 추상 메서드 인터페이스)의 인스턴스**다.
+Java의 메서드는 값이 아니므로 그 자체로는 일급이 아니다. Java 8+의 lambda는 "기능을 메서드 인자처럼, 코드를 데이터처럼"(Oracle Tutorial) 다루게 하지만, 실체는 **함수형 인터페이스(단일 추상 메서드 인터페이스)의 인스턴스**다.
 
 `java.util.function`의 표준 함수형 인터페이스:
 

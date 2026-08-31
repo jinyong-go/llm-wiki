@@ -2,6 +2,38 @@
 
 ---
 
+## 2026-08-31 17:33:58
+
+- **수정**: `wiki/java/common/gradle-dependency-configurations.md` — §2~8을 "§2. 종류"의 하위 항목(2.1~2.7)으로 재구성, ABI 설명 각주 추가, §2.3 compileOnly 문장 정리, §2.4 compileOnlyApi 괄호 예시를 본문 문장으로 변경, 내부 앵커 링크 갱신
+
+## 2026-08-31 17:25:58
+
+- **이동**: `wiki/java/excel.md` → `wiki/java/common/excel.md`(내용 변경 없음)
+
+## 2026-08-31 17:21:44
+
+- **생성**: `wiki/java/common/gradle-dependency-configurations.md` — Gradle 의존성 Configuration 신규 문서(Gradle 공식 문서: Java Library Plugin/Java Plugin/Dependency Management for Java Projects 기반). §2 implementation, §3 api(ABI 노출 판단 기준), §4 compileOnly, §5 compileOnlyApi, §6 runtimeOnly, §7 테스트 전용 Configuration(testImplementation/testCompileOnly/testRuntimeOnly), §8 annotationProcessor(Lombok compileOnly+annotationProcessor 병행 필요), §9 종합 비교(컴파일/런타임 클래스패스·소비자 노출 여부 표, implementation의 런타임 노출 오해 정정, Resolvable Configuration 구성), §10 선택 기준
+- **수정**: `wiki/java/common/gradle.md` — §7.2에 신규 문서 링크 추가, Related pages에 `[[gradle-dependency-configurations]]` 추가
+- **수정**: `wiki/index.md` — Java 섹션에 `[[gradle-dependency-configurations]]` 항목 추가
+
+## 2026-08-31 17:13:10
+
+- **생성**: `wiki/javascript/common/fetch-api.md` — Fetch API 신규 문서(MDN Fetch API/Using Fetch/fetch()/RequestInit/Response.type, WHATWG Fetch Standard 기반). §1 개요(XMLHttpRequest 대비 장점), §2 기본 사용법, §3 응답 상태 확인(HTTP 에러 상태엔 reject 안 됨), §4 요청 옵션(method/headers/body/credentials/mode), §5 응답 본문 읽기(locked·disturbed 스트림, clone()), §6 요청 취소(AbortController/AbortSignal.timeout()), §7 기타(redirect: "manual"의 opaqueredirect 동작, JSON 전송 시 Content-Type 기본값이 text/plain인 문제, 캐시로 인한 오래된 응답, 업로드 진행률 추적 불가), §8 에러 처리(에러 유형별 표, error.name 분기 패턴)
+- **수정**: `wiki/index.md` — JavaScript 섹션에 `[[fetch-api]]` 항목 추가
+
+## 2026-08-31 16:55:52
+
+- **수정**: `wiki/javascript/common/async-await.md` — §1 "내부적으로 여전히 Promise다" 표현을 "async 함수는 여전히 Promise를 반환하고 await는 그 Promise가 처리되기를 기다린다"로 정정, §3 "async 함수 안에서만(또는 모듈 최상위에서)"를 "모듈 최상위 또는 async 함수 내에서"로 수정
+
+## 2026-08-31 14:25:48
+
+- **수정**: 프로즈/목록 항목 내 하드랩(문장 중간 줄바꿈) 제거, 단락을 한 줄로 병합(내용 변경 없음) — `wiki/ai/ai-agent-schema.md`, `wiki/crypto/hsm.md`, `wiki/dbms/concurrency-control.md`, `wiki/dbms/index-scan.md`, `wiki/dbms/oracle-hints.md`, `wiki/dbms/upsert-merge.md`, `wiki/java/common/cpu-usage-troubleshooting.md`, `wiki/java/common/expression-vs-statement.md`, `wiki/java/common/java-process-analysis-tools.md`, `wiki/java/common/jvm-options.md`, `wiki/java/spring/aop.md`, `wiki/java/spring/batch-tasklet.md`, `wiki/java/spring/dependency-injection.md`, `wiki/java/spring/entity-listener-di.md`, `wiki/java/spring/externalized-configuration.md`, `wiki/java/spring/jpa-composite-key.md`, `wiki/java/spring/jpa-entity-lifecycle.md`, `wiki/java/spring/profiles.md`, `wiki/java/spring/spring-event.md`, `wiki/java/test/inverse-operation-testing.md`, `wiki/java/test/jacoco.md`, `wiki/java/test/jmh.md`, `wiki/java/test/junit-parameterized-test.md`, `wiki/javascript/common/es-module.md`, `wiki/javascript/common/template-literals.md`, `wiki/linux/network/dns-configuration.md`, `wiki/linux/system/crontab.md`, `wiki/programming/first-class-citizen.md`, `wiki/web/cors.md`
+
+## 2026-08-31 11:23:31
+
+- **생성**: `wiki/javascript/react/react-ssr.md` — React SSR 신규 문서(React 공식 문서/React Router 문서 기반). §2 패키지 구성(react-dom 서브 경로 vs react-router-dom·메타프레임워크 별도 설치), §3 비스트리밍 SSR(renderToString/renderToStaticMarkup), §4 스트리밍 SSR(renderToPipeableStream/renderToReadableStream, Suspense·셸), §5 하이드레이션(선택적 하이드레이션)
+- **수정**: `wiki/index.md` — `## React` 섹션 신설, `[[react-ssr]]` 항목 추가
+
 ## 2026-08-27 17:40:43
 
 - **수정**: `wiki/javascript/common/function-declaration.md` — §4.1 목록을 각 항목별 문단으로 풀고, 생성자·generator 예시 코드를 해당 항목 바로 아래로 재배치

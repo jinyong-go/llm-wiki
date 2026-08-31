@@ -1,6 +1,6 @@
 ---
 title: JPA 복합키 — @EmbeddedId / @IdClass
-updated: 2026-07-08 10:32:15
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - jpa
@@ -13,8 +13,7 @@ tags:
 
 ## 1. 개요
 
-복합키(Composite Primary Key)는 두 개 이상의 컬럼 조합으로 PK를 구성하는 방식.
-JPA는 두 가지 매핑 방법을 제공한다: `@EmbeddedId`와 `@IdClass`.
+복합키(Composite Primary Key)는 두 개 이상의 컬럼 조합으로 PK를 구성하는 방식. JPA는 두 가지 매핑 방법을 제공한다: `@EmbeddedId`와 `@IdClass`.
 
 ---
 
@@ -29,8 +28,7 @@ JPA 명세가 요구하는 조건이다.
 | `equals()` / `hashCode()` | PK 컬럼 값 기반으로 구현 필수 |
 | `Serializable` | 구현 필수 |
 
-복합키 구성 요소 타입: 기본 타입, 래퍼 타입, `String`, `UUID`, `Date`, `BigDecimal`, `BigInteger`.
-컬렉션(`@OneToMany` 등)은 PK 구성 요소로 사용 불가.
+복합키 구성 요소 타입: 기본 타입, 래퍼 타입, `String`, `UUID`, `Date`, `BigDecimal`, `BigInteger`. 컬렉션(`@OneToMany` 등)은 PK 구성 요소로 사용 불가.
 
 ---
 

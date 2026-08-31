@@ -1,6 +1,6 @@
 ---
 title: HSM (Hardware Security Module)
-updated: 2026-07-16 16:59:10
+updated: 2026-08-31 14:25:48
 tags:
   - crypto
   - hsm
@@ -121,8 +121,7 @@ AWS CloudHSM의 FIPS 140-3 인증은 FIPS 모드 클러스터에 적용된다. A
 
 키 통제권·규제 준수(예: CA 키의 전용 HSM 보관 요건)가 필요하면 전용 HSM, 일반 애플리케이션 암호화는 관리형 키 서비스로 충분하다.[^2]
 
-[^1]: 추론. Thales Luna, Utimaco 등 주요 벤더 제품과 클라우드 HSM이 FIPS 140-2/140-3 Level 3 인증을 명시하는 사례([Cloudflare 블로그](https://blog.cloudflare.com/keyless-ssl-supports-fips-140-2-l3-hsm/), [Thales Docs](https://thalesdocs.com/gphsm/luna/7/docs/network/Content/compliance/fips.htm))에 근거한 일반화이며, 모든 제품에 대한 전수 확인은 아님.
-[^2]: 추론. AWS CloudHSM 공식 문서가 키에 대한 전적인 통제가 필요한 경우 CloudHSM, 그 외 관리형 통합은 KMS로 구분하는 가이드와 각 CSP의 서비스 포지셔닝에 근거한 일반화.
+[^1]: 추론. Thales Luna, Utimaco 등 주요 벤더 제품과 클라우드 HSM이 FIPS 140-2/140-3 Level 3 인증을 명시하는 사례([Cloudflare 블로그](https://blog.cloudflare.com/keyless-ssl-supports-fips-140-2-l3-hsm/), [Thales Docs](https://thalesdocs.com/gphsm/luna/7/docs/network/Content/compliance/fips.htm))에 근거한 일반화이며, 모든 제품에 대한 전수 확인은 아님. [^2]: 추론. AWS CloudHSM 공식 문서가 키에 대한 전적인 통제가 필요한 경우 CloudHSM, 그 외 관리형 통합은 KMS로 구분하는 가이드와 각 CSP의 서비스 포지셔닝에 근거한 일반화.
 
 ---
 

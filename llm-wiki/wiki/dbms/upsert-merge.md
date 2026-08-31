@@ -1,6 +1,6 @@
 ---
 title: DBMS별 Upsert / Merge
-updated: 2026-08-12 17:40:32
+updated: 2026-08-31 14:25:48
 tags:
   - dbms
   - sql
@@ -54,10 +54,8 @@ WHEN NOT MATCHED THEN
 
 ### 3.1. 오류 사례
 
-- **`ON` 절 컬럼을 `UPDATE SET`으로 변경 → `ORA-38104`**
-  `ON` 조건에 쓰인 컬럼을 `WHEN MATCHED ... UPDATE SET`에서 갱신하려 하면 `ORA-38104: Columns referenced in the ON Clause cannot be updated`가 발생한다. 해당 갱신이 성립되면 이미 매칭된 행이 갱신 도중 "매칭되지 않는" 상태로 바뀔 수 있어, 갱신 전후로 매칭 결과가 흔들리는 것을 막기 위한 제약이다. 이런 컬럼을 조건부로 바꿔야 한다면 `ON` 조건에서 빼고 `UPDATE ... WHERE`로 옮겨야 한다.
-- **소스 중복으로 같은 타깃 행이 두 번 매칭 → `ORA-30926`**
-  `USING`의 소스에 `ON` 키 기준 중복 행이 있어 같은 타깃 행에 두 번 이상 매칭되면 `ORA-30926: unable to get a stable set of rows in the source tables`가 발생한다. 소스 쿼리에 `DISTINCT`나 분석 함수로 키 중복을 제거해야 해결된다.
+- **`ON` 절 컬럼을 `UPDATE SET`으로 변경 → `ORA-38104`** `ON` 조건에 쓰인 컬럼을 `WHEN MATCHED ... UPDATE SET`에서 갱신하려 하면 `ORA-38104: Columns referenced in the ON Clause cannot be updated`가 발생한다. 해당 갱신이 성립되면 이미 매칭된 행이 갱신 도중 "매칭되지 않는" 상태로 바뀔 수 있어, 갱신 전후로 매칭 결과가 흔들리는 것을 막기 위한 제약이다. 이런 컬럼을 조건부로 바꿔야 한다면 `ON` 조건에서 빼고 `UPDATE ... WHERE`로 옮겨야 한다.
+- **소스 중복으로 같은 타깃 행이 두 번 매칭 → `ORA-30926`** `USING`의 소스에 `ON` 키 기준 중복 행이 있어 같은 타깃 행에 두 번 이상 매칭되면 `ORA-30926: unable to get a stable set of rows in the source tables`가 발생한다. 소스 쿼리에 `DISTINCT`나 분석 함수로 키 중복을 제거해야 해결된다.
 
 ## 4. PostgreSQL — INSERT ... ON CONFLICT
 
@@ -74,10 +72,8 @@ SET name = EXCLUDED.name, updated_at = EXCLUDED.updated_at;
 
 ### 4.1. 오류 사례
 
-- **지정한 컬럼에 유니크 제약/인덱스가 없음 → `there is no unique or exclusion constraint matching the ON CONFLICT specification`**
-  `ON CONFLICT (col)`에 지정한 컬럼 조합과 정확히 일치하는 유니크 인덱스가 테이블에 없으면 이 오류가 발생한다. 부분 유니크 인덱스(`WHERE` 조건 포함)를 대상으로 하려면 `ON CONFLICT (col) WHERE ...`처럼 술어까지 함께 지정해야 추론된다.
-- **한 문장에서 같은 행을 두 번 갱신 → 21000 cardinality violation**
-  `ON CONFLICT DO UPDATE command cannot affect row a second time` 오류(SQLSTATE 21000)는 하나의 INSERT 문에 넘긴 값들 중 두 개 이상이 같은 충돌 대상(유니크 키)을 가리킬 때 발생한다. Oracle의 `ORA-30926`과 동일한 취지의 결정성 보장이며, 입력 데이터를 미리 중복 제거해야 한다.
+- **지정한 컬럼에 유니크 제약/인덱스가 없음 → `there is no unique or exclusion constraint matching the ON CONFLICT specification`** `ON CONFLICT (col)`에 지정한 컬럼 조합과 정확히 일치하는 유니크 인덱스가 테이블에 없으면 이 오류가 발생한다. 부분 유니크 인덱스(`WHERE` 조건 포함)를 대상으로 하려면 `ON CONFLICT (col) WHERE ...`처럼 술어까지 함께 지정해야 추론된다.
+- **한 문장에서 같은 행을 두 번 갱신 → 21000 cardinality violation** `ON CONFLICT DO UPDATE command cannot affect row a second time` 오류(SQLSTATE 21000)는 하나의 INSERT 문에 넘긴 값들 중 두 개 이상이 같은 충돌 대상(유니크 키)을 가리킬 때 발생한다. Oracle의 `ORA-30926`과 동일한 취지의 결정성 보장이며, 입력 데이터를 미리 중복 제거해야 한다.
 
 ## 5. MySQL — INSERT ... ON DUPLICATE KEY UPDATE
 
@@ -97,10 +93,8 @@ ON DUPLICATE KEY UPDATE
 
 Oracle/PostgreSQL은 매칭 기준이 유니크하지 않거나 중복되면 **오류**로 막지만, MySQL은 같은 상황에서 오류 없이 의도와 다르게 동작하는 경우가 있어 더 주의가 필요하다.
 
-- **대상 컬럼에 유니크 제약이 없음 → 오류 없이 매번 INSERT됨**
-  테이블에 PK/유니크 키가 전혀 없으면 "중복 키" 자체가 성립하지 않으므로 `ON DUPLICATE KEY UPDATE` 절은 절대 발동하지 않는다. 오류를 내지 않고 그냥 일반 INSERT처럼 매번 새 행이 쌓여, 의도한 upsert 대신 중복 데이터가 누적되는 방식으로 실패한다.
-- **유니크 키가 여러 개이고 서로 다른 행에 각각 매칭 → 그중 하나만 갱신**
-  테이블에 유니크 인덱스가 둘 이상 있고 삽입하려는 행이 서로 다른 기존 행과 각각 충돌하면, 오류 없이 그중 한 행만 갱신된다(정확히 어느 행인지는 문서상 보장되지 않음). MySQL 공식 문서도 유니크 인덱스가 여러 개인 테이블에는 이 구문 사용을 권장하지 않는다.
+- **대상 컬럼에 유니크 제약이 없음 → 오류 없이 매번 INSERT됨** 테이블에 PK/유니크 키가 전혀 없으면 "중복 키" 자체가 성립하지 않으므로 `ON DUPLICATE KEY UPDATE` 절은 절대 발동하지 않는다. 오류를 내지 않고 그냥 일반 INSERT처럼 매번 새 행이 쌓여, 의도한 upsert 대신 중복 데이터가 누적되는 방식으로 실패한다.
+- **유니크 키가 여러 개이고 서로 다른 행에 각각 매칭 → 그중 하나만 갱신** 테이블에 유니크 인덱스가 둘 이상 있고 삽입하려는 행이 서로 다른 기존 행과 각각 충돌하면, 오류 없이 그중 한 행만 갱신된다(정확히 어느 행인지는 문서상 보장되지 않음). MySQL 공식 문서도 유니크 인덱스가 여러 개인 테이블에는 이 구문 사용을 권장하지 않는다.
 
 ## 6. 비교
 

@@ -1,6 +1,6 @@
 ---
 title: CPU 사용량 증가 트러블슈팅 — KeyStore 반복 접근 사례
-updated: 2026-07-08 10:32:15
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - jvm
@@ -11,9 +11,7 @@ tags:
 ---
 
 ## 1. 개요
-서버 코드 변경 후 CPU 사용량이 상승한 사례와 그 진단·해결 과정을 정리한다.
-근본 원인은 **요청 처리 경로(hot path)에서 `KeyStore`에 매번 접근하여 개인키를 복호화**한 것이었다.
-`KeyStore.getKey(alias, password)`는 호출마다 암호 기반 키 유도(PBKDF)를 수행하므로 CPU 비용이 누적된다.
+서버 코드 변경 후 CPU 사용량이 상승한 사례와 그 진단·해결 과정을 정리한다. 근본 원인은 **요청 처리 경로(hot path)에서 `KeyStore`에 매번 접근하여 개인키를 복호화**한 것이었다. `KeyStore.getKey(alias, password)`는 호출마다 암호 기반 키 유도(PBKDF)를 수행하므로 CPU 비용이 누적된다.
 
 ---
 
@@ -66,8 +64,7 @@ tags:
 3. `jstack <pid> > dump.txt`
 4. 덤프에서 `nid=0x<hex>` 검색 → 해당 스레드가 실행 중인 **정확한 메서드·스택 프레임** 확인
 
-이렇게 했다면 `nioEventLoop` 스레드의 스택에서 `KeyStore.getKey` / PBKDF 복호화 프레임이 바로 드러나, **Netty·패킷 소거 단계를 건너뛸** 수 있었다.
-주의: `jstack` 단발 스냅샷은 그 순간만 포착할 수 있으므로, 수 초 간격으로 여러 번 떠서 **반복 등장하는 프레임**을 확인해야 정확하다. ([[java-process-analysis-tools]] 참고)
+이렇게 했다면 `nioEventLoop` 스레드의 스택에서 `KeyStore.getKey` / PBKDF 복호화 프레임이 바로 드러나, **Netty·패킷 소거 단계를 건너뛸** 수 있었다. 주의: `jstack` 단발 스냅샷은 그 순간만 포착할 수 있으므로, 수 초 간격으로 여러 번 떠서 **반복 등장하는 프레임**을 확인해야 정확하다. ([[java-process-analysis-tools]] 참고)
 
 ### 4.2. CPU 샘플링 프로파일러 (async-profiler / JFR)
 플레임 그래프로 CPU 점유 핫패스를 직접 시각화한다.

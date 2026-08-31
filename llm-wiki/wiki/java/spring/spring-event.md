@@ -1,6 +1,6 @@
 ---
 title: Spring 이벤트
-updated: 2026-08-11 17:04:12
+updated: 2026-08-31 14:25:48
 tags:
   - java
   - spring
@@ -9,8 +9,7 @@ tags:
 
 ## 1. 개요
 
-`ApplicationContext`는 옵저버 패턴 기반의 이벤트 발행·구독 메커니즘을 제공한다.
-빈 간 직접 의존 없이 부가 로직(알림, 캐시 갱신, 감사 등)을 분리할 수 있다.
+`ApplicationContext`는 옵저버 패턴 기반의 이벤트 발행·구독 메커니즘을 제공한다. 빈 간 직접 의존 없이 부가 로직(알림, 캐시 갱신, 감사 등)을 분리할 수 있다.
 
 ## 2. 구성 요소
 
@@ -21,9 +20,7 @@ tags:
 
 ### 2.1. 주입되는 구현체
 
-`ApplicationEventPublisher` 주입 시 별도의 발행자 빈이 아니라 **`ApplicationContext` 자신이 주입**된다.
-`ApplicationContext`가 `ApplicationEventPublisher`를 확장(구현)하며,
-`AbstractApplicationContext.prepareBeanFactory()`가 컨텍스트 자신을 해당 타입의 주입 대상으로 등록하기 때문:
+`ApplicationEventPublisher` 주입 시 별도의 발행자 빈이 아니라 **`ApplicationContext` 자신이 주입**된다. `ApplicationContext`가 `ApplicationEventPublisher`를 확장(구현)하며, `AbstractApplicationContext.prepareBeanFactory()`가 컨텍스트 자신을 해당 타입의 주입 대상으로 등록하기 때문:
 
 ```java
 beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
@@ -72,8 +69,7 @@ public class OrderEventHandler {
 
 `ApplicationStartingEvent` → `ApplicationEnvironmentPreparedEvent` → `ApplicationContextInitializedEvent` → `ApplicationPreparedEvent` → (refresh) → `ApplicationStartedEvent` → `ApplicationReadyEvent` (실패 시 `ApplicationFailedEvent`)
 
-컨텍스트 생성 전에 발행되는 이벤트는 `@Bean` 리스너로 수신 불가 —
-`SpringApplication.addListeners(...)` 또는 `META-INF/spring.factories`의 `org.springframework.context.ApplicationListener` 키로 등록
+컨텍스트 생성 전에 발행되는 이벤트는 `@Bean` 리스너로 수신 불가 — `SpringApplication.addListeners(...)` 또는 `META-INF/spring.factories`의 `org.springframework.context.ApplicationListener` 키로 등록
 
 ## 4. @EventListener
 
@@ -136,8 +132,7 @@ public void handle(OrderCreatedEvent event) { /* 별도 스레드 */ }
 
 주의사항:
 - **진행 중 트랜잭션이 없으면 리스너가 아예 실행되지 않음** — `fallbackExecution = true`로 강제 실행 가능
-- **AFTER_COMMIT 함정**: 트랜잭션은 이미 커밋 완료 상태이므로 리스너 안의 DB 변경(JPA 쓰기 등)은
-  커밋되지 않고 조용히 유실됨 → 쓰기가 필요하면 `@Transactional(propagation = REQUIRES_NEW)` 필요
+- **AFTER_COMMIT 함정**: 트랜잭션은 이미 커밋 완료 상태이므로 리스너 안의 DB 변경(JPA 쓰기 등)은 커밋되지 않고 조용히 유실됨 → 쓰기가 필요하면 `@Transactional(propagation = REQUIRES_NEW)` 필요
 - `REQUIRES_NEW`로 발행 트랜잭션이 분리된 경우 리스너는 자신이 바인딩된 트랜잭션의 결과를 따름
 - Spring 6.1+: 리액티브 트랜잭션(`ReactiveTransactionManager`)도 지원 — `TransactionalEventPublisher` 사용
 - 용례: AFTER_COMMIT(알림·캐시 갱신), BEFORE_COMMIT(커밋 전 검증), AFTER_ROLLBACK(보상 로직)

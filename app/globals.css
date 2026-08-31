@@ -188,6 +188,26 @@ a {
   font-weight: 600;
 }
 
+/* ---------- index tree (home page) ---------- */
+
+.index-tree {
+  margin-top: 8px;
+}
+
+.index-tree .nav-dir > ul {
+  padding-left: 18px;
+}
+
+.index-tree .nav-dir-label {
+  font-size: 14.5px;
+  padding: 9px 8px 5px;
+}
+
+.index-tree .nav-page a {
+  font-size: 14.5px;
+  padding: 6px 10px;
+}
+
 /* ---------- breadcrumb ---------- */
 
 .breadcrumb {
@@ -195,9 +215,15 @@ a {
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin-bottom: 24px;
+  margin: -40px -48px 24px;
+  padding: 16px 48px;
   font-size: 13px;
   color: var(--text-muted);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .breadcrumb a {

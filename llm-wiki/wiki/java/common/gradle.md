@@ -1,6 +1,6 @@
 ---
 title: Gradle
-updated: 2026-07-22 16:15:14
+updated: 2026-08-31 17:21:44
 tags:
   - java
   - gradle
@@ -193,7 +193,7 @@ repositories {
 
 ### 7.2. Configuration(의존성 버킷)
 
-의존성은 용도별 **Configuration**으로 그룹화해 선언한다. `java`/`java-library` 플러그인을 적용하면 아래 Configuration이 자동 생성된다.
+의존성은 용도별 **Configuration**으로 그룹화해 선언한다. `java`/`java-library` 플러그인을 적용하면 아래 Configuration이 자동 생성된다. 각 Configuration의 상세 역할·컴파일/런타임 클래스패스 노출 범위·선택 기준은 [[gradle-dependency-configurations]] 참고.
 
 - **`implementation`** — 프로덕션 코드 컴파일·실행에만 필요. 이 Configuration으로 선언한 의존성은 소비자(이 라이브러리를 사용하는 다른 프로젝트)의 컴파일 클래스패스에 노출되지 않는다 — 내부 구현 의존성을 숨겨 재컴파일 범위를 줄이는 목적
 - **`api`**(`java-library` 플러그인 전용) — 소비자에게도 노출되어야 하는 의존성. 이 라이브러리의 public API 타입 시그니처에 등장하는 의존성이면 `api`를 써야 함
@@ -340,3 +340,4 @@ wrapper 사용 시 `gradle` 대신 `./gradlew`(Unix/macOS) 또는 `gradlew.bat`(
 - [[maven]] — Maven 빌드 방식(§9 Maven과 비교)
 - [[gradle-multi-project]] — Gradle 멀티 프로젝트: settings.gradle 구성, 프로젝트 간 의존성, cross-project configuration과 컨벤션 플러그인
 - [[gradle-task]] — Gradle Task: 타입, 등록 방법, 의존관계와 순서, 조건부 실행
+- [[gradle-dependency-configurations]] — Gradle 의존성 Configuration 상세 비교: implementation/api/compileOnly/runtimeOnly 등

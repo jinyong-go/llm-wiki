@@ -1,6 +1,6 @@
 ---
 title: DNS 설정 — resolv.conf, hosts, nsswitch.conf
-updated: 2026-07-08 10:32:15
+updated: 2026-08-31 14:25:48
 tags:
   - linux
   - dns
@@ -48,8 +48,7 @@ search example.internal corp.example.com
 ```
 `ndots` 미만의 점(`.`)을 포함한 짧은 이름 조회 시 각 search 도메인을 차례로 붙여 시도한다.
 
-예: `search example.internal` 설정 + `db-server` 조회
-→ `db-server.example.internal` 순으로 시도
+예: `search example.internal` 설정 + `db-server` 조회 → `db-server.example.internal` 순으로 시도
 
 **domain** — `search`의 구식 표현 (단일 도메인만 지원), 사용 지양.
 

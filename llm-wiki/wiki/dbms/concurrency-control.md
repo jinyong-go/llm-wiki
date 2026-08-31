@@ -1,6 +1,6 @@
 ---
 title: DBMS 동시성 제어와 일관성 전략 (Concurrency Control and Consistency)
-updated: 2026-07-15 17:45:40
+updated: 2026-08-31 14:25:48
 tags:
   - dbms
   - sql
@@ -13,10 +13,7 @@ tags:
 
 ## 1. 개요
 
-동시성 제어(Concurrency Control)는 여러 트랜잭션이 동시에 실행될 때 데이터
-정합성을 보장하는 기법이다. 핵심은 **일관성 ↔ 성능(동시성/TPS)의 트레이드오프**이다.
-정합성을 강하게 보장할수록 락 범위·유지 시간이 늘거나 검증 실패(abort) 재시도가
-증가해 처리량(TPS)이 감소한다.
+동시성 제어(Concurrency Control)는 여러 트랜잭션이 동시에 실행될 때 데이터 정합성을 보장하는 기법이다. 핵심은 **일관성 ↔ 성능(동시성/TPS)의 트레이드오프**이다. 정합성을 강하게 보장할수록 락 범위·유지 시간이 늘거나 검증 실패(abort) 재시도가 증가해 처리량(TPS)이 감소한다.
 
 계층은 세 단계로 구분한다.
 - **정책**: 트랜잭션 격리 수준 — 무엇을 허용/금지할지 정의
@@ -53,27 +50,19 @@ tags:
   - 비고: PostgreSQL·Oracle 기본값
 - **REPEATABLE READ**
   - 장점: 트랜잭션 내 동일 스냅샷 보장(반복 읽기 일관성)
-  - 단점: 표준상 팬텀 가능. 스냅샷/락 유지로 롱 트랜잭션 시 오버헤드,
-    쓰기 충돌 시 직렬화 실패 가능
+  - 단점: 표준상 팬텀 가능. 스냅샷/락 유지로 롱 트랜잭션 시 오버헤드, 쓰기 충돌 시 직렬화 실패 가능
   - 비고: MySQL InnoDB 기본값
 - **SERIALIZABLE**
   - 장점: 완전한 직렬성, 이상 현상 전부 차단
   - 단점: 락 경합 최대 또는 직렬화 실패(abort) 재시도 증가 → TPS 최저
 
-핵심: 격리 수준을 높이면 이상 현상은 줄지만, 락 범위·유지 시간이 늘거나 검증
-abort가 증가하여 동시성과 TPS가 감소한다.
+핵심: 격리 수준을 높이면 이상 현상은 줄지만, 락 범위·유지 시간이 늘거나 검증 abort가 증가하여 동시성과 TPS가 감소한다.
 
 ### 2.2. 구현 차이
 
-- **MySQL InnoDB**: REPEATABLE READ 기본. **Next-Key Lock**(레코드 락 + 갭 락)으로
-  REPEATABLE READ에서도 팬텀을 상당 부분 방지(*). READ COMMITTED는 갭 락을 쓰지
-  않아 팬텀이 발생 가능.
-- **PostgreSQL**: READ COMMITTED 기본. RR은 **Snapshot Isolation**으로 구현되어
-  팬텀은 없으나 **Write Skew** 발생 가능. SERIALIZABLE은 **SSI**(Serializable
-  Snapshot Isolation)로 이를 탐지·abort. RR/SERIALIZABLE 사용 시 직렬화 실패에
-  대비한 재시도 로직이 필요하다.
-- **Oracle**: READ UNCOMMITTED/RR 미지원. SERIALIZABLE은 스냅샷 기반으로,
-  실질적으로 Snapshot Isolation이므로 **Write Skew**가 가능하다(진정한 직렬성 아님).
+- **MySQL InnoDB**: REPEATABLE READ 기본. **Next-Key Lock**(레코드 락 + 갭 락)으로 REPEATABLE READ에서도 팬텀을 상당 부분 방지(*). READ COMMITTED는 갭 락을 쓰지 않아 팬텀이 발생 가능.
+- **PostgreSQL**: READ COMMITTED 기본. RR은 **Snapshot Isolation**으로 구현되어 팬텀은 없으나 **Write Skew** 발생 가능. SERIALIZABLE은 **SSI**(Serializable Snapshot Isolation)로 이를 탐지·abort. RR/SERIALIZABLE 사용 시 직렬화 실패에 대비한 재시도 로직이 필요하다.
+- **Oracle**: READ UNCOMMITTED/RR 미지원. SERIALIZABLE은 스냅샷 기반으로, 실질적으로 Snapshot Isolation이므로 **Write Skew**가 가능하다(진정한 직렬성 아님).
 
 ---
 
@@ -83,8 +72,7 @@ abort가 증가하여 동시성과 TPS가 감소한다.
 
 "충돌이 자주 일어난다"고 가정하고 **작업 전에 락을 먼저 획득**한다.
 
-- 동작: 공유 락(S)/배타 락(X)을 대상(row/page/table)에 걸고, 이론적으로는
-  **2PL(Two-Phase Locking)** — 락 획득 단계와 해제 단계를 분리해 직렬성 보장.
+- 동작: 공유 락(S)/배타 락(X)을 대상(row/page/table)에 걸고, 이론적으로는 **2PL(Two-Phase Locking)** — 락 획득 단계와 해제 단계를 분리해 직렬성 보장.
 - 장점: 충돌 시에도 데이터 정합성 확실, 재시도 로직 불필요
 - 단점: 락 경합으로 처리량 저하, **데드락** 위험, 대기 시간 발생
 - 적합: 충돌 빈도 높음, 재시도 비용이 큰 경우 (예: 재고 차감, 계좌 이체)
@@ -93,8 +81,7 @@ abort가 증가하여 동시성과 TPS가 감소한다.
 
 "충돌이 드물다"고 가정하고 **락 없이 진행 후 커밋 시점에 충돌을 검증**한다.
 
-- 동작: `version`/`timestamp` 컬럼으로 구현. DB 기능이 아닌 **애플리케이션
-  패턴**인 경우가 많다.
+- 동작: `version`/`timestamp` 컬럼으로 구현. DB 기능이 아닌 **애플리케이션 패턴**인 경우가 많다.
   ```sql
   UPDATE item SET stock = stock - 1, version = version + 1
   WHERE id = ? AND version = ?;   -- 영향 행 수 0이면 충돌 → 재시도
@@ -107,11 +94,9 @@ abort가 증가하여 동시성과 TPS가 감소한다.
 
 읽기와 쓰기가 서로 막지 않도록 **버전 스냅샷**을 유지한다.
 
-- 동작: 읽기는 특정 시점 스냅샷을 조회, 쓰기는 새 버전을 생성. 읽기가 쓰기를,
-  쓰기가 읽기를 블로킹하지 않음.
+- 동작: 읽기는 특정 시점 스냅샷을 조회, 쓰기는 새 버전을 생성. 읽기가 쓰기를, 쓰기가 읽기를 블로킹하지 않음.
 - 장점: 읽기-쓰기 비블로킹으로 높은 동시성
-- 단점: 구버전 저장 공간 필요(Postgres dead tuple → VACUUM, Oracle UNDO,
-  InnoDB undo log), 롱 트랜잭션이 구버전 정리를 지연시킴
+- 단점: 구버전 저장 공간 필요(Postgres dead tuple → VACUUM, Oracle UNDO, InnoDB undo log), 롱 트랜잭션이 구버전 정리를 지연시킴
 - 비고: PostgreSQL, MySQL InnoDB, Oracle 모두 채택
 
 ### 3.4. 메커니즘 비교
@@ -130,15 +115,13 @@ abort가 증가하여 동시성과 TPS가 감소한다.
 비관적 락을 SQL 레벨에서 직접 지정한다. 락은 트랜잭션 커밋/롤백 시 해제된다.
 
 ### 4.1. `SELECT ... FOR UPDATE`
-- 동작: 조회된 행에 **배타 락(X)** 을 건다. 다른 트랜잭션의
-  `FOR UPDATE`/`FOR SHARE`/`UPDATE`/`DELETE`를 커밋까지 차단(대기).
+- 동작: 조회된 행에 **배타 락(X)** 을 건다. 다른 트랜잭션의 `FOR UPDATE`/`FOR SHARE`/`UPDATE`/`DELETE`를 커밋까지 차단(대기).
 - 장점: 조회 후 갱신(read-then-write)의 정합성 보장(Lost Update 방지)
 - 단점: 락 경합, 데드락 위험, 대기로 인한 응답 지연
 
 ### 4.2. `SELECT ... FOR SHARE` / `LOCK IN SHARE MODE`
 - 동작: 조회 행에 **공유 락(S)** 을 건다. 다른 트랜잭션의 읽기는 허용, 쓰기는 차단.
-- 장점: 참조되는 행이 갱신/삭제되지 않음을 보장하며 읽기 동시성 유지
-  (예: 부모 행 존재 보장)
+- 장점: 참조되는 행이 갱신/삭제되지 않음을 보장하며 읽기 동시성 유지 (예: 부모 행 존재 보장)
 - 단점: 여러 tx가 S락 보유 후 각자 X락을 시도하면 **데드락** 빈발
 - 비고: MySQL 8.0+ `FOR SHARE`, 5.7 이하 `LOCK IN SHARE MODE`
 
@@ -166,14 +149,11 @@ abort가 증가하여 동시성과 TPS가 감소한다.
 - 단점: 동시성 최악. 스키마 변경 등 예외적 상황 외 지양
 
 ### 4.7. 어드바이저리 락 (Advisory Lock)
-- 동작: 행이 아닌 임의 키(정수)에 대한 애플리케이션 정의 락
-  (PostgreSQL `pg_advisory_lock`). 세션 레벨(명시적 해제까지 유지) 또는
-  트랜잭션 레벨(커밋 시 자동 해제)로 획득.
+- 동작: 행이 아닌 임의 키(정수)에 대한 애플리케이션 정의 락 (PostgreSQL `pg_advisory_lock`). 세션 레벨(명시적 해제까지 유지) 또는 트랜잭션 레벨(커밋 시 자동 해제)로 획득.
 - 장점: 논리적 자원(배치 잡, 임계 구역)에 대한 락 → 분산 락 대용
 - 단점: 애플리케이션이 락 규약을 지켜야 함, 세션 종료/명시적 해제 관리 필요
 
-공통 주의: 명시적 락 사용 시 여러 트랜잭션이 락을 서로 다른 순서로 획득하면
-데드락이 발생한다. 락 획득 순서를 일관되게 고정해 예방한다.
+공통 주의: 명시적 락 사용 시 여러 트랜잭션이 락을 서로 다른 순서로 획득하면 데드락이 발생한다. 락 획득 순서를 일관되게 고정해 예방한다.
 
 ---
 

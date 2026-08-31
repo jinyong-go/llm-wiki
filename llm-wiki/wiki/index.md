@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-08-27 17:34:26
+updated: 2026-08-31 17:21:44
 tags:
   - meta
 ---
@@ -99,6 +99,7 @@ tags:
 - [[gradle-multi-project]] — Gradle 멀티 프로젝트: settings.gradle 구성, 프로젝트 간 의존성, cross-project configuration과 컨벤션 플러그인
 - [[gradle-task]] — Gradle Task: 타입, 등록 방법, 의존관계와 순서, 조건부 실행
 - [[gradle-application]] — Gradle 애플리케이션 실행 구성: mainClass 지정, 클래스패스·lib 구성, 배포 형식별 비교
+- [[gradle-dependency-configurations]] — Gradle 의존성 Configuration 상세 비교: implementation/api/compileOnly/compileOnlyApi/runtimeOnly/annotationProcessor, 클래스패스 노출 범위, 선택 기준
 - [[fat-jar-signature-error]] — Fat Jar 서명 파일(META-INF/*.SF/.RSA/.DSA) 충돌로 인한 SecurityException 원인·해결
 - [[thread-unsafe-utilities]] — SimpleDateFormat/Calendar가 스레드 안전하지 않은 원인과 DateTimeFormatter/ThreadLocal 등 대안
 
@@ -251,6 +252,7 @@ tags:
 - [[commonjs]] — CommonJS: require/module.exports 문법과 동작
 - [[es-module]] — ES Module: import/export 문법과 동작, 순환 참조, 브라우저 `<script type="module">`의 기본 defer 동작
 - [[template-literals]] — 템플릿 리터럴(백틱): 문자열 보간, 여러 줄 문자열, 중첩, tagged template, raw 문자열
+- [[fetch-api]] — Fetch API: 기본 사용법, 응답 상태 확인, 요청 옵션, 본문 읽기, 요청 취소, 리다이렉트·에러 처리
 - [[variable-declaration]] — 자바스크립트 변수 선언: var/let/const 비교, 스코프, 호이스팅·TDZ, 재선언/재할당, 전역 객체 프로퍼티
 - [[lexical-scope]] — 자바스크립트 렉시컬 스코프: 스코프 체인, 환경 레코드, 클로저, this, with·eval 예외
 
@@ -282,3 +284,7 @@ tags:
 - [[nestjs-sequelize]] — NestJS Sequelize: Active Record 모델, forFeature
 - [[nestjs-prisma]] — NestJS Prisma: schema.prisma, PrismaService, raw SQL
 - [[nestjs-static-files]] — NestJS 정적 파일 서빙: ServeStaticModule, useStaticAssets, 빌드 스크립트
+
+## React
+
+- [[react-ssr]] — React SSR API(renderToString/스트리밍), Suspense, 하이드레이션, 필요 패키지
