@@ -110,11 +110,19 @@ a {
 }
 
 .sidebar-home {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-weight: 700;
   font-size: 17px;
   text-decoration: none;
   color: var(--text);
+}
+
+.sidebar-home svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
 }
 
 .nav-list {
@@ -190,6 +198,22 @@ a {
 
 /* ---------- index tree (home page) ---------- */
 
+.index-desc {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.index-heading {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
 .index-tree {
   margin-top: 8px;
 }
@@ -253,7 +277,10 @@ a {
 /* ---------- theme toggle ---------- */
 
 .theme-toggle {
-  position: relative;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
 }
 
 .theme-toggle-btn {
@@ -269,6 +296,7 @@ a {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: var(--shadow-md);
 }
 
 .theme-toggle-btn:hover {

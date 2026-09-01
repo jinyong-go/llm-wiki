@@ -4,6 +4,7 @@ import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/github-dark.css'
 import './globals.css'
 import Sidebar from '@/components/Sidebar'
+import ThemeToggle from '@/components/ThemeToggle'
 import { getWikiIndex } from '@/lib/wiki-index'
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar navTree={navTree} />
           <main className="content">{children}</main>
         </div>
+        <ThemeToggle />
       </body>
     </html>
   )
