@@ -1,6 +1,6 @@
 ---
-title: OAuth 2.0 — 개념·역할·Grant Type·Authorization Code+PKCE 플로우·보안·JWT 비교
-updated: 2026-07-22 14:38:24
+title: OAuth 2.0
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - oauth

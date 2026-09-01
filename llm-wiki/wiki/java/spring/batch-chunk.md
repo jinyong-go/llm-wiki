@@ -1,6 +1,6 @@
 ---
-title: Spring Batch Chunk 지향 처리 — 개념, ItemReader/Processor/Writer, 예시, 장단점
-updated: 2026-07-14 11:26:44
+title: Spring Batch Chunk 지향 처리
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

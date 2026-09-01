@@ -1,6 +1,6 @@
 ---
-title: 로드 밸런서 — 목적·동작·L4/L7 계층·알고리즘
-updated: 2026-07-08 10:32:15
+title: 로드 밸런서
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - load-balancer

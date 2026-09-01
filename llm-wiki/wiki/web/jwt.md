@@ -1,6 +1,6 @@
 ---
-title: JWT (JSON Web Token) — 구조·클레임·서명 알고리즘·검증·보안
-updated: 2026-07-08 10:32:15
+title: JWT (JSON Web Token)
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - jwt

@@ -1,6 +1,6 @@
 ---
-title: Spring Batch DB ItemReader·ItemWriter — JDBC/JPA/Hibernate/Spring Data
-updated: 2026-07-14 11:26:44
+title: Spring Batch DB ItemReader·ItemWriter
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

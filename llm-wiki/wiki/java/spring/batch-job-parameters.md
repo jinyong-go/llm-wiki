@@ -1,6 +1,6 @@
 ---
-title: Spring Batch JobParameters — 타입, 전달·사용 방법, 버전 차이
-updated: 2026-07-14 11:26:44
+title: Spring Batch JobParameters
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

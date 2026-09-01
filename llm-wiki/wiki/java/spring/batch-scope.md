@@ -1,6 +1,6 @@
 ---
-title: Spring Batch StepScope·JobScope — 빈 스코프와 Late Binding
-updated: 2026-07-08 10:32:15
+title: Spring Batch StepScope·JobScope
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

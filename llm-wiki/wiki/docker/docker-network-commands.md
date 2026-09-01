@@ -1,6 +1,6 @@
 ---
-title: Docker 네트워크 CLI 및 디버깅 가이드
-updated: 2026-07-08 10:32:15
+title: Docker 네트워크 CLI
+updated: 2026-09-01 11:43:12
 tags:
   - docker
   - network

@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-08-31 17:21:44
+updated: 2026-09-01 23:21:14
 tags:
   - meta
 ---
@@ -100,6 +100,7 @@ tags:
 - [[gradle-task]] — Gradle Task: 타입, 등록 방법, 의존관계와 순서, 조건부 실행
 - [[gradle-application]] — Gradle 애플리케이션 실행 구성: mainClass 지정, 클래스패스·lib 구성, 배포 형식별 비교
 - [[gradle-dependency-configurations]] — Gradle 의존성 Configuration 상세 비교: implementation/api/compileOnly/compileOnlyApi/runtimeOnly/annotationProcessor, 클래스패스 노출 범위, 선택 기준
+- [[gradle-shadow]] — Gradle Shadow: 버전별 플러그인 ID/호환성, shadowJar 기본 동작, application 통합, 의존성 필터링, 병합/relocate/minimize
 - [[fat-jar-signature-error]] — Fat Jar 서명 파일(META-INF/*.SF/.RSA/.DSA) 충돌로 인한 SecurityException 원인·해결
 - [[thread-unsafe-utilities]] — SimpleDateFormat/Calendar가 스레드 안전하지 않은 원인과 DateTimeFormatter/ThreadLocal 등 대안
 
@@ -214,6 +215,7 @@ tags:
 ## DBMS
 
 - [[oracle-hints]] — Oracle 옵티마이저 힌트: 문법, 종류, 충돌 규칙
+- [[clob]] — Oracle CLOB: 정의, 저장 방식(in-row/out-of-row, SecureFile), 저장 옵션, DBMS_LOB 패키지, 타입 선택 기준, AL16UTF16 내부 인코딩에 따른 용량 변화
 - [[execution-plan]] — RDBMS 실행 계획: DBMS별 확인 방법, 출력 항목, 성능 확인 포인트
 - [[optimizer-statistics]] — RDBMS 옵티마이저 통계: DBMS별 수집·조회, 히스토그램
 - [[index-scan]] — RDBMS 인덱스 스캔: DBMS별 유형, 전체 테이블 스캔 대비 선택 기준

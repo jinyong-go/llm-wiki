@@ -1,6 +1,6 @@
 ---
-title: 도커 보안 및 격리 (Docker Security & Isolation)
-updated: 2026-07-08 10:32:15
+title: 도커 보안과 격리
+updated: 2026-09-01 11:43:12
 tags:
   - docker
   - security

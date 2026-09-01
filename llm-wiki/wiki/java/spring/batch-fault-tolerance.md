@@ -1,6 +1,6 @@
 ---
-title: Spring Batch 재시작·스킵·재시도 — Restart, Skip, Retry, 내결함성
-updated: 2026-07-14 11:26:44
+title: Spring Batch 재시작·스킵·재시도
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

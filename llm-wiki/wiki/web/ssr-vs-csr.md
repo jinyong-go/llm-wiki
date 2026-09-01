@@ -1,6 +1,6 @@
 ---
-title: SSR vs CSR — 렌더링 위치·동작·하이드레이션·트레이드오프
-updated: 2026-08-11 17:04:12
+title: SSR vs CSR
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - rendering

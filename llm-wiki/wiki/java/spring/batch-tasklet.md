@@ -1,6 +1,6 @@
 ---
-title: Spring Batch Tasklet — 개념, 사용 시점, 예시, 장단점
-updated: 2026-08-31 14:25:48
+title: Spring Batch Tasklet
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

@@ -1,6 +1,6 @@
 ---
-title: RESTful API 설계 — REST 제약·HTTP 메서드·요청/응답·리소스 설계
-updated: 2026-07-08 10:32:15
+title: RESTful API 설계
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - http

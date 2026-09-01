@@ -1,6 +1,6 @@
 ---
-title: 좋은 테스트 코드 작성법 — 결과 검증·구조(GWT/AAA)·속성(FIRST/Test Desiderata)
-updated: 2026-08-11 17:04:12
+title: 좋은 테스트 코드 작성법
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - testing

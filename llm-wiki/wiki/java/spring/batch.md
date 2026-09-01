@@ -1,6 +1,6 @@
 ---
-title: Spring Batch — 개념, 도메인 모델, Job·Step, 처리 방식, Chunk 구성요소
-updated: 2026-07-14 11:26:44
+title: Spring Batch
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

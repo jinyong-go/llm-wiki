@@ -1,6 +1,6 @@
 ---
-title: 도커파일 지시어 상세 가이드 (Dockerfile Directives)
-updated: 2026-07-08 10:32:15
+title: 도커파일 지시어
+updated: 2026-09-01 11:43:12
 tags:
   - docker
   - dockerfile

@@ -1,6 +1,6 @@
 ---
-title: DBMS 동시성 제어와 일관성 전략 (Concurrency Control and Consistency)
-updated: 2026-08-31 14:25:48
+title: DBMS 동시성 제어
+updated: 2026-09-01 11:43:12
 tags:
   - dbms
   - sql

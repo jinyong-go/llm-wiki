@@ -1,6 +1,6 @@
 ---
-title: Spring Batch 조건별 플로우 — 순차/조건 전이, ExitStatus, JobExecutionDecider
-updated: 2026-07-14 11:26:44
+title: Spring Batch 조건별 플로우
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

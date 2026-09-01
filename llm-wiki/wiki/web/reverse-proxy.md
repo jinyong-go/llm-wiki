@@ -1,6 +1,6 @@
 ---
-title: 리버스 프록시 — 개념·포워드 프록시 비교·용도·nginx 설정
-updated: 2026-07-08 10:32:15
+title: 리버스 프록시
+updated: 2026-09-01 11:43:12
 tags:
   - web
   - http

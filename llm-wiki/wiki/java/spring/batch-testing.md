@@ -1,6 +1,6 @@
 ---
-title: Spring Batch 테스트 — @SpringBatchTest, 잡/스텝 실행, 스코프 빈, 도메인 목킹
-updated: 2026-07-14 11:26:44
+title: Spring Batch 테스트
+updated: 2026-09-01 11:43:12
 tags:
   - java
   - spring

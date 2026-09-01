@@ -1,6 +1,6 @@
 ---
-title: 도커 볼륨 및 데이터 마운트 가이드 (Docker Volumes & Mounts)
-updated: 2026-07-08 10:32:15
+title: 도커 볼륨과 데이터 마운트
+updated: 2026-09-01 11:43:12
 tags:
   - docker
   - storage

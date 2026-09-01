@@ -1,6 +1,6 @@
 ---
-title: 도커 볼륨 관리 CLI 가이드 (Docker Volume CLI)
-updated: 2026-07-08 10:32:15
+title: 도커 볼륨 관리 CLI
+updated: 2026-09-01 11:43:12
 tags:
   - docker
   - volume
