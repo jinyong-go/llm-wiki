@@ -103,6 +103,8 @@ tags:
 - [[gradle-shadow]] — Gradle Shadow: 버전별 플러그인 ID/호환성, shadowJar 기본 동작, application 통합, 의존성 필터링, 병합/relocate/minimize
 - [[fat-jar-signature-error]] — Fat Jar 서명 파일(META-INF/*.SF/.RSA/.DSA) 충돌로 인한 SecurityException 원인·해결
 - [[thread-unsafe-utilities]] — SimpleDateFormat/Calendar가 스레드 안전하지 않은 원인과 DateTimeFormatter/ThreadLocal 등 대안
+- [[netty]] — Netty 아키텍처: 배경(blocking I/O 한계, TCP 메시지 경계 문제), 원리(논블로킹 멀티플렉싱, Reactor/EventLoop, 블로킹 금지 규칙), 구성 요소(Channel, ChannelPipeline, ByteBuf), Native Transport
+- [[netty-implementation]] — Netty 구현: 부트스트랩/ChannelOption, ChannelInitializer, 핸들러(SimpleChannelInboundHandler/@Sharable), 길이 기반 프레이밍 코덱, ByteBuf 릴리스·ResourceLeakDetector, ChannelFuture 데드락 주의, IdleStateHandler
 
 ### 암호 (crypto)
 
@@ -215,7 +217,7 @@ tags:
 ## DBMS
 
 - [[oracle-hints]] — Oracle 옵티마이저 힌트: 문법, 종류, 충돌 규칙
-- [[clob]] — Oracle CLOB: 정의, 저장 방식(in-row/out-of-row, SecureFile), 저장 옵션, DBMS_LOB 패키지, 타입 선택 기준, AL16UTF16 내부 인코딩에 따른 용량 변화
+- [[clob-in-oracle]] — Oracle CLOB: 정의, 저장 방식(in-row/out-of-row, SecureFile), 저장 옵션, DBMS_LOB 패키지, 타입 선택 기준, PostgreSQL/MySQL 비교, AL16UTF16 내부 인코딩에 따른 용량 변화, 실측 검증
 - [[execution-plan]] — RDBMS 실행 계획: DBMS별 확인 방법, 출력 항목, 성능 확인 포인트
 - [[optimizer-statistics]] — RDBMS 옵티마이저 통계: DBMS별 수집·조회, 히스토그램
 - [[index-scan]] — RDBMS 인덱스 스캔: DBMS별 유형, 전체 테이블 스캔 대비 선택 기준

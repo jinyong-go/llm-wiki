@@ -2,10 +2,11 @@
   "name": "llm-wiki",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "NODE_ENV=development tsx watch server/index.ts",
+    "start": "NODE_ENV=production tsx server/index.ts",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint"
   },
   "dependencies": {
@@ -15,7 +16,6 @@
     "highlight.js": "^11.12.0",
     "katex": "^0.18.4",
     "mdast-util-to-string": "^4.0.0",
-    "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "rehype-highlight": "^7.0.2",
@@ -34,7 +34,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.3",
-    "typescript": "^5"
+    "tsx": "^4",
+    "typescript": "^5",
+    "typescript-eslint": "^8"
   }
 }

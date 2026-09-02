@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { NavNode } from '@/lib/wiki-index'
 
 export default function NavTree({
@@ -29,9 +28,9 @@ export default function NavTree({
         }
         return (
           <li key={node.slug} className="nav-page">
-            <Link href={`/${node.slug}`} className={currentPath === node.slug ? 'active' : ''}>
+            <a href={`/${node.slug}`} className={currentPath === node.slug ? 'active' : ''}>
               {node.title}
-            </Link>
+            </a>
           </li>
         )
       })}

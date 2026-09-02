@@ -1,11 +1,13 @@
 ---
-title: CLOB
-updated: 2026-09-01 23:21:14
+title: CLOB in Oracle
+updated: 2026-09-02 09:13:53
 tags:
   - dbms
   - oracle
   - lob
   - character-set
+  - postgresql
+  - mysql
 ---
 
 ## 1. 개요
@@ -181,14 +183,30 @@ END;
 |---|---|
 | `VARCHAR2` | 짧은 텍스트 (관례적으로 200자 미만), 인덱싱·비교 연산 빈번 |
 | `CLOB` | 크기 제한이 없는 문서·텍스트 (XML, HTML, 로그, 메모) |
-| `NCLOB` | 문자 데이터 대부분이 아시아 언어이며 저장 효율이 중요한 경우 (국가별 문자셋 사용, 7. 기타 참고) |
+| `NCLOB` | 문자 데이터 대부분이 아시아 언어이며 저장 효율이 중요한 경우 (국가별 문자셋 사용, 8. 기타 참고) |
 | `BLOB` | 바이너리 데이터. XML도 클라이언트·서버 문자셋이 다르면 CLOB 변환 과정에서 원본이 손상될 수 있어 원본 보존이 중요하면 BLOB 권장 |
 
 ---
 
-## 7. 기타
+## 7. 타 DBMS 비교
 
-### 7.1 내부 저장 인코딩과 용량 변화
+PostgreSQL `text`, MySQL `TEXT`/`LONGTEXT`는 CLOB과 달리 별도의 내부 재인코딩 없이 설정된 인코딩을 그대로 가변폭으로 저장한다.
+
+| DBMS | 대용량 문자 타입 | 저장 인코딩 | 내부 재인코딩 |
+|---|---|---|---|
+| Oracle | CLOB | DB 문자셋을 따르되, 멀티바이트 문자셋이면 저장 시 AL16UTF16으로 강제 변환 (8.1) | 있음 |
+| PostgreSQL | `text` | `server_encoding`(보통 UTF8) 그대로, 1~4바이트/글자 가변 | 없음 |
+| MySQL | `TEXT`/`LONGTEXT` | 컬럼에 지정된 문자셋(예: `utf8mb4`) 그대로, 1~4바이트/글자 가변 | 없음 |
+
+- PostgreSQL은 `server_encoding` 하나만 사용하며 CLOB/NCLOB 같은 구분이 없다. 저장은 항상 설정된 인코딩 그대로이고, client-server 간 변환은 전송 시점에만 일어난다.[^3]
+- MySQL은 컬럼별로 문자셋을 지정할 수 있으나(`CHARACTER SET utf8mb4` 등), 지정한 문자셋이 곧 물리 저장 인코딩이다. `ucs2`/`utf16`처럼 고정폭 문자셋을 명시적으로 선택하지 않는 한 가변폭으로 저장된다.[^4]
+- 따라서 "1글자 = 고정 N바이트" 계산은 Oracle CLOB(멀티바이트 DB 문자셋 기준)에서는 유효하지만, PostgreSQL `text`·MySQL `TEXT`/`LONGTEXT`(UTF-8 계열 문자셋 기준)에는 적용되지 않는다 — 문자 구성에 따라 바이트 수가 달라진다.
+
+---
+
+## 8. 기타
+
+### 8.1 내부 저장 인코딩과 용량 변화
 
 데이터베이스 문자셋이 **가변폭 멀티바이트**(예: `AL32UTF8`)인 경우, CLOB 컬럼 값은 디스크에 **고정폭 2바이트 유니코드인 `AL16UTF16`**으로 변환되어 저장된다.[^1] 이로 인해 원본 데이터의 문자 구성에 따라 저장 용량이 달라진다:
 
@@ -201,6 +219,38 @@ Oracle은 신규 데이터베이스에 `AL32UTF8` 문자셋과 `VARCHAR2`/`CHAR`
 
 `GETLENGTH`가 반환하는 문자 수와 실제 저장 바이트 수가 다른 이유(5.2 참고)는 이 내부 인코딩 변환 때문이다: 문자 수는 논리적 개수이지만, 저장은 항상 `AL16UTF16` 고정 2바이트 기준으로 이뤄진다.
 
+### 8.2 실측 검증
+
+CLOB이 실제로 AL16UTF16 기준(고정 2바이트)으로 저장되는지 확인하려면 세그먼트 크기가 아니라 논리적 문자 수 기준으로 비교해야 한다.
+
+**저장 용량 조회 (개괄)**
+
+```sql
+SELECT l.column_name, s.segment_name, s.bytes, s.blocks
+FROM   user_lobs    l
+JOIN   user_segments s ON s.segment_name = l.segment_name
+WHERE  l.table_name  = 'MY_TABLE'
+  AND  l.column_name = 'MY_CLOB_COL';
+```
+
+이 방식에는 세 가지 주의점이 있다:
+
+1. **In-row 데이터 누락**: 값이 약 4000바이트 이하면 LOB 세그먼트가 아니라 테이블 세그먼트에 저장되므로(3.1 참고) 위 쿼리로 잡히지 않는다. 값 대부분이 4000바이트를 초과하면 이 영향은 작다.
+2. **파티션 테이블**: 파티션 테이블은 `user_lobs.segment_name`이 NULL이므로 `user_lob_partitions`를 조회해야 한다.
+3. **CHUNK 단위 반올림**: out-of-row 데이터는 CHUNK 크기(기본 DB 블록 크기, 흔히 8192바이트) 배수로만 공간이 할당된다. 세그먼트 bytes를 행 수로 나눈 평균은 순수 인코딩 바이트(문자 수 × 2)보다 항상 크게 나온다.
+
+**논리적 문자 수 기준 비교**
+
+```sql
+SELECT COUNT(*)                                    AS row_cnt,
+       SUM(DBMS_LOB.GETLENGTH(my_clob_col))         AS total_chars,
+       AVG(DBMS_LOB.GETLENGTH(my_clob_col))          AS avg_chars
+FROM   my_table
+WHERE  my_clob_col IS NOT NULL;
+```
+
+`평균 세그먼트 bytes ÷ 평균 문자 수` 비율이 정확히 2.0이 아니라 CHUNK 반올림 오버헤드만큼 더 크게(경험적으로 2.0~2.5 수준) 나오는 것은 정상이다.[^2] 순수 인코딩 비율만 확인하려면 값 크기를 CHUNK 배수에 맞춰 통제한 테스트 데이터로 별도 검증해야 한다.
+
 ---
 
 ## Sources
@@ -211,6 +261,12 @@ Oracle은 신규 데이터베이스에 `AL32UTF8` 문자셋과 `VARCHAR2`/`CHAR`
 - [Oracle Database SecureFiles and Large Objects Developer's Guide — Using Oracle SecureFiles (12c)](https://docs.oracle.com/database/121/ADLOB/adlob_smart.htm)
 - [Oracle Database SecureFiles and Large Objects Developer's Guide — Using LOB APIs (12c)](https://docs.oracle.com/database/121/ADLOB/adlob_lob_ops.htm)
 - [Oracle PL/SQL Packages and Types Reference — DBMS_LOB (21c)](https://docs.oracle.com/en/database/oracle/oracle-database/21/arpls/DBMS_LOB.html)
+- [PostgreSQL Documentation — Character Set Support (multibyte.html)](https://www.postgresql.org/docs/current/multibyte.html)
+- [PostgreSQL Documentation — TOAST (storage-toast.html)](https://www.postgresql.org/docs/current/storage-toast.html)
+- [PostgreSQL Documentation — Character Types (datatype-character.html)](https://www.postgresql.org/docs/current/datatype-character.html)
+- [MySQL 8.0 Reference Manual — Column Character Set and Collation](https://dev.mysql.com/doc/refman/8.0/en/charset-column.html)
+- [MySQL 8.0 Reference Manual — Data Type Storage Requirements](https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html)
+- [MySQL 8.0 Reference Manual — InnoDB Row Formats](https://dev.mysql.com/doc/refman/8.0/en/innodb-row-format.html)
 
 ---
 
@@ -218,3 +274,6 @@ Oracle은 신규 데이터베이스에 `AL32UTF8` 문자셋과 `VARCHAR2`/`CHAR`
 - [[sql-functions]]
 
 [^1]: 원문(Globalization Support Guide §6.5.3): "Data in CLOB columns is stored in the AL16UTF16 character set when the database character set is multibyte, such as UTF8 or AL32UTF8. This means that the storage space required for an English document doubles when the data is converted. Storage for an Asian language document in a CLOB column requires less storage space than the same document in a LONG column using AL32UTF8, typically around 30% less, depending on the contents of the document."
+[^2]: CHUNK 반올림에 의한 오버헤드 크기는 개별 값의 크기 분포에 따라 달라지는 추정치이며, Oracle 공식문서에 명시된 수치가 아니라 저장 구조(out-of-row 저장은 CHUNK 배수 단위로만 할당됨, 3.1 참고)로부터 유추한 설명이다.
+[^3]: PostgreSQL Documentation — Character Set Support: "PostgreSQL supports automatic character set conversion between server and client for many combinations of character sets." 저장 자체는 서버 인코딩 그대로 유지됨.
+[^4]: MySQL 8.0 Reference Manual — Column Character Set and Collation: 컬럼별 문자셋·콜레이션 지정 규칙.

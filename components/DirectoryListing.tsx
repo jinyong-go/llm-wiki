@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { NavNode } from '@/lib/wiki-index'
 
 export default function DirectoryListing({ path, nodes }: { path: string; nodes: NavNode[] }) {
@@ -18,7 +17,7 @@ export default function DirectoryListing({ path, nodes }: { path: string; nodes:
             <ul>
               {dirs.map((d) => (
                 <li key={d.name}>
-                  <Link href={`/${path}/${d.name}`}>{d.name}</Link>
+                  <a href={`/${path}/${d.name}`}>{d.name}</a>
                 </li>
               ))}
             </ul>
@@ -30,7 +29,7 @@ export default function DirectoryListing({ path, nodes }: { path: string; nodes:
             <ul>
               {pages.map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/${p.slug}`}>{p.title}</Link>
+                  <a href={`/${p.slug}`}>{p.title}</a>
                 </li>
               ))}
             </ul>
