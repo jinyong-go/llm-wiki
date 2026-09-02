@@ -2,6 +2,12 @@
 
 ---
 
+## 2026-09-02 23:46:40
+
+- **이동**: `wiki/java/spring/*` → `wiki/spring/*`(39개), `wiki/javascript/nestjs/*` → `wiki/nestjs/*`(13개), `wiki/javascript/react/*` → `wiki/react/*`(1개), `wiki/javascript/typescript/*` → `wiki/typescript/*`(4개), `wiki/javascript/node/*` → `wiki/node/*`(3개) — 물리 디렉터리를 `wiki/index.md`의 기존 카테고리 분류(Spring/NestJS/React/TypeScript/Node.js가 Java/JavaScript와 대등한 최상위 섹션)에 맞춰 최상위로 승격. 사이드바 트리(NavTree)·breadcrumb이 물리 디렉터리 기준으로 렌더링되어 기존에는 index.md 분류와 어긋났음
+- **이동**: `wiki/javascript/common/*` → `wiki/javascript/*`(12개) — 위 이동 후 `common`이 javascript 하위 유일한 서브디렉터리로 남아 구분 의미가 없어져 평탄화
+- wikilink는 파일명 기준으로 해석되어 본문·index.md 링크 수정 불필요. 파일명·본문 변경 없음
+
 ## 2026-09-02 13:02:54
 
 - **생성**: `wiki/java/common/netty-implementation.md` — Netty 구현 신규 문서(공식문서 기반: netty.io User Guide/Reference-Counted Objects, Netty 4.1 API Javadoc 다수). §2 부트스트랩과 채널(EventLoopGroup 구현체, ServerBootstrap option/childOption 구분, shutdownGracefully), §3 ChannelInitializer, §4 핸들러 작성(ChannelInboundHandlerAdapter vs SimpleChannelInboundHandler 자동 release 차이, @Sharable 상태 없음 요건, exceptionCaught), §5 길이 기반 프레이밍 코덱(LengthFieldBasedFrameDecoder/LengthFieldPrepender), §6 ByteBuf 메모리 관리(ctx.alloc(), 참조 카운팅 릴리스 책임, ResourceLeakDetector PARANOID 테스트 권고), §7 ChannelFuture/ChannelFutureListener(I/O 스레드 내 sync()/await() 데드락 경고), §8 IdleStateHandler, §9 주의할 점 요약 표. [[netty]]를 전제로 코드 예시 중심 작성
