@@ -163,5 +163,4 @@ location /stream/ {
 - [[forward-headers-proxy]] — 리버스 프록시 뒤 X-Forwarded-* 처리(Spring redirect 문제)
 - [[cors]] — 프록시 계층에서의 CORS 헤더 처리
 - [[restful-api-design]] — API 게이트웨이/단일 진입점 맥락
-- [[ssr-vs-csr]] — SSR 앞단 리버스 프록시 캐싱·TLS 종료
 - [[curl]] — 프록시 경유 요청/헤더 진단

@@ -1,6 +1,6 @@
 ---
 title: RDBMS 인덱스 스캔 (Index Scan)
-updated: 2026-08-31 14:25:48
+updated: 2026-09-03 11:24:27
 tags:
   - dbms
   - sql
@@ -108,7 +108,13 @@ SELECT * FROM customers WHERE cust_email = 'Abbey@company.example.com';
 
 ## 3. 인덱스 스캔 유형 - PostgreSQL
 
-쿼리 힌트를 기본 지원하지 않는다. 스캔 방식 지정은 플래너 파라미터(`enable_*`, 완전 비활성화가 아닌 비용 페널티 부여)를 세션 수준에서 조정하거나 `pg_hint_plan` 확장의 힌트 주석을 사용한다.
+쿼리 힌트를 기본 지원하지 않는다. 스캔 방식 지정은 플래너 파라미터(`enable_*`, 완전 비활성화가 아닌 비용 페널티 부여)를 세션 수준에서 조정하거나 `pg_hint_plan` 확장의 힌트 주석을 사용한다. `pg_hint_plan`은 별도 확장으로 설치하며 `shared_preload_libraries`에 등록해야 사용할 수 있다.
+
+```sql
+-- 힌트 주석은 쿼리 직전에 위치해야 하며 빈 줄이 있으면 무시됨
+/*+ IndexScan(orders orders_pkey) */
+EXPLAIN SELECT * FROM orders WHERE order_id = 100;
+```
 
 ### 3.1 Index Scan
 
@@ -236,7 +242,21 @@ WHERE status IN ('PAID', 'SHIPPED') AND order_date > DATE '2026-01-01';
 
 - 값별 실행이 각각 등치 조건이므로, 범위 조건과 달리 **후행 컬럼 조건이 액세스 조건으로 유지**된다. 위 예시는 (status, order_date) 각 조합의 좁은 범위만 스캔한다.
 - 값마다 루트→브랜치→리프 수직 탐색이 반복되므로, **IN 값 수가 많으면 반복 비용이 누적되어 오히려 성능이 감소**할 수 있다. 이 경우 옵티마이저는 단일 범위 스캔이나 전체 테이블 스캔을 선택할 수 있다.
-- 별개의 변환으로, top-level OR/IN을 UNION ALL 분기로 재작성하는 **OR expansion**이 있다. 분기별로 서로 다른 인덱스·접근 경로가 유리할 때 등 변환 후 비용이 더 낮다고 판단되는 경우에만 비용 기반으로 적용된다.
+- **OR Expansion과의 차이**: 동일 컬럼에 대한 IN-list/OR 조건은 OR expansion 대상이 아니며 항상 INLIST ITERATOR로 처리된다. OR expansion은 서로 다른 컬럼·테이블에 걸친 top-level OR 조건을 `UNION ALL` 분기로 재작성하는 별개의 변환으로, 분기마다 서로 다른 접근 경로·조인 순서를 독립적으로 선택할 수 있다는 점이 다르다. 반면 INLIST ITERATOR는 동일한 하위 플랜을 값마다 반복 실행할 뿐 분기별로 플랜을 바꾸지 않는다.
+- **UNION ALL을 쓰는 이유**: 두 번째 이후 분기에는 원본 조건뿐 아니라 앞선 분기 조건의 NULL-safe 부정(`LNNVL(...)`)이 필터로 추가되어 분기끼리 상호 배타적이 되도록 만든다. 한 행이 여러 분기에 동시에 나타날 수 없으므로 `UNION`의 정렬 기반 중복 제거 없이 `UNION ALL`만으로 원본과 동일한 결과를 얻는다. 변환 후 비용이 원본보다 낮을 때만 비용 기반으로 적용된다.
+- 12.2 이전에는 `CONCATENATION` 연산자로, 12.2부터는 `UNION-ALL` 연산자(`VW_ORE_*` 뷰)로 표시된다.
+- 강제/억제는 각각 `OR_EXPAND` / `NO_EXPAND` 힌트로 지정한다.
+
+```sql
+-- OR expansion: 서로 다른 컬럼(테이블)에 걸친 조건
+SELECT * FROM employees e, departments d
+WHERE (e.email = 'SSTILES' OR d.department_name = 'Treasury')
+AND e.department_id = d.department_id;
+-- UNION-ALL | VW_ORE_19FF4E3E  (12.2+; 이전은 CONCATENATION)
+--   NESTED LOOPS → INDEX UNIQUE SCAN | EMP_EMAIL_UK
+--   NESTED LOOPS → INDEX UNIQUE SCAN | DEPARTMENT_NAME_UK
+--     filter(LNNVL("E"."EMAIL"='SSTILES'))   -- 1번 분기 조건 배제, 분기 간 상호배타성 확보
+```
 
 ---
 ## Sources
@@ -252,6 +272,7 @@ WHERE status IN ('PAID', 'SHIPPED') AND order_date > DATE '2026-01-01';
 - [Use The Index, Luke — Tuning SQL LIKE using indexes](https://use-the-index-luke.com/sql/where-clause/searching-for-ranges/like-performance-tuning)
 - [Oracle SQL Tuning Guide — Reading Execution Plans (INLIST ITERATOR)](https://docs.oracle.com/database/121/TGSQL/tgsql_interp.htm)
 - [Oracle SQL Tuning Guide — Query Transformations: OR Expansion (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/query-transformations.html)
+- [Oracle Optimizer Blog — Optimizer Transformations: OR Expansion](https://blogs.oracle.com/optimizer/optimizer-transformations-or-expansion)
 - [MySQL: Index Hints](https://dev.mysql.com/doc/refman/8.4/en/index-hints.html)
 - [MySQL: Optimizer Hints](https://dev.mysql.com/doc/refman/8.4/en/optimizer-hints.html)
 - [SQL Server: Table Hints (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table)

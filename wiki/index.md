@@ -242,7 +242,6 @@ tags:
 - [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
 - [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
 - [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
-- [[ssr-vs-csr]] — SSR vs CSR: 렌더링 방식 비교, 하이드레이션
 - [[restful-api-design]] — RESTful API 설계: REST 제약, HTTP 메서드, URI 규칙
 
 ## JavaScript
@@ -288,7 +287,3 @@ tags:
 - [[nestjs-sequelize]] — NestJS Sequelize: Active Record 모델, forFeature
 - [[nestjs-prisma]] — NestJS Prisma: schema.prisma, PrismaService, raw SQL
 - [[nestjs-static-files]] — NestJS 정적 파일 서빙: ServeStaticModule, useStaticAssets, 빌드 스크립트
-
-## React
-
-- [[react-ssr]] — React SSR API(renderToString/스트리밍), Suspense, 하이드레이션, 필요 패키지

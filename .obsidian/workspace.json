@@ -1,24 +1,24 @@
 {
   "main": {
-    "id": "55653aa119cb06f0",
+    "id": "bec82e555b6802ec",
     "type": "split",
     "children": [
       {
-        "id": "33e09a4b25223f61",
+        "id": "54de1b5184bfa213",
         "type": "tabs",
         "children": [
           {
-            "id": "3be2e5c710bdf031",
+            "id": "f5e202ca559b388f",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "wiki/javascript/common/function-declaration.md",
+                "file": "wiki/dbms/index-scan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "function-declaration"
+              "title": "index-scan"
             }
           }
         ]
@@ -27,15 +27,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "81d9c9fb1b79b183",
+    "id": "82b64a78519c2ed3",
     "type": "split",
     "children": [
       {
-        "id": "797d36129d6fd72f",
+        "id": "aea2922a5998e0a3",
         "type": "tabs",
         "children": [
           {
-            "id": "e2cf9dfad807b1fe",
+            "id": "0f77aa6c46c8ff35",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -50,13 +50,13 @@
             }
           },
           {
-            "id": "1d6a54131ca84470",
+            "id": "4739f217b73f7a5b",
             "type": "leaf",
             "state": {
               "type": "search",
               "state": {
                 "query": "",
-                "matchingCase": true,
+                "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
@@ -67,11 +67,14 @@
             }
           },
           {
-            "id": "9759716a9c25b754",
+            "id": "a5a1a167c6918ae1",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
-              "state": {},
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
               "icon": "lucide-bookmark",
               "title": "북마크"
             }
@@ -83,20 +86,20 @@
     "width": 300
   },
   "right": {
-    "id": "698eefab7fab0e8b",
+    "id": "f8e18c6dbc50851c",
     "type": "split",
     "children": [
       {
-        "id": "f3f4e4952a25b483",
+        "id": "1bc3000d86213d01",
         "type": "tabs",
         "children": [
           {
-            "id": "05122b91bc3c3615",
+            "id": "ddabe7001d535a7a",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "wiki/javascript/common/function-declaration.md",
+                "file": "llm-wiki/wiki/java/common/gradle-dependency-configurations.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -110,21 +113,21 @@
             }
           },
           {
-            "id": "c736212a8bdbf076",
+            "id": "a68d86bd6fd506a2",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "AGENTS.md",
+                "file": "llm-wiki/wiki/java/common/gradle-dependency-configurations.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "AGENTS 의 나가는 링크"
+              "title": "나가는 링크"
             }
           },
           {
-            "id": "12374241627b9d79",
+            "id": "5ddc512989b514dd",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -139,7 +142,7 @@
             }
           },
           {
-            "id": "004bca3f678f0d39",
+            "id": "6cc164c057f42373",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -153,12 +156,12 @@
             }
           },
           {
-            "id": "93c4ef572aa7cc7d",
+            "id": "ac08f5776afe2b79",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "wiki/javascript/common/function-declaration.md",
+                "file": "llm-wiki/wiki/java/common/gradle-dependency-configurations.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -167,12 +170,12 @@
               "title": "개요"
             }
           }
-        ],
-        "currentTab": 4
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -185,43 +188,44 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "93c4ef572aa7cc7d",
+  "active": "f5e202ca559b388f",
   "lastOpenFiles": [
-    "wiki/javascript/common/async-await.md",
-    "wiki/javascript/common/function-declaration.md",
-    "wiki/javascript/typescript/tsconfig.md",
-    "wiki/javascript/common/promise.md",
-    "wiki/javascript/nestjs/nestjs-prisma.md",
-    "무제.md",
-    "wiki/javascript/nestjs/nestjs-testing.md",
-    "wiki/javascript/nestjs/nestjs-typeorm.md",
-    "wiki/javascript/nestjs/nestjs-sequelize.md",
-    "wiki/javascript/nestjs/nestjs-mongoose.md",
-    "wiki/javascript/nestjs/nestjs-dependency-injection.md",
-    "logs/2026-08/log.md",
-    "logs/2026-08",
-    "logs/2026-07/log.md",
-    "logs/2026-07",
-    "logs/2026-06/log.md",
-    "logs/2026-06",
-    "logs/2026-05/log.md",
-    "logs/2026-05",
-    "wiki/javascript/nestjs/nestjs-database.md",
-    "wiki/javascript/typescript/typescript-6.0.md",
-    "wiki/javascript/typescript/typescript-5.0.md",
-    "wiki/javascript/node/npm.md",
-    "wiki/javascript/typescript/typescript.md",
-    "wiki/javascript/typescript",
-    "wiki/javascript/nestjs/nestjs.md",
-    "wiki/javascript/common/variable-declaration.md",
-    "wiki/javascript/common/truthy-falsy.md",
-    "wiki/javascript/common/template-literals.md",
-    "wiki/javascript/common/null-operators.md",
-    "wiki/javascript/common/module-system.md",
-    "wiki/javascript/common",
-    "wiki/index.md.tmp.1697.335a9788e4ca",
-    "wiki/javascript/nestjs",
-    "wiki/javascript/node",
-    "logs/log.md.tmp.1697.14c68f6b8ccf"
+    "wiki/dbms/partitioning.md",
+    "wiki/dbms/upsert-merge.md",
+    "wiki/dbms/deadlock-livelock.md",
+    "wiki/node/npx.md",
+    "wiki/spring/batch-chunk.md",
+    "wiki/spring/hikari-datasource.md",
+    "wiki/typescript/typescript.md",
+    "wiki/spring/redis.md",
+    "wiki/spring/batch-scope.md",
+    "wiki/spring/multi-datasource.md",
+    "wiki/spring/querydsl.md",
+    "wiki/spring/jpa-n-plus-one.md",
+    "wiki/typescript/typescript-6.0.md",
+    "wiki/spring/spring-event.md",
+    "wiki/spring/configuration-properties.md",
+    "wiki/nestjs/nestjs-typeorm.md",
+    "wiki/spring/batch-db-reader-writer.md",
+    "wiki/spring/batch.md",
+    "wiki/typescript/typescript-5.0.md",
+    "wiki/nestjs/nestjs-testing.md",
+    "wiki/spring/ldap-java.md",
+    "wiki/nestjs/nestjs-database.md",
+    "wiki/spring/hikari-deadlock.md",
+    "wiki/spring/hikari-pool-sizing.md",
+    "wiki/spring/jpa-delete.md",
+    "wiki/spring/spring-event-error-handling.md",
+    "node_modules/tsx/dist/cjs/api/index.d.cts",
+    "node_modules/tsx/dist/cjs/api/index.mjs",
+    "node_modules/tsx/dist/cjs/api/index.cjs",
+    "node_modules/tsx/dist/cjs/api/index.d.mts",
+    "node_modules/tsx/dist/esm/api/index.mjs",
+    "node_modules/tsx/dist/esm/api/index.cjs",
+    "node_modules/tsx/dist/esm/api/index.d.mts",
+    "node_modules/tsx/dist/esm/api/index.d.cts",
+    "node_modules/tsx/dist/cjs/index.mjs",
+    "node_modules/tsx/dist/cjs/index.cjs",
+    "app/icon.svg"
   ]
 }

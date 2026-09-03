@@ -2,6 +2,15 @@
 
 ---
 
+## 2026-09-03 11:24:27
+
+- **수정**: `wiki/dbms/index-scan.md` — §3 PostgreSQL 도입부에 `pg_hint_plan` 설치 안내(shared_preload_libraries)와 힌트 주석 사용 예시 추가. §7.3에 INLIST ITERATOR와 OR expansion의 차이(동일 컬럼은 항상 INLIST ITERATOR, OR expansion은 서로 다른 컬럼·테이블 대상이며 분기별 독립 최적화 가능), UNION ALL을 쓰는 이유(LNNVL로 분기 간 상호배타성 확보해 중복 없이 결합), 12.2 CONCATENATION→UNION-ALL 연산자 변경, OR_EXPAND/NO_EXPAND 힌트 내용 추가. Sources에 Oracle Optimizer 블로그 추가
+
+## 2026-09-02 23:54:28
+
+- **삭제**: `wiki/react/react-ssr.md`, `wiki/web/ssr-vs-csr.md` — 불필요 판단에 따라 삭제. `wiki/react/`가 해당 문서만 있던 디렉터리라 함께 제거
+- `wiki/index.md`에서 두 항목과 빈 "React" 섹션 제거, `wiki/web/reverse-proxy.md` Related pages에서 `[[ssr-vs-csr]]` 링크 제거(깨진 링크 방지)
+
 ## 2026-09-02 23:46:40
 
 - **이동**: `wiki/java/spring/*` → `wiki/spring/*`(39개), `wiki/javascript/nestjs/*` → `wiki/nestjs/*`(13개), `wiki/javascript/react/*` → `wiki/react/*`(1개), `wiki/javascript/typescript/*` → `wiki/typescript/*`(4개), `wiki/javascript/node/*` → `wiki/node/*`(3개) — 물리 디렉터리를 `wiki/index.md`의 기존 카테고리 분류(Spring/NestJS/React/TypeScript/Node.js가 Java/JavaScript와 대등한 최상위 섹션)에 맞춰 최상위로 승격. 사이드바 트리(NavTree)·breadcrumb이 물리 디렉터리 기준으로 렌더링되어 기존에는 index.md 분류와 어긋났음
