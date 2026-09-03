@@ -2,6 +2,30 @@
 
 ---
 
+## 2026-09-03 22:36:42
+
+- **생성**: `wiki/security/web/sliding-window.md` — Sliding Window(Anti-Replay Window) 신규 문서(RFC 4303/RFC 6479, RFC 6347, RFC 3711 기반). §1 개요, §2 구조(ESN 포함), §3 판정 규칙, §4 비트 시프트 구현(4.1 Java 예제 — 64비트 long 단일 워드), §5 RFC 6479 블록 기반 순환 비트맵 개선(5.1 Java 예제 — 32비트 워드 32개), §6 활용 예시(IPsec/DTLS/SRTP)
+- **수정**: `wiki/security/web/replay-attack.md` — 5장(Sliding Window)을 상세 구조·판정 규칙·RFC 6479 서술에서 요약 문단 + `[[sliding-window]]` 링크로 축약. Sources에서 RFC 6479 제거(본문에서 더 이상 직접 언급 안 함), Related pages에 `[[sliding-window]]` 추가
+- **수정**: `wiki/index.md` — Security > Web에 `[[sliding-window]]` 항목 추가, `[[replay-attack]]` 설명을 축약된 5장 내용에 맞게 수정
+
+## 2026-09-03 22:26:11
+
+- **생성**: `wiki/security/web/replay-attack.md` — Replay Attack 신규 문서(RFC 4303/RFC 6479, OWASP REST Security Cheat Sheet, Packetlabs 가이드 기반). 1장 개요(정의·대상), 2~4장 Nonce/타임스탬프/Nonce+타임스탬프 조합(각 기법의 원리·한계), 5장 시퀀스 번호 기반 Sliding Window(구조·판정 규칙·RFC 6479 비트맵 개선)
+- **수정**: `wiki/index.md` — Security > Web에 `[[replay-attack]]` 항목 추가
+
+## 2026-09-03 22:16:18
+
+- **이동**: `wiki/security/crypto/*`(9개) 재분류 → `wiki/security/crypto/*`(cms, hsm, kdf, ml-dsa, ml-kem 5개 잔류), `wiki/security/pki/*`(cmp, certificate-revocation, x509-certificate, timestamp-token 4개 신설)
+- **이동**: `wiki/web/{cors,jwt,oauth2,sso}.md` → `wiki/security/web/*` — 보안 프로토콜/토큰 문서를 security 하위로 통합. `cookie`/`session-vs-cookie`는 보안 외 일반 서술 비중이 커 web에 유지
+- **수정**: `wiki/index.md` — `## Security`를 `### Crypto`/`### PKI`/`### Web` 하위 섹션으로 재편, `## Web`에서 이동된 4개 항목 제거. wikilink는 파일명 기준 해석되어 본문 링크 수정 불필요
+
+## 2026-09-03 22:12:41
+
+- **이동**: `wiki/linux/security/*`(openssl-*.md 9개) → `wiki/linux/openssl/*` — 디렉터리에 OpenSSL 문서만 남아 용도에 맞게 개명
+- **이동**: `wiki/linux/security/linux-file-permissions.md` → `wiki/linux/filesystem/linux-file-permissions.md` — 파일시스템 권한 주제로 기존 `filesystem` 서브디렉터리(df/du/inode 등)에 합류
+- **이동**: `wiki/crypto/*`(8개) → `wiki/security/crypto/*` — `wiki/java/crypto`(Java 전용 크립토 문서) 서브디렉터리 명명 패턴과 통일. `wiki/web`의 보안 관련 문서(cookie/cors/jwt/oauth2/sso 등)는 이동 대상 아님
+- **수정**: `wiki/index.md` — `## Crypto` 섹션 헤더를 `## Security`로 변경(항목 목록은 동일). wikilink는 파일명 기준으로 해석되어 본문 링크 수정 불필요
+
 ## 2026-09-03 11:24:27
 
 - **수정**: `wiki/dbms/index-scan.md` — §3 PostgreSQL 도입부에 `pg_hint_plan` 설치 안내(shared_preload_libraries)와 힌트 주석 사용 예시 추가. §7.3에 INLIST ITERATOR와 OR expansion의 차이(동일 컬럼은 항상 INLIST ITERATOR, OR expansion은 서로 다른 컬럼·테이블 대상이며 분기별 독립 최적화 가능), UNION ALL을 쓰는 이유(LNNVL로 분기 간 상호배타성 확보해 중복 없이 결합), 12.2 CONCATENATION→UNION-ALL 연산자 변경, OR_EXPAND/NO_EXPAND 힌트 내용 추가. Sources에 Oracle Optimizer 블로그 추가

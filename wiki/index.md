@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-01 23:21:14
+updated: 2026-09-03 22:36:42
 tags:
   - meta
 ---
@@ -128,17 +128,31 @@ tags:
 - [[junit-parameterized-test]] — JUnit 5 ParameterizedTest: 인자 소스, 변환, 집계
 - [[jacoco]] — JaCoCo 테스트 커버리지: 원리, 설정, 기준
 
-## Crypto
+## Security
 
-- [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
-- [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
-- [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
+### Crypto
+
 - [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
-- [[timestamp-token]] — RFC 3161 타임스탬프 토큰: TSP 프로토콜, TST 구조, 검증
 - [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
 - [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM
 - [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명
 - [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
+
+### PKI
+
+- [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
+- [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
+- [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
+- [[timestamp-token]] — RFC 3161 타임스탬프 토큰: TSP 프로토콜, TST 구조, 검증
+
+### Web
+
+- [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
+- [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
+- [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
+- [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
+- [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
+- [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
 
 ## Spring
 
@@ -235,13 +249,9 @@ tags:
 
 - [[load-balancer]] — 로드 밸런서: 동작, L4 vs L7, 분산 알고리즘
 - [[reverse-proxy]] — 리버스 프록시: 용도, 전달 헤더, nginx 설정
-- [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
 - [[cookie]] — Cookie: 동작, 보안 속성, 취약점
 - [[web-storage]] — Web Storage: localStorage/sessionStorage/IndexedDB 비교
 - [[session-vs-cookie]] — Session vs Cookie: HTTP 상태 유지 수단 비교
-- [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
-- [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
-- [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
 - [[restful-api-design]] — RESTful API 설계: REST 제약, HTTP 메서드, URI 규칙
 
 ## JavaScript
