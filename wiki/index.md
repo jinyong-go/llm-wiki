@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-03 22:36:42
+updated: 2026-09-04 23:10:34
 tags:
   - meta
 ---
@@ -137,6 +137,7 @@ tags:
 - [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM
 - [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명
 - [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
+- [[padding-oracle-attack]] — Padding Oracle Attack: CBC 패딩 검증 악용 복호화·위조, 원리, 방어(AEAD/Encrypt-then-MAC), ASP.NET/POODLE/Lucky13 사례
 
 ### PKI
 
@@ -148,6 +149,7 @@ tags:
 ### Web
 
 - [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
+- [[csrf]] — CSRF: 성립 조건, GET/POST 취약성, 방어(토큰·SameSite·Origin 검증·Custom Header), 실제 사고 사례(Netflix/YouTube/uTorrent 등)
 - [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
 - [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
 - [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교

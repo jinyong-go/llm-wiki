@@ -2,6 +2,16 @@
 
 ---
 
+## 2026-09-04 23:10:34
+
+- **생성**: `wiki/security/web/csrf.md` — CSRF 신규 문서(OWASP CSRF Prevention Cheat Sheet, OWASP CSRF, Wikipedia 기반). 1장 개요, 2장 성립 조건과 원리(2.1 GET vs POST, 공격 예시 포함), 3장 방어 기법(Synchronizer Token, Double Submit Cookie, SameSite 쿠키, Origin/Referer 검증, Custom Header), 4장 로그인 CSRF, 5장 실제 사고 사례(Netflix/ING Direct/YouTube/uTorrent/멕시코 은행 라우터/TikTok)
+- **수정**: `wiki/index.md` — Security > Web에 `[[csrf]]` 항목 추가
+
+## 2026-09-04 17:00:33
+
+- **생성**: `wiki/security/crypto/padding-oracle-attack.md` — Padding Oracle Attack 신규 문서(OWASP WSTG, Vaudenay/Rizzo·Duong 논문, Microsoft 보안 권고, POODLE/Lucky13 자료 기반). 1장 개요(적용 범위), 2장 원리(PKCS#7, CBC 복호화 구조, 바이트 단위 복원 절차), 3장 방어(AEAD 전환, Encrypt-then-MAC, 상수 시간 처리, 에러 응답 통일, 검증된 라이브러리 사용, 레거시 프로토콜 비활성화), 4장 탐지 방법(OWASP WSTG 절차), 5장 실제 사례(ASP.NET MS10-070, POODLE, Lucky13)
+- **수정**: `wiki/index.md` — Security > Crypto에 `[[padding-oracle-attack]]` 항목 추가
+
 ## 2026-09-03 22:36:42
 
 - **생성**: `wiki/security/web/sliding-window.md` — Sliding Window(Anti-Replay Window) 신규 문서(RFC 4303/RFC 6479, RFC 6347, RFC 3711 기반). §1 개요, §2 구조(ESN 포함), §3 판정 규칙, §4 비트 시프트 구현(4.1 Java 예제 — 64비트 long 단일 워드), §5 RFC 6479 블록 기반 순환 비트맵 개선(5.1 Java 예제 — 32비트 워드 32개), §6 활용 예시(IPsec/DTLS/SRTP)
