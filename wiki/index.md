@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-04 23:10:34
+updated: 2026-09-06 00:00:38
 tags:
   - meta
 ---
@@ -132,6 +132,7 @@ tags:
 
 ### Crypto
 
+- [[hash-function]] — 해시 함수: 요구 성질, 내부 구조(Merkle–Damgård/스펀지/HAIFA), 알고리즘, 주요 활용 사례
 - [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
 - [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
 - [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM
@@ -155,6 +156,7 @@ tags:
 - [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
 - [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
 - [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
+- [[session-hijacking]] — 세션 하이재킹: 공격 기법(스니핑/예측/무차별 대입/고정/클라이언트 탈취/노출), 방어(엔트로피·TLS·재발급·타임아웃), Firesheep 사례
 
 ## Spring
 

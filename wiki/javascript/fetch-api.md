@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 Fetch API
-updated: 2026-08-31 17:13:10
+updated: 2026-09-06 00:10:51
 tags:
   - javascript
   - fetch
@@ -9,7 +9,7 @@ tags:
 
 ## 1. 개요
 
-**Fetch API**는 HTTP 요청을 보내고 응답을 처리하는 자바스크립트 인터페이스다. 콜백 기반 [[XMLHttpRequest]]를 대체하며, [[promise|Promise]] 기반으로 동작해 콜백 중첩 없이 [[async-await]]와 자연스럽게 결합된다. `Request`/`Response`가 표준 객체로 캡슐화되어 있어 `clone()`으로 재사용하거나 Service Worker의 `fetch` 이벤트에서 그대로 가로채고 재구성할 수 있고, 본문을 `ReadableStream`으로 다뤄 대용량 응답도 메모리 효율적으로 처리할 수 있다. 전역 함수 `fetch(resource, options)`를 호출해 요청하며, `window`와 worker 컨텍스트 모두에서 사용 가능하다.
+**Fetch API**는 HTTP 요청을 보내고 응답을 처리하는 자바스크립트 인터페이스다. 콜백 기반 `XMLHttpRequest`를 대체하며, [[promise|Promise]] 기반으로 동작해 콜백 중첩 없이 [[async-await]]와 자연스럽게 결합된다. `Request`/`Response`가 표준 객체로 캡슐화되어 있어 `clone()`으로 재사용하거나 Service Worker의 `fetch` 이벤트에서 그대로 가로채고 재구성할 수 있고, 본문을 `ReadableStream`으로 다뤄 대용량 응답도 메모리 효율적으로 처리할 수 있다. 전역 함수 `fetch(resource, options)`를 호출해 요청하며, `window`와 worker 컨텍스트 모두에서 사용 가능하다.
 
 ---
 

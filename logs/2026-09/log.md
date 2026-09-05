@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-09-06 00:10:51
+
+- **점검**: wiki-lint 링크 점검 실행(238개 문서, 위키링크 1,561건·고유 242종, Sources 웹 URL 855종 고유). 실제 깨진 위키링크 1건, 웹 링크 깨짐 0건(403 80건은 봇 차단 오탐 확인)
+- **수정**: `wiki/javascript/fetch-api.md` — 대응 페이지 없는 `[[XMLHttpRequest]]` 위키링크를 `` `XMLHttpRequest` `` 코드 스팬으로 전환
+- **생성**: `logs/lint/report-20260906.md` — 점검 결과 보고서
+
+## 2026-09-06 00:00:38
+
+- **생성**: `wiki/security/web/session-hijacking.md` — Session Hijacking 신규 문서(OWASP Session Management Cheat Sheet, Firesheep 사례 기반). 1장 개요([[csrf]]와의 구분), 2장 공격 기법(세션 스니핑/예측/무차별 대입/세션 고정/클라이언트 사이드 탈취/노출), 3장 방어 기법(세션 ID 엔트로피, 전 구간 TLS, HttpOnly·SameSite, 세션 ID 재발급, idle/absolute 타임아웃, 클라이언트 속성 바인딩, URL 노출 금지), 4장 실제 사례(Firesheep, 2010)
+- **수정**: `wiki/web/cookie.md` — 5장 표의 "세션 하이재킹 (XSS 경유)"·"Session Fixation" 두 행을 `[[session-hijacking]]` 링크 한 행으로 축약, Related pages에 `[[session-hijacking]]`·`[[csrf]]` 추가
+- **수정**: `wiki/index.md` — Security > Web에 `[[session-hijacking]]` 항목 추가
+
+## 2026-09-05 23:49:03
+
+- **생성**: `wiki/security/crypto/hash-function.md` — 해시 함수(단방향 암호화) 신규 문서(NIST FIPS 180-4/202, SP 800-185, RFC 9155/7693, HAIFA·BLAKE2 논문 기반). 1장 개요(암호화와의 구분), 2장 원리(요구 성질, 내부 구조 — Merkle–Damgård와 length-extension 공격, HMAC 방어 원리, 스펀지, HAIFA/트리), 3장 주요 알고리즘 비교(MD5/SHA-1/SHA-2/SHA-3/BLAKE), 4장 주요 활용 사례(무결성 검증, 디지털 서명, HMAC, 패스워드 저장, 블록체인, 중복 제거, 커밋먼트), 5장 보안 고려사항
+- **수정**: `wiki/index.md` — Security > Crypto에 `[[hash-function]]` 항목 추가
+
 ## 2026-09-04 23:10:34
 
 - **생성**: `wiki/security/web/csrf.md` — CSRF 신규 문서(OWASP CSRF Prevention Cheat Sheet, OWASP CSRF, Wikipedia 기반). 1장 개요, 2장 성립 조건과 원리(2.1 GET vs POST, 공격 예시 포함), 3장 방어 기법(Synchronizer Token, Double Submit Cookie, SameSite 쿠키, Origin/Referer 검증, Custom Header), 4장 로그인 CSRF, 5장 실제 사고 사례(Netflix/ING Direct/YouTube/uTorrent/멕시코 은행 라우터/TikTok)

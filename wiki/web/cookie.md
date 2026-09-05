@@ -1,6 +1,6 @@
 ---
 title: Cookie
-updated: 2026-07-06 17:31:44
+updated: 2026-09-06 00:00:38
 tags:
   - web
   - http
@@ -67,10 +67,9 @@ Set-Cookie: __Host-SESSIONID=...; HttpOnly; Secure; SameSite=Lax; Path=/
 
 | 공격 | 원리 | 완화 |
 |---|---|---|
-| **세션 하이재킹 (XSS 경유)** | XSS로 주입된 스크립트가 `document.cookie`에서 세션 ID를 읽어 공격자에게 전송 → 세션 도용 | `HttpOnly` + XSS 자체 방어(출력 이스케이프, CSP) |
+| **세션 하이재킹** | 세션 ID를 탈취(XSS·스니핑·예측 등)하거나 사전에 심어(Session Fixation) 사용자로 위장 | 공격 기법·방어 상세는 [[session-hijacking]] 참고 |
 | **CSRF** | 쿠키 자동 첨부를 악용 — 로그인된 사용자가 악성 페이지를 열면 브라우저가 세션 쿠키를 실어 위조 요청 전송 | `SameSite=Lax/Strict` + CSRF 토큰, 중요 작업 재인증 |
 | **네트워크 스니핑 (MITM)** | 평문 HTTP 전송 중 쿠키 탈취 | `Secure` + 전 구간 HTTPS(HSTS) |
-| **Session Fixation** | 공격자가 미리 알고 있는 세션 ID를 피해자에게 심고, 피해자 로그인 후 그 ID로 접근 | **로그인 성공 시 세션 ID 재발급**, URL 세션 ID 금지 |
 | **쿠키 주입 (cookie tossing)** | 장악한 서브도메인에서 `Domain=example.com` 쿠키를 설정해 본 도메인 세션에 개입 | `__Host-` 접두사(Domain 지정 불가 강제) |
 | 쿠키 변조 | 클라이언트가 쿠키 값(권한 플래그 등)을 직접 수정 | 민감 값 저장 금지, 서버 측 상태 대조·서명 |
 
@@ -88,3 +87,5 @@ Set-Cookie: __Host-SESSIONID=...; HttpOnly; Secure; SameSite=Lax; Path=/
 - [[web-storage]]
 - [[jwt]]
 - [[cors]]
+- [[session-hijacking]]
+- [[csrf]]
