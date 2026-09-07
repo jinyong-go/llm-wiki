@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-09-07 22:27:37
+
+- **생성**: `wiki/java/crypto/ml-dsa-bouncycastle.md` — ML-DSA의 BouncyCastle/JCA 구현을 [[ml-dsa]]에서 분리한 신규 문서. 3장 구현을 키 생성(KeyGen)/서명(Sign)/검증(Verify)/인코딩·디코딩(PublicKey·PrivateKey ↔ byte[], X.509/PKCS#8) 하위 항목으로 구성. X.509 인증서 발급(자체 서명·CA 발급), 버전·상호운용 주의(issue #1991, #2060) 포함
+- **수정**: `wiki/security/crypto/ml-dsa.md` — BouncyCastle·인증서 발급 절 제거, 수학적·암호학적 원리 대폭 보강(FIPS 204 기반). 2장 대수 구조(q=8380417, 512제곱근 ζ=1753으로 X^256+1이 1차 인수 256개로 완전분해, ML-KEM과 대비), 3장 계산 가정(MLWE+SelfTargetMSIS, Schnorr→FS-with-Aborts 유도), 4장 키 생성, 5장 서명(거부 샘플링 루프 의사코드, 2단계 검사), 6장 검증(커밋 재구성 원리), 7장 압축·힌트 메커니즘(Power2Round/Decompose/HighBits/LowBits/MakeHint/UseHint), 8장 Pre-hash 변형(HashML-DSA), 9장 Dilithium 대비 변경점, 10장 파라미터(전체 표, 크기 공식). ML-DSA-65 공개키 크기 오류(1592→1952 byte) 수정. 제목에서 BouncyCastle 제거
+- **수정**: `wiki/index.md` — Java 암호 섹션에 `[[ml-dsa-bouncycastle]]` 추가, `[[ml-dsa]]` 설명 갱신
+
+## 2026-09-07 22:18:44
+
+- **생성**: `wiki/java/crypto/ml-kem-bouncycastle.md` — ML-KEM의 BouncyCastle/JCA 구현을 [[ml-kem]]에서 분리한 신규 문서. 3장 구현을 키 생성(KeyGen)/캡슐화(Encaps)/복원(Decaps)/인코딩·디코딩(PublicKey·PrivateKey ↔ byte[], X.509/PKCS#8) 하위 항목으로 구성. 공유 비밀의 AES·KDF 연결, 암묵적 거부로 인한 실패 검출(AEAD 태그), Java 21+ `javax.crypto.KEM`, 버전·인코딩 호환성 주의 포함
+- **수정**: `wiki/security/crypto/ml-kem.md` — BouncyCastle 구현 절 제거, 수학적·암호학적 원리 대폭 보강(FIPS 203 기반). 2장 대수 구조(R_q, negacyclic, 모듈 R_q^k, X^256+1의 128개 2차 인수분해와 NTT), 3장 MLWE(탐색/결정, CBD 잡음, 거부 샘플링), 4장 K-PKE(KeyGen/Encrypt/Decrypt, Compress/Decompress, 복호 정확성과 q/4 한계 유도), 5장 FO 변환(해시 함수 G/H/J/PRF/XOF, 결정론화·재암호화·암묵적 거부, 입력 검사, Kyber 대비 변경점), 6장 파라미터(세트·크기 공식·복호 실패율), 7장 운영 고려. 제목에서 BouncyCastle 제거
+- **수정**: `wiki/index.md` — Java 암호 섹션에 `[[ml-kem-bouncycastle]]` 추가, `[[ml-kem]]` 설명 갱신
+
 ## 2026-09-07 09:02:35
 
 - **생성**: `wiki/java/common/bitwise-operators.md` — 비트 연산자 신규 문서(Oracle Java Tutorials, JLS SE21 §15.19/§15.22, Integer API 기반). 1장 비트 논리 연산자(&/|/^/~), 2장 시프트 연산자(<<,>>,>>>)와 시프트 거리 마스킹(0x1f/0x3f), 3장 타입 승격(단항 승격, 시프트의 독립 승격), 4장 복합 대입, 5장 활용 패턴(마스킹·플래그 설정/해제/토글), 6장 Integer/Long 비트 유틸리티 메서드

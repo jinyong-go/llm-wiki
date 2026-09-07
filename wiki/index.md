@@ -110,6 +110,8 @@ tags:
 ### 암호 (crypto)
 
 - [[cmp-bouncycastle]] — BouncyCastle CMP 메시지 생성·파싱·검증 (개념은 [[cmp]])
+- [[ml-kem-bouncycastle]] — BouncyCastle ML-KEM 키 생성·캡슐화·복원, 키 인코딩·디코딩 (개념은 [[ml-kem]])
+- [[ml-dsa-bouncycastle]] — BouncyCastle ML-DSA 서명·검증, 키 인코딩·디코딩, X.509 인증서 발급 (개념은 [[ml-dsa]])
 - [[jwt-java]] — Java JWT 생성·검증: 라이브러리 비교·예시 (개념은 [[jwt]])
 - [[cert-path-validation]] — BouncyCastle 인증서 경로 검증 (개념은 [[x509-certificate]])
 - [[crl-java]] — Java CRL 생성·파싱·검증 (개념은 [[certificate-revocation]])
@@ -136,8 +138,8 @@ tags:
 - [[hash-function]] — 해시 함수: 요구 성질, 내부 구조(Merkle–Damgård/스펀지/HAIFA), 알고리즘, 주요 활용 사례
 - [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
 - [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
-- [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM
-- [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명
+- [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM: 대수 구조(R_q·NTT), MLWE, K-PKE, FO 변환, 파라미터
+- [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명: 대수 구조, MLWE+MSIS, FS-with-Aborts, 힌트 메커니즘, 파라미터
 - [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
 - [[padding-oracle-attack]] — Padding Oracle Attack: CBC 패딩 검증 악용 복호화·위조, 원리, 방어(AEAD/Encrypt-then-MAC), ASP.NET/POODLE/Lucky13 사례
 
