@@ -148,6 +148,7 @@ tags:
 - [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
 - [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
 - [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
+- [[certificate-purpose]] — 인증서 용도: Key Usage×EKU 조합별 프로파일(TLS 서버/클라이언트, 전자서명, 코드서명, S/MIME 등)과 실사용 사례
 - [[timestamp-token]] — RFC 3161 타임스탬프 토큰: TSP 프로토콜, TST 구조, 검증
 
 ### Web

@@ -1,6 +1,6 @@
 ---
 title: X.509 인증서
-updated: 2026-07-14 11:26:44
+updated: 2026-09-08 23:03:19
 tags:
   - crypto
   - pki
@@ -100,6 +100,8 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 | 2.5.29.37.0       | `anyExtendedKeyUsage` | 모든 용도 허용 (제한 없음 표시)                                             |
 
 > Key Usage와 EKU가 모두 있으면 **양쪽 모두에 부합하는 용도로만** 사용 가능하다. 예: serverAuth 인증서는 통상 `digitalSignature`(+RSA면 `keyEncipherment`)와 조합.
+
+실사용 인증서 유형별 Key Usage×EKU 조합과 상세 사례는 [[certificate-purpose]] 참고.
 
 #### Subject Alternative Name (SAN)
 
@@ -213,6 +215,7 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 ---
 
 ## Related pages
+- [[certificate-purpose]] — Key Usage×EKU 조합별 인증서 용도·실사용 사례
 - [[cmp]] — 인증서 발급·갱신·폐기 관리 프로토콜
 - [[certificate-revocation]] — 인증서 폐기(CRL·OCSP) 상세
 - [[cert-path-validation]] — Java/BouncyCastle 인증서 경로 검증 구현

@@ -2,6 +2,12 @@
 
 ---
 
+## 2026-09-08 23:03:19
+
+- **생성**: `wiki/security/pki/certificate-purpose.md` — 인증서 용도 신규 문서(RFC 5280, OpenSSL openssl-verification-options, DigiCert eIDAS Qualified Key Usages 기반). Key Usage×EKU×Basic Constraints 조합별 프로파일을 상위 항목으로 구성(TLS 서버/클라이언트, 개인 전자서명용, 암호화용, 코드서명, S/MIME, 타임스탬프, OCSP 응답자, CA), 각 프로파일 하위에 설정·실사용 항목. 개인 전자서명용/암호화용 인증서의 이중 키쌍 모델은 각주로 추론 근거 명시. openssl `-purpose` 값과 프로파일 대응표 포함
+- **수정**: `wiki/security/pki/x509-certificate.md` — EKU 절에 [[certificate-purpose]] 링크 추가, Related pages에 추가
+- **수정**: `wiki/index.md` — PKI 섹션에 `[[certificate-purpose]]` 추가
+
 ## 2026-09-07 22:27:37
 
 - **생성**: `wiki/java/crypto/ml-dsa-bouncycastle.md` — ML-DSA의 BouncyCastle/JCA 구현을 [[ml-dsa]]에서 분리한 신규 문서. 3장 구현을 키 생성(KeyGen)/서명(Sign)/검증(Verify)/인코딩·디코딩(PublicKey·PrivateKey ↔ byte[], X.509/PKCS#8) 하위 항목으로 구성. X.509 인증서 발급(자체 서명·CA 발급), 버전·상호운용 주의(issue #1991, #2060) 포함
