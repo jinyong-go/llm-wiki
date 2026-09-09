@@ -158,6 +158,7 @@ tags:
 - [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
 - [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
 - [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
+- [[webauthn]] — WebAuthn: 공개키 기반 등록·인증 Ceremony, Attestation, Authenticator 분류, FIDO2/Passkey
 - [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
 - [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
 - [[session-hijacking]] — 세션 하이재킹: 공격 기법(스니핑/예측/무차별 대입/고정/클라이언트 탈취/노출), 방어(엔트로피·TLS·재발급·타임아웃), Firesheep 사례

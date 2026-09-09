@@ -2,6 +2,11 @@
 
 ---
 
+## 2026-09-09 22:27:47
+
+- **생성**: `wiki/security/web/webauthn.md` — WebAuthn 신규 문서(W3C Web Authentication Level 2, MDN Web Authentication API, FIDO Alliance 명세 개요 기반). 등록/인증 Ceremony(mermaid 시퀀스, `create()`/`get()` 옵션 표), Authenticator Data 구조와 signCount 클론 탐지, 증명(Attestation) 유형·전달 수준, Authenticator 분류(부착 방식/인증 팩터/저장 방식별 예시), 자동완성 UI(Conditional Mediation) 코드 예시, 장단점, 보안 고려사항으로 구성
+- **수정**: `wiki/index.md` — Security > Web 섹션에 `[[webauthn]]` 추가
+
 ## 2026-09-08 23:03:19
 
 - **생성**: `wiki/security/pki/certificate-purpose.md` — 인증서 용도 신규 문서(RFC 5280, OpenSSL openssl-verification-options, DigiCert eIDAS Qualified Key Usages 기반). Key Usage×EKU×Basic Constraints 조합별 프로파일을 상위 항목으로 구성(TLS 서버/클라이언트, 개인 전자서명용, 암호화용, 코드서명, S/MIME, 타임스탬프, OCSP 응답자, CA), 각 프로파일 하위에 설정·실사용 항목. 개인 전자서명용/암호화용 인증서의 이중 키쌍 모델은 각주로 추론 근거 명시. openssl `-purpose` 값과 프로파일 대응표 포함
