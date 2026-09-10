@@ -2,6 +2,24 @@
 
 ---
 
+## 2026-09-10 22:26:07
+
+- **수정**: `wiki/java/crypto/webauthn-java.md` — §2 헤더 아래 소개 문장 추가(§3과 대칭). §4.2 "라이브러리 선택 기준" 신설 — Spring Security `webAuthn()` DSL이 내부적으로 WebAuthn4J를 사용하는 점(§2 Yubico와 별개 구현), 서블릿 전용이며 WebFlux 미지원인 점 기반으로 §2/§3 선택 기준 기술. Sources에 webauthn4j-spring-security GitHub Discussion 출처 추가
+
+## 2026-09-10 22:23:00
+
+- **수정**: `wiki/java/crypto/webauthn-java.md` — §2를 "Yubico java-webauthn-server" 상위 항목으로 묶고 2.1 의존성(gradle)·2.2 RelyingParty 구성(RelyingPartyIdentity/RelyingParty 설명 추가)·2.3 등록·2.4 인증으로 재편. §3 Spring Security에 3.1 의존성(gradle, 별도 artifact)·3.2 구성 방법(`webAuthn()` DSL 옵션 표, 엔드포인트·CSRF 표)·3.3 구현체·사용 클래스 신설. §2.3·2.4 코드에 `credentialRepository.save()`/`updateSignCount()`/`login()`이 RP가 직접 구현해야 하는 메서드임을 알리는 주석 추가. §4 기타 신설 — 4.1 요청 객체(regRequest/authRequest)의 세션 저장 이유. Sources에 Maven Central/Maven Repository 출처 추가
+
+## 2026-09-10 22:01:52
+
+- **수정**: `wiki/security/web/webauthn.md` — §1 개요에서 구현 예시·장단점 참조 문단 삭제, §8 제목·본문의 자동완성 UI 괄호 표기를 `Conditional Mediation`에서 `Autofill`로 교체(위치도 "자동완성" 바로 뒤로 이동). §11 기타 신설(11.1 Java 구현 예시 링크, 11.2 대표 서비스 제공자 — 플랫폼/서드파티 비밀번호 관리자/IdP·IAM 벤더/하드웨어 보안키 제조사/Passkey 전용 BaaS). Okta·Cisco Duo·Corbado·Hanko 출처 추가
+
+## 2026-09-10 13:24:38
+
+- **생성**: `wiki/java/crypto/webauthn-java.md` — WebAuthn Java 구현 예시 신규 문서. Yubico java-webauthn-server 기반 RelyingParty 구성·`CredentialRepository` 인터페이스, 등록/인증 각 단계별 서버(Java)·클라이언트(JS) 코드(라이브러리 제공 타입 import 포함), Spring Security 6.4+ `webAuthn()` DSL 예시로 구성. challenge 등 요청 객체를 세션 등 서버 측 저장소에 보관하는 이유 명시
+- **수정**: `wiki/security/web/webauthn.md` — §1에 [[webauthn-java]] 링크 추가, Related pages에 추가
+- **수정**: `wiki/index.md` — Java > 암호(crypto) 섹션에 `[[webauthn-java]]` 추가
+
 ## 2026-09-09 22:27:47
 
 - **생성**: `wiki/security/web/webauthn.md` — WebAuthn 신규 문서(W3C Web Authentication Level 2, MDN Web Authentication API, FIDO Alliance 명세 개요 기반). 등록/인증 Ceremony(mermaid 시퀀스, `create()`/`get()` 옵션 표), Authenticator Data 구조와 signCount 클론 탐지, 증명(Attestation) 유형·전달 수준, Authenticator 분류(부착 방식/인증 팩터/저장 방식별 예시), 자동완성 UI(Conditional Mediation) 코드 예시, 장단점, 보안 고려사항으로 구성

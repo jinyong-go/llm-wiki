@@ -117,6 +117,7 @@ tags:
 - [[crl-java]] — Java CRL 생성·파싱·검증 (개념은 [[certificate-revocation]])
 - [[keystore-java]] — Java KeyStore 생성·저장·로드 (PKCS#12)
 - [[jar-signing]] — JAR 서명: 구성 파일, jarsigner/빌드 도구 통합, 검증 절차와 실패 사례
+- [[webauthn-java]] — Java(java-webauthn-server)·Spring Security WebAuthn 등록·인증 구현 (개념은 [[webauthn]])
 
 ### 테스트
 

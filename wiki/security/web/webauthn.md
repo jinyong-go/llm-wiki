@@ -1,6 +1,6 @@
 ---
 title: WebAuthn
-updated: 2026-09-09 22:27:47
+updated: 2026-09-10 22:01:52
 tags:
   - web
   - authentication
@@ -13,8 +13,6 @@ tags:
 **WebAuthn**(Web Authentication API)은 Credential Management API를 확장한 W3C 표준으로, 공개키 암호화를 이용한 강력한 인증을 제공해 패스워드리스 인증과 SMS 없는 **다중 요소 인증**(Multi-Factor Authentication, MFA)을 가능하게 한다.
 
 **FIDO**(Fast IDentity Online) Alliance의 **CTAP**(Client to Authenticator Protocol)와 결합해 FIDO2를 구성하며, WebAuthn은 브라우저(Client)와 웹앱 사이의 API를, CTAP은 Client와 Authenticator(보안키, 플랫폼 생체인증 등) 사이의 통신을 표준화한다. 웹의 Passkey는 WebAuthn 위에 구현된다.
-
-비밀번호 대비 장단점은 §9 참고.
 
 ---
 
@@ -184,9 +182,9 @@ Authenticator의 특성은 세 가지 독립적인 기준으로 분류되며, �
 
 ---
 
-## 8. 자동완성 UI(Conditional Mediation)
+## 8. 자동완성(Autofill) UI
 
-**자동완성 UI**(Autofill UI)는 **조건부 중재**(Conditional Mediation)라고도 하며, 로그인 폼의 username 입력란에 `autocomplete="username webauthn"`을 지정하면 페이지 로드 시 `mediation: "conditional"`로 `get()`을 호출해 사용 가능한 discoverable credential을 브라우저 자동완성에 노출하는 기능이다. `allowCredentials`는 생략하며, 사용자가 필드를 클릭하기 전까지는 대기한다. 비밀번호와 Passkey를 하나의 자동완성 UI로 통합하는 용도로 쓰인다.
+**자동완성**(Autofill) **UI**는 **조건부 중재**(Conditional Mediation)라고도 하며, 로그인 폼의 username 입력란에 `autocomplete="username webauthn"`을 지정하면 페이지 로드 시 `mediation: "conditional"`로 `get()`을 호출해 사용 가능한 discoverable credential을 브라우저 자동완성에 노출하는 기능이다. `allowCredentials`는 생략하며, 사용자가 필드를 클릭하기 전까지는 대기한다. 비밀번호와 Passkey를 하나의 자동완성 UI로 통합하는 용도로 쓰인다.
 
 ```html
 <input type="text" name="username" autocomplete="username webauthn" />
@@ -236,14 +234,35 @@ if (supported) {
 
 ---
 
+## 11. 기타
+
+### 11.1. 구현 예시
+
+Java 구현 예시는 [[webauthn-java]] 참조.
+
+### 11.2. 서비스 제공자
+
+- **플랫폼 제공자** — OS/브라우저 내장 Passkey 관리자. Apple(iCloud Keychain), Google(Google Password Manager), Microsoft(Windows Hello)
+- **서드파티 비밀번호 관리자** — 1Password, Dashlane 등이 브라우저 확장으로 Passkey를 저장·동기화
+- **IdP/IAM 벤더** — Okta, Cisco Duo 등이 WebAuthn을 MFA·패스워드리스 인증 수단으로 통합 지원
+- **하드웨어 보안키 제조사** — Yubico(YubiKey), Feitian 등 FIDO2 인증 Authenticator 공급
+- **Passkey 전용 서비스(BaaS)** — Corbado, Hanko(FIDO2 인증 passkey 서버·SDK), Passage by 1Password 등 RP가 자체 인프라 없이 Passkey 인증을 도입할 수 있도록 지원
+
+---
+
 ## Sources
 - W3C — Web Authentication: An API for accessing Public Key Credentials, Level 2: https://www.w3.org/TR/webauthn-2/
 - MDN — Web Authentication API: https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API
 - FIDO Alliance — FIDO Specifications Overview (CTAP/WebAuthn 관계): https://fidoalliance.org/specifications/
+- Okta Developer — Web Authentication integration guide: https://developer.okta.com/docs/guides/authenticators-web-authn/main/
+- Cisco Duo — Duo Passwordless: https://duo.com/docs/passwordless
+- Corbado — Passkeys explained clearly: https://www.corbado.com/blog/passkeys-explained-clearly
+- Hanko — FIDO2-certified passkey server and SDKs (GitHub): https://github.com/teamhanko/passkeys
 
 ---
 
 ## Related pages
+- [[webauthn-java]] — Java(java-webauthn-server)·Spring Security 등록·인증 구현 예시
 - [[sso]] — SSO 모델과의 관계(별도 인증 팩터로 결합 가능)
 - [[x509-certificate]] — 증명 인증서(attestation certificate)의 기반인 X.509 구조·검증
 - [[cookie]] — Credential Management API가 확장하는 기반, 세션 유지 수단 비교
