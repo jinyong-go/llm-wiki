@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-09-12 00:40:31
+
+- **생성**: `wiki/java/common/jdbc-connection-pool.md` — JDBC 커넥션 풀 신규 문서. javax.sql SPI(DataSource/ConnectionPoolDataSource/PooledConnection, ConnectionEventListener/StatementEventListener), Apache Commons Pool2 기준 커넥션 상태 모델(idle/allocated/eviction/invalid)과 대여·소진·유휴 관리·abandoned 회수, 구현체 목록(HikariCP/DBCP2 등), DriverManager 비교, try-with-resources 커넥션 반납 패턴으로 구성. `wiki/index.md` Java 섹션에 링크 추가
+
 ## 2026-09-10 22:26:07
 
 - **수정**: `wiki/java/crypto/webauthn-java.md` — §2 헤더 아래 소개 문장 추가(§3과 대칭). §4.2 "라이브러리 선택 기준" 신설 — Spring Security `webAuthn()` DSL이 내부적으로 WebAuthn4J를 사용하는 점(§2 Yubico와 별개 구현), 서블릿 전용이며 WebFlux 미지원인 점 기반으로 §2/§3 선택 기준 기술. Sources에 webauthn4j-spring-security GitHub Discussion 출처 추가

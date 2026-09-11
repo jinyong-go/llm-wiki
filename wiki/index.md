@@ -83,6 +83,7 @@ tags:
 - [[excel]] — Java Excel 처리 라이브러리 비교 (POI/FastExcel/EasyExcel)
 - [[jni]] — Java JNI: native 메서드 선언, C 구현, 라이브러리 빌드/로드(java.library.path vs LD_LIBRARY_PATH), macOS quarantine 주의사항
 - [[bitwise-operators]] — Java 비트 연산자: &/|/^/~, 시프트(<<,>>,>>>)와 마스킹 규칙, 타입 승격, Integer/Long 비트 유틸리티
+- [[jdbc-connection-pool]] — JDBC 커넥션 풀: javax.sql SPI(DataSource/ConnectionPoolDataSource/PooledConnection), 커넥션 상태 모델(idle/allocated/eviction), 풀 관리(borrow/eviction/abandoned 회수), 구현체
 
 - [[jvm-options]] — JVM 옵션 가이드 (메모리, GC, 로깅, 진단)
 - [[gc]] — 가비지 컬렉터 종류별 동작·장단점·선택 가이드
