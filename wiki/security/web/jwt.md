@@ -1,6 +1,6 @@
 ---
 title: JWT (JSON Web Token)
-updated: 2026-09-01 11:43:12
+updated: 2026-09-13 00:33:04
 tags:
   - web
   - jwt
@@ -21,7 +21,7 @@ tags:
 
 ## 2. 구조
 
-`header.payload.signature` — 세 부분을 각각 **base64url**로 인코딩해 `.`으로 연결한다.
+`header.payload.signature`의 세 부분을 각각 **base64url**로 인코딩해 `.`으로 연결한 형태다. 이 3-segment 구조는 서명형(JWS) 기준이며, 암호화형인 JWE(§4)는 5-segment 구조로 다르다.
 
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9   ← header
@@ -53,13 +53,11 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 
 ## 3. 클레임 (Claims)
 
-| 종류 | 설명 |
-|------|------|
-| **Registered** | RFC 7519가 정의한 표준 클레임(선택적이나 권장) |
-| **Public** | IANA 등록 또는 충돌 방지 네임스페이스의 커스텀 클레임 |
-| **Private** | 당사자 간 합의한 커스텀 클레임 |
+JWT 페이로드에 담기는 클레임은 이름 충돌 방지·표준화 수준에 따라 등록·공개·비공개 클레임 세 종류로 나뉜다(RFC 7519 §4).
 
-**등록 클레임(Registered)**
+### 3.1. 등록 클레임 (Registered)
+
+IANA "JSON Web Token Claims" 레지스트리에 등록된 클레임이다. 사용이 필수는 아니지만, 상호운용 가능한 클레임 집합의 출발점으로 제공되며 애플리케이션이 실제 사용할 클레임과 필수 여부를 정의해야 한다.
 
 | 클레임 | 의미 |
 |--------|------|
@@ -71,17 +69,23 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 | `iat` | 발급 시각(issued at) |
 | `jti` | 고유 ID(중복/재사용 방지) |
 
+### 3.2. 공개 클레임 (Public)
+
+등록 클레임에 없는 이름을 자유롭게 정의할 수 있지만, 충돌을 막기 위해 IANA 레지스트리에 등록하거나 충돌 방지 이름(collision-resistant name, 보통 URI 형태)을 사용해야 하는 클레임이다. 이름을 정의하는 쪽이 해당 네임스페이스를 실제로 통제하고 있어야 한다.
+
+### 3.3. 비공개 클레임 (Private)
+
+발급자와 검증자가 상호 합의해 사용하는 클레임으로, 등록 클레임도 공개 클레임도 아닌 이름이다. 충돌 방지 장치가 없으므로 당사자 간에만 통용되도록 주의해서 사용해야 한다.
+
 ---
 
-## 4. JWS vs JWE
+## 4. JWE
 
-| | **JWS** (RFC 7515) | **JWE** (RFC 7516) |
-|---|---|---|
-| 방식 | 서명(또는 MAC) | 암호화 |
-| 내용 노출 | **읽을 수 있음**(무결성만 보장) | **읽을 수 없음**(기밀 보장) |
-| 용도 | 대부분의 "JWT"(인증 토큰 등) | 민감 데이터를 토큰에 담아야 할 때 |
+JWE(JSON Web Encryption, RFC 7516)는 페이로드를 암호화해 기밀성을 보장하는 방식이다. §2의 서명형(JWS)은 header·payload가 base64url 인코딩일 뿐이라 누구나 읽을 수 있고 서명은 위·변조만 막는 반면, JWE는 페이로드 자체를 암호화하므로 제3자가 내용을 읽을 수 없다.
 
-> 통상 "JWT"라고 하면 **JWS(서명형)**를 가리킨다. 서명은 **위·변조 방지**이지 **기밀**이 아니므로, payload에 **비밀번호·민감정보를 넣지 않는다.**
+구조도 다르다. JWS는 `header.payload.signature` 3-segment인 반면, JWE는 Compact Serialization 기준 `BASE64URL(Protected Header) || '.' || BASE64URL(Encrypted Key) || '.' || BASE64URL(IV) || '.' || BASE64URL(Ciphertext) || '.' || BASE64URL(Authentication Tag)`, 5-segment 구조다(RFC 7516 §3.1).
+
+통상 "JWT"라고 하면 JWS 형태를 가리키며 대부분의 인증 토큰이 여기 해당한다. JWE는 민감한 데이터를 토큰에 직접 담아야 할 때 사용한다.
 
 ---
 
@@ -92,9 +96,10 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 | **HS256** | HMAC-SHA256 | **대칭키**(공유 비밀) — 발급자·검증자가 같은 비밀 공유 |
 | **RS256** | RSA 서명 | **비대칭키** — 개인키 서명, 공개키 검증 |
 | **ES256** | ECDSA(P-256) 서명 | 비대칭키 — RSA보다 짧은 키·서명 |
+| **EdDSA** | Ed25519/Ed448 서명 | 비대칭키 — RFC 8037, ES256 대비 서명 생성이 빠르고 결정적(deterministic) |
 
 - **대칭(HS256)**: 단순하지만 비밀을 공유해야 한다. 검증자가 많으면 비밀 유출 위험↑.
-- **비대칭(RS256/ES256)**: 발급자만 개인키를 갖고, 검증자는 **공개키만** 있으면 된다. 다자 검증(예: 여러 마이크로서비스)에 적합. OIDC ID Token은 보통 RS256.
+- **비대칭(RS256/ES256/EdDSA)**: 발급자만 개인키를 갖고, 검증자는 **공개키만** 있으면 된다. 다자 검증(예: 여러 마이크로서비스)에 적합. OIDC ID Token은 보통 RS256.
 
 > 서명·HMAC의 원리는 [[openssl-dgst]], 키 생성은 [[openssl-keygen]] 참고.
 
@@ -113,7 +118,9 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 
 ---
 
-## 7. 보안 고려사항 (RFC 8725 JWT BCP)
+## 7. 보안 고려사항
+
+RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
 - **`alg: none` 공격** — 서명을 제거하고 `alg`를 `none`으로 바꾼 토큰을 서버가 그대로 신뢰하면 위조 성공. → `none` 허용 금지.
 - **알고리즘 혼동(RS256 → HS256)** — 공격자가 `alg`를 HS256으로 바꾸면, 서버가 **RSA 공개키를 HMAC 비밀로 오용**해 검증이 뚫린다. → **서버가 기대하는 `alg`를 고정/allowlist**로 강제(토큰의 `alg`를 신뢰하지 말 것).
@@ -142,8 +149,8 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 ## 9. 요약
 
 - JWT = 클레임을 담는 **토큰 규격**(포맷). `header.payload.signature`를 base64url로 인코딩. **프로토콜 아님.**
-- 통상 **JWS(서명형)** — 무결성 보장이지 기밀 아님(payload 읽힘, 민감정보 금지).
-- 서명: 대칭 **HS256**(비밀 공유) vs 비대칭 **RS256/ES256**(공개키 검증, 다자 검증 적합).
+- 통상 **JWS(서명형)** — 무결성 보장이지 기밀 아님(payload 읽힘, 민감정보 금지). JWE는 암호화형(5-segment, §4).
+- 서명: 대칭 **HS256**(비밀 공유) vs 비대칭 **RS256/ES256/EdDSA**(공개키 검증, 다자 검증 적합).
 - 검증은 **서명 + exp/nbf + iss/aud**를 모두 확인, 실패 시 전체 거부.
 - 보안(RFC 8725): `alg:none` 금지·**alg 혼동 방지(alg 고정/allowlist)**·클레임 검증·강한 키.
 - 폐기가 어려운 점은 짧은 만료 + refresh 토큰([[oauth2]])으로 보완.
@@ -155,6 +162,7 @@ HMACSHA256( base64UrlEncode(header) + "." + base64UrlEncode(payload), secret )  
 - RFC 7515 — JSON Web Signature (JWS): https://datatracker.ietf.org/doc/html/rfc7515
 - RFC 7516 — JSON Web Encryption (JWE): https://datatracker.ietf.org/doc/html/rfc7516
 - RFC 7518 — JSON Web Algorithms (JWA): https://datatracker.ietf.org/doc/html/rfc7518
+- RFC 8037 — CFRG Curves for JOSE (EdDSA): https://datatracker.ietf.org/doc/html/rfc8037
 - RFC 8725 — JSON Web Token Best Current Practices: https://datatracker.ietf.org/doc/html/rfc8725
 - jwt.io — Introduction to JSON Web Tokens: https://jwt.io/introduction
 

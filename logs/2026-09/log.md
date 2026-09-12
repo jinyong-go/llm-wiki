@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-09-13 00:33:04
+
+- **수정**: `wiki/security/web/jwt.md` — §3 클레임 종류 표(Registered/Public/Private) 제거 후 3.1/3.2/3.3 하위 항목으로 분리(RFC 7519 §4 기준 상세 서술). §4 "JWS vs JWE" 비교 표를 "JWE" 서술형 항목으로 교체(JWS와의 차이·5-segment 구조 설명, RFC 7516 §3.1 근거 추가). §5 서명 알고리즘 표에 EdDSA 행 추가(RFC 8037). §7 제목에서 괄호 제거("보안 고려사항 (RFC 8725 JWT BCP)" → "보안 고려사항"), RFC 8725 언급을 본문으로 이동. §2 구조 설명에 JWS(3-segment)·JWE(5-segment) 구분 명확화 문장 추가, 대시(—) 연결 문장 제거. Sources에 RFC 7516/8037 추가
+
+## 2026-09-13 00:00:51
+
+- **수정**: `wiki/java/crypto/webauthn-java.md` — §1 challenge 재전송 방지 관련 문장에서 대시(—) 연결 표현을 제거하고 두 문장으로 분리
+
 ## 2026-09-12 00:40:31
 
 - **생성**: `wiki/java/common/jdbc-connection-pool.md` — JDBC 커넥션 풀 신규 문서. javax.sql SPI(DataSource/ConnectionPoolDataSource/PooledConnection, ConnectionEventListener/StatementEventListener), Apache Commons Pool2 기준 커넥션 상태 모델(idle/allocated/eviction/invalid)과 대여·소진·유휴 관리·abandoned 회수, 구현체 목록(HikariCP/DBCP2 등), DriverManager 비교, try-with-resources 커넥션 반납 패턴으로 구성. `wiki/index.md` Java 섹션에 링크 추가

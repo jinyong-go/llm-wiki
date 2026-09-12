@@ -1,6 +1,6 @@
 ---
 title: Java WebAuthn — java-webauthn-server·Spring Security 구현 예시
-updated: 2026-09-10 22:26:07
+updated: 2026-09-13 00:00:51
 tags:
   - java
   - security
@@ -13,7 +13,7 @@ tags:
 
 WebAuthn 개념(등록/인증 Ceremony, Attestation, Authenticator 분류 등)은 [[webauthn]] 참조. 이 문서는 Java RP 서버에서 Yubico **java-webauthn-server**로 등록·인증을 구현하는 예시이며, 클라이언트는 브라우저 표준 API를 사용한다.
 
-`start*`가 생성한 요청 객체(challenge 포함)는 세션 등 서버 측 저장소에 보관했다가 `finish*`에 그대로 넘긴다. `finish*`는 클라이언트가 보낸 서명 응답이 이 요청과 일치하는지 검증하므로, 요청 자체를 클라이언트가 되돌려주는 값으로 대체할 수 없다 — challenge는 재전송([[webauthn]] §10) 방지의 근거이고, rpId·userVerification 요구치·allowCredentials 등 나머지 필드도 검증에 그대로 쓰인다.
+`start*`가 생성한 요청 객체(challenge 포함)는 세션 등 서버 측 저장소에 보관했다가 `finish*`에 그대로 넘긴다. `finish*`는 클라이언트가 보낸 서명 응답이 이 요청과 일치하는지 검증하므로, 요청 자체를 클라이언트가 되돌려주는 값으로 대체할 수 없다. challenge는 재전송([[webauthn]] §10) 방지의 근거이며, rpId·userVerification 요구치·allowCredentials 등 나머지 필드도 검증에 그대로 쓰인다.
 
 ---
 
