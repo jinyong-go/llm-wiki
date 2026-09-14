@@ -1,6 +1,6 @@
 ---
 title: JWT (JSON Web Token)
-updated: 2026-09-13 00:33:04
+updated: 2026-09-14 13:05:02
 tags:
   - web
   - jwt
@@ -118,7 +118,28 @@ JWE(JSON Web Encryption, RFC 7516)는 페이로드를 암호화해 기밀성을 
 
 ---
 
-## 7. 보안 고려사항
+## 7. 클라이언트 저장 위치
+
+브라우저(SPA 등)에서 JWT를 어디에 저장할지는 토큰 규격과 별개의 보안 문제다.
+
+### 7.1. localStorage / sessionStorage
+동일 출처의 모든 JavaScript가 접근 가능하므로, XSS 공격 발생 시 토큰이 그대로 탈취된다. OWASP는 인증 토큰·세션 ID·JWT·refresh 토큰을 localStorage/sessionStorage에 저장하지 말 것을 명시하고 있다(MUST NOT).
+
+### 7.2. HttpOnly + Secure + SameSite 쿠키
+- `HttpOnly` — JavaScript(`document.cookie`)로 접근 불가. XSS로 직접 탈취 불가.
+- `Secure` — HTTPS 연결에서만 전송.
+- `SameSite=Strict`(권장) 또는 `Lax` — 크로스사이트 요청에 자동 첨부되지 않도록 제한. CSRF에 대한 심층 방어 수단이며 CSRF 토큰을 대체하지는 않는다. `SameSite=None`은 반드시 `Secure`와 함께 사용해야 한다.
+
+API 서버가 별도 origin(CORS)인 구성에서는 쿠키가 요청에 자동 포함되지 않는다. 클라이언트가 `fetch`의 `credentials: "include"` 또는 `XMLHttpRequest.withCredentials = true`로 자격 증명 포함을 요청하고, 서버가 응답 헤더에 `Access-Control-Allow-Credentials: true`를 반환해야 브라우저가 쿠키를 전송·저장한다. 이 헤더를 쓸 경우 `Access-Control-Allow-Origin`에 와일드카드(`*`)를 쓸 수 없고 요청 origin을 명시해야 한다(위반 시 브라우저가 요청을 차단).
+
+`HttpOnly; Secure; SameSite` 쿠키를 우선 사용하거나 BFF(Backend-for-Frontend)[^1] 패턴을 사용하는 것이 권장된다.
+
+### 7.3. 메모리 / Web Worker
+JS 변수(메모리)에만 두면 새로고침 시 소실되지만 탈취 노출 시간이 짧다. Web Worker 내부에 두면 메인 컨텍스트에 전혀 노출되지 않아 HttpOnly 쿠키와 동등한 기밀성을 가지나, XSS가 Web Worker에 메시지를 보내 연산을 수행시키는 경로는 여전히 남는다.
+
+---
+
+## 8. 보안 고려사항
 
 RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
@@ -131,7 +152,7 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
 ---
 
-## 8. 장단점
+## 9. 장단점
 
 **장점**
 - **Stateless·자기 완결형** — 서버가 세션을 저장하지 않고 토큰만으로 검증(DB 조회 불필요).
@@ -146,12 +167,13 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
 ---
 
-## 9. 요약
+## 10. 요약
 
 - JWT = 클레임을 담는 **토큰 규격**(포맷). `header.payload.signature`를 base64url로 인코딩. **프로토콜 아님.**
 - 통상 **JWS(서명형)** — 무결성 보장이지 기밀 아님(payload 읽힘, 민감정보 금지). JWE는 암호화형(5-segment, §4).
 - 서명: 대칭 **HS256**(비밀 공유) vs 비대칭 **RS256/ES256/EdDSA**(공개키 검증, 다자 검증 적합).
 - 검증은 **서명 + exp/nbf + iss/aud**를 모두 확인, 실패 시 전체 거부.
+- 클라이언트 저장은 localStorage/sessionStorage 금지, HttpOnly+Secure+SameSite 쿠키(크로스 origin이면 CORS credentials 설정 필요) 권장(§7).
 - 보안(RFC 8725): `alg:none` 금지·**alg 혼동 방지(alg 고정/allowlist)**·클레임 검증·강한 키.
 - 폐기가 어려운 점은 짧은 만료 + refresh 토큰([[oauth2]])으로 보완.
 
@@ -165,6 +187,9 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 - RFC 8037 — CFRG Curves for JOSE (EdDSA): https://datatracker.ietf.org/doc/html/rfc8037
 - RFC 8725 — JSON Web Token Best Current Practices: https://datatracker.ietf.org/doc/html/rfc8725
 - jwt.io — Introduction to JSON Web Tokens: https://jwt.io/introduction
+- OWASP Session Management Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+- MDN — Access-Control-Allow-Credentials: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Credentials
+- MDN — Access-Control-Allow-Origin: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Access-Control-Allow-Origin
 
 ---
 
@@ -174,3 +199,7 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 - [[oauth2]] — JWT를 액세스/ID 토큰 포맷으로 사용(§8.2 관계)
 - [[openssl-dgst]] — HMAC·디지털 서명 원리(HS256/RS256의 기반)
 - [[openssl-keygen]] — RS256/ES256용 키 생성
+
+---
+
+[^1]: BFF(Backend-for-Frontend) — 프론트엔드 전용 백엔드를 두어 토큰을 서버 측에만 보관하고, 브라우저에는 HttpOnly 세션 쿠키만 발급하는 아키텍처 패턴.

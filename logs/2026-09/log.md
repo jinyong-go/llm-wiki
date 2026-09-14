@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-09-14 17:56:30
+
+- **생성**: `wiki/java/test/mockito-void-methods.md` — Mockito void 메서드 모킹 신규 문서. void는 상태 검증 불가·상호작용 검증만 가능하다는 배경, doNothing(기본 동작·명시적 사용 시점), doThrow(예외·연속 예외·checked exception 제약), doAnswer(커스텀 동작·콜백 패턴 예시), verify+ArgumentCaptor로 인자 캡처, BDDMockito 대응, spy void 메서드 실제 실행 주의점으로 구성. `wiki/index.md` 테스트 섹션에 링크 추가
+
+## 2026-09-14 16:34:37
+
+- **수정**: `wiki/java/test/junit-test-suite.md` — 구조 재배치: §1 "개요 — 테스트 스위트란" → "개요"로 제목 단순화. §2 "의존성" 신설(2.1 JUnit 4, 2.2 JUnit 5, 구 §3.1 의존성 코드 이동). 구 §2 "JUnit 4"를 §3 "JUnit 4에서의 사용"으로 변경 후 3.1 설정 방법/3.2 주요 애너테이션으로 분리. 구 §3 "JUnit 5 (Platform Suite)"를 §4 "JUnit 5에서의 사용"으로 변경 후 4.1 설정 방법/4.2 주요 애너테이션으로 분리. §4(태그 필터링)~§6(Maven Surefire)은 §5~§7로 번호만 이동. 구 §7 "요약" 삭제 후 §8 "주의점" 신설(스위트 중복 실행, Vintage 엔진 누락 시 "No tests found", Include/Exclude 단독 사용 오류, 태그 예약문자 무시). Sources에 Baeldung, Gradle Forums 2건 추가
+- **수정**: `wiki/java/test/spock.md` — junit-test-suite.md 섹션 번호 변경에 따라 Maven 의존성 항목의 상호참조를 "§6 참고" → "§7 참고"로 수정
+
+## 2026-09-14 16:01:01
+
+- **수정**: `wiki/java/test/spock.md` — 구조 재배치: §8 "의존성 설정"을 §2로 이동, §2 "장단점"을 §8로 이동. 구 §9 "요약" 삭제 후 §9 "기타 및 주의점" 신설(Groovy-Spock 버전 불일치, IntelliJ Specification 심볼 인식 실패, Maven gmavenplus-plugin 미인식, final 클래스 모킹 제약). §1에 1.1 "핵심 용어"(SUS/feature/fixture) 추가. §4 "블록"에 4.1 블록 순서 규칙, 4.3 조건과 Power Assert(실패 출력 예시), 4.4 old() 값 비교 신설. Sources에 Spock Primer(2.4), Solid Soft 블로그, GMavenPlus Wiki, JetBrains 문서, Spock Extensions 문서 4건 추가
+
+## 2026-09-14 13:05:02
+
+- **수정**: `wiki/security/web/jwt.md` — 신규 §7 "클라이언트 저장 위치" 삽입(이후 §7~9 → §8~10으로 번호 밀림). 7.1 localStorage/sessionStorage 금지(OWASP), 7.2 HttpOnly+Secure+SameSite 쿠키(CORS `Access-Control-Allow-Credentials`·`Access-Control-Allow-Origin` 와일드카드 제약 포함, BFF 패턴 각주 추가), 7.3 메모리/Web Worker로 구성. §10(구 §9) 요약에 저장 위치 bullet 추가. Sources에 OWASP Session Management Cheat Sheet, MDN CORS 헤더 2건 추가
+
 ## 2026-09-13 00:33:04
 
 - **수정**: `wiki/security/web/jwt.md` — §3 클레임 종류 표(Registered/Public/Private) 제거 후 3.1/3.2/3.3 하위 항목으로 분리(RFC 7519 §4 기준 상세 서술). §4 "JWS vs JWE" 비교 표를 "JWE" 서술형 항목으로 교체(JWS와의 차이·5-segment 구조 설명, RFC 7516 §3.1 근거 추가). §5 서명 알고리즘 표에 EdDSA 행 추가(RFC 8037). §7 제목에서 괄호 제거("보안 고려사항 (RFC 8725 JWT BCP)" → "보안 고려사항"), RFC 8725 언급을 본문으로 이동. §2 구조 설명에 JWS(3-segment)·JWE(5-segment) 구분 명확화 문장 추가, 대시(—) 연결 문장 제거. Sources에 RFC 7516/8037 추가

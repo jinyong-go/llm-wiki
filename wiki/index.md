@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-06 00:00:38
+updated: 2026-09-14 17:56:30
 tags:
   - meta
 ---
@@ -125,6 +125,7 @@ tags:
 - [[java-testing-libraries]] — Java 테스트 라이브러리 목적별 개요
 - [[jmh]] — JMH 마이크로벤치마크: 설정, 어노테이션, 결과 해석
 - [[mockito-doreturn-vs-when]] — Mockito 스터빙 구문 비교: when().thenXxx() vs doXxx().when()
+- [[mockito-void-methods]] — Mockito void 메서드 모킹: doNothing/doThrow/doAnswer, verify·ArgumentCaptor, checked exception 제약
 - [[inverse-operation-testing]] — 역연산 함수 테스트 전략 (KAT, 라운드트립, 프로퍼티)
 - [[good-test-practices]] — 좋은 테스트 코드 작성법
 - [[test-double]] — 테스트 더블: Mock/Stub/Spy 차이와 선택 기준
