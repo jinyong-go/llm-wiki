@@ -132,6 +132,7 @@ tags:
 - [[spock]] — Spock: Groovy 기반 BDD 테스트 프레임워크
 - [[junit-test-suite]] — JUnit 테스트 스위트와 태그 필터링
 - [[junit-parameterized-test]] — JUnit 5 ParameterizedTest: 인자 소스, 변환, 집계
+- [[junit-test-execution-order]] — JUnit 테스트 실행 순서 제어와 순서 의존 통합 테스트
 - [[jacoco]] — JaCoCo 테스트 커버리지: 원리, 설정, 기준
 
 ## Security

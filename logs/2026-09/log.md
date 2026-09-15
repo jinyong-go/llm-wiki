@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-09-15 23:23:14
+
+- **생성**: `wiki/java/test/junit-test-execution-order.md` — JUnit 테스트 실행 순서 신규 문서. 기본 정렬이 결정적이지만 비자명하다는 전제, `@TestMethodOrder`와 내장 MethodOrderer 4종(@Nested 재귀 상속 포함), `@TestClassOrder`·ClassOrderer와 최상위 클래스는 전역 설정으로만 지정된다는 제약, `@TestInstance(PER_CLASS)` 상태 공유, Spring `@Transactional` 자동 롤백 충돌과 태그 분리, junit-pioneer `@DisableIfTestFails` 실패 전파 차단, MethodOrderer·PER_CLASS 클래스의 기본 병렬 제외, `@TestFactory` 대안, JUnit 4 `@FixMethodOrder`, 주의점으로 구성. 동적 테스트 실패 후 후속 실행 여부는 각주로 추론 표시. `wiki/index.md` 테스트 섹션에 링크 추가
+
 ## 2026-09-14 17:56:30
 
 - **생성**: `wiki/java/test/mockito-void-methods.md` — Mockito void 메서드 모킹 신규 문서. void는 상태 검증 불가·상호작용 검증만 가능하다는 배경, doNothing(기본 동작·명시적 사용 시점), doThrow(예외·연속 예외·checked exception 제약), doAnswer(커스텀 동작·콜백 패턴 예시), verify+ArgumentCaptor로 인자 캡처, BDDMockito 대응, spy void 메서드 실제 실행 주의점으로 구성. `wiki/index.md` 테스트 섹션에 링크 추가
