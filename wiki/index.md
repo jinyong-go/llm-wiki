@@ -218,6 +218,7 @@ tags:
 - [[design-patterns-behavioral]] — GoF 행동 패턴 11종
 - [[cqrs]] — CQRS: Command/Query 모델 분리 패턴
 - [[first-class-citizen]] — 일급 객체: 정의, 일급 함수, 언어별 지원
+- [[tps-improvement]] — 애플리케이션 서버 TPS 향상: 병목 진단(USE Method, DB vs 서버), Little's Law, 스레드 풀 사이징, CPU bound(스케일링) vs IO bound(비동기·가상 스레드) 대응
 
 ## AI
 

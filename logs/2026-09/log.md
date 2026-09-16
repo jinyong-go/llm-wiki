@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-09-16 09:58:29
+
+- **생성**: `wiki/programming/tps-improvement.md` — 애플리케이션 서버 TPS 향상 신규 문서. 병목 진단(USE Method, DB vs 서버 구분·APM), Little's Law(동시성-처리량-지연 관계), 스레드 풀 사이징(Goetz 공식, blocking coefficient, 하위 자원 한계), CPU bound 대응(수직/수평 스케일링, Amdahl's Law, 시간복잡도 개선), IO bound 대응(비동기 논블로킹 스타일, Java 가상 스레드/JEP 444)으로 구성. Amdahl's Law의 분산 수평 확장 적용은 유추적 확장임을 각주로 표시. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가
+
 ## 2026-09-15 23:23:14
 
 - **생성**: `wiki/java/test/junit-test-execution-order.md` — JUnit 테스트 실행 순서 신규 문서. 기본 정렬이 결정적이지만 비자명하다는 전제, `@TestMethodOrder`와 내장 MethodOrderer 4종(@Nested 재귀 상속 포함), `@TestClassOrder`·ClassOrderer와 최상위 클래스는 전역 설정으로만 지정된다는 제약, `@TestInstance(PER_CLASS)` 상태 공유, Spring `@Transactional` 자동 롤백 충돌과 태그 분리, junit-pioneer `@DisableIfTestFails` 실패 전파 차단, MethodOrderer·PER_CLASS 클래스의 기본 병렬 제외, `@TestFactory` 대안, JUnit 4 `@FixMethodOrder`, 주의점으로 구성. 동적 테스트 실패 후 후속 실행 여부는 각주로 추론 표시. `wiki/index.md` 테스트 섹션에 링크 추가
