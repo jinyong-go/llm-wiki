@@ -2,6 +2,26 @@
 
 ---
 
+## 2026-09-17 10:33:57
+
+- **수정**: `wiki/programming/load-testing.md` — RPS/TPS 최초 언급 시 영문 전체 표기 병기(Requests Per Second, Transactions Per Second). §6 주요 도구의 Apache JMeter 항목을 "도구명 — 설명 (링크)" 순서로 재배열. §8을 "관련 문서"에서 "기타"로 변경하고 지속적 성능 테스트(CI/CD·cron 자동화)와 synthetic monitoring 구분 항목 추가(k6 Automated performance testing/Synthetic monitoring 가이드 근거). happy path 용어에 k6 용어집 정의 각주 추가. Sources에 관련 k6 문서 3건 추가
+
+## 2026-09-17 10:27:19
+
+- **이동**: `wiki/spring/` 하위 39개 파일 전체를 `wiki/java/spring/`으로 이동 (Java 하위 common/crypto/test와 동일한 패턴으로 통합). 파일명·내용은 변경 없음, 위키링크는 파일명 기반이라 영향 없음. `wiki/index.md`의 `## Spring` 섹션을 `## Java` 하위 `### Spring`으로 이동
+
+## 2026-09-17 10:20:20
+
+- **생성**: `wiki/programming/load-testing.md` — 부하 테스트 신규 문서. 정의·목적, 테스트 유형 비교표(Smoke/Average-load/Stress/Soak/Spike/Breakpoint, 명칭·경계는 상대적임을 각주로 표시), 주요 지표(Throughput/Error rate/Duration 백분위수/Concurrent users/자원 사용률, RED 방법론과의 대응은 k6 문서의 인용임을 각주로 표시), 동시 사용자 수 산정 공식과 피크 트래픽 기준 설계, 실행 과정(SLA 정의→시나리오→환경→ramp-up/유지/ramp-down→모니터링→분석→튜닝 반복), 주요 도구(JMeter/k6/Gatling 등), 주의사항(부하 발생기 자체 병목, 분산 실행 필요성, happy path 가정 위험, ramp-up 필요성, 평균 트래픽 기준의 위험)으로 구성. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가
+
+## 2026-09-17 09:52:22
+
+- **생성**: `wiki/programming/jmeter-components.md` — JMeter 구성 요소 신규 문서. Thread Group(스레드 수·ramp-up·Thread lifetime), Controller(Sampler/Logic Controller/Test Fragment), Listener, Timer, Assertion, Configuration Element(scope별 접근·우선순위, User Defined Variables 예외), Pre/Post-Processor, 실행 순서(Config→Pre-Processor→Timer→Sampler→Post-Processor→Assertion→Listener), Scoping Rules(Manager 계열 비병합 vs Default 계열 병합), Properties/Variables 구분, 변수 파라미터화(`__P` 함수)로 구성. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가
+
+## 2026-09-17 09:30:05
+
+- **생성**: `wiki/programming/jmeter-introduction.md` — Apache JMeter 소개 신규 문서. 정의·목적·지원 프로토콜, "브라우저가 아니다" 한계, 설치 요구사항·절차, GUI 모드(테스트 계획 작성·레코딩·디버깅)와 CLI 모드(부하 테스트, 주요 옵션 표) 및 서버 모드로 구성. 장단점 절은 공식 문서에 직접적 목록이 없어 기능 소개·GUI/CLI 안내를 근거로 정리했음을 각주로 표시. 구성 요소(Thread Group, Sampler 등)는 `jmeter-components` 문서로 분리 예정. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가
+
 ## 2026-09-16 09:58:29
 
 - **생성**: `wiki/programming/tps-improvement.md` — 애플리케이션 서버 TPS 향상 신규 문서. 병목 진단(USE Method, DB vs 서버 구분·APM), Little's Law(동시성-처리량-지연 관계), 스레드 풀 사이징(Goetz 공식, blocking coefficient, 하위 자원 한계), CPU bound 대응(수직/수평 스케일링, Amdahl's Law, 시간복잡도 개선), IO bound 대응(비동기 논블로킹 스타일, Java 가상 스레드/JEP 444)으로 구성. Amdahl's Law의 분산 수평 확장 적용은 유추적 확장임을 각주로 표시. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가

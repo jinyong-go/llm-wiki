@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-14 17:56:30
+updated: 2026-09-17 10:27:19
 tags:
   - meta
 ---
@@ -135,39 +135,7 @@ tags:
 - [[junit-test-execution-order]] — JUnit 테스트 실행 순서 제어와 순서 의존 통합 테스트
 - [[jacoco]] — JaCoCo 테스트 커버리지: 원리, 설정, 기준
 
-## Security
-
-### Crypto
-
-- [[hash-function]] — 해시 함수: 요구 성질, 내부 구조(Merkle–Damgård/스펀지/HAIFA), 알고리즘, 주요 활용 사례
-- [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
-- [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
-- [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM: 대수 구조(R_q·NTT), MLWE, K-PKE, FO 변환, 파라미터
-- [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명: 대수 구조, MLWE+MSIS, FS-with-Aborts, 힌트 메커니즘, 파라미터
-- [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
-- [[padding-oracle-attack]] — Padding Oracle Attack: CBC 패딩 검증 악용 복호화·위조, 원리, 방어(AEAD/Encrypt-then-MAC), ASP.NET/POODLE/Lucky13 사례
-
-### PKI
-
-- [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
-- [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
-- [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
-- [[certificate-purpose]] — 인증서 용도: Key Usage×EKU 조합별 프로파일(TLS 서버/클라이언트, 전자서명, 코드서명, S/MIME 등)과 실사용 사례
-- [[timestamp-token]] — RFC 3161 타임스탬프 토큰: TSP 프로토콜, TST 구조, 검증
-
-### Web
-
-- [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
-- [[csrf]] — CSRF: 성립 조건, GET/POST 취약성, 방어(토큰·SameSite·Origin 검증·Custom Header), 실제 사고 사례(Netflix/YouTube/uTorrent 등)
-- [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
-- [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
-- [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
-- [[webauthn]] — WebAuthn: 공개키 기반 등록·인증 Ceremony, Attestation, Authenticator 분류, FIDO2/Passkey
-- [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
-- [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
-- [[session-hijacking]] — 세션 하이재킹: 공격 기법(스니핑/예측/무차별 대입/고정/클라이언트 탈취/노출), 방어(엔트로피·TLS·재발급·타임아웃), Firesheep 사례
-
-## Spring
+### Spring
 
 - [[hikari-datasource]] — HikariCP DataSource: 내부 구조, 설정, 풀 사이즈
 - [[hikari-deadlock]] — HikariCP 데드락: 메커니즘, 진단, 해결
@@ -209,6 +177,38 @@ tags:
 - [[batch-flow]] — Spring Batch 조건별 플로우 제어
 - [[batch-testing]] — Spring Batch 테스트 방법과 유틸리티
 
+## Security
+
+### Crypto
+
+- [[hash-function]] — 해시 함수: 요구 성질, 내부 구조(Merkle–Damgård/스펀지/HAIFA), 알고리즘, 주요 활용 사례
+- [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
+- [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
+- [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM: 대수 구조(R_q·NTT), MLWE, K-PKE, FO 변환, 파라미터
+- [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명: 대수 구조, MLWE+MSIS, FS-with-Aborts, 힌트 메커니즘, 파라미터
+- [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
+- [[padding-oracle-attack]] — Padding Oracle Attack: CBC 패딩 검증 악용 복호화·위조, 원리, 방어(AEAD/Encrypt-then-MAC), ASP.NET/POODLE/Lucky13 사례
+
+### PKI
+
+- [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
+- [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
+- [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
+- [[certificate-purpose]] — 인증서 용도: Key Usage×EKU 조합별 프로파일(TLS 서버/클라이언트, 전자서명, 코드서명, S/MIME 등)과 실사용 사례
+- [[timestamp-token]] — RFC 3161 타임스탬프 토큰: TSP 프로토콜, TST 구조, 검증
+
+### Web
+
+- [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
+- [[csrf]] — CSRF: 성립 조건, GET/POST 취약성, 방어(토큰·SameSite·Origin 검증·Custom Header), 실제 사고 사례(Netflix/YouTube/uTorrent 등)
+- [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
+- [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
+- [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
+- [[webauthn]] — WebAuthn: 공개키 기반 등록·인증 Ceremony, Attestation, Authenticator 분류, FIDO2/Passkey
+- [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
+- [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
+- [[session-hijacking]] — 세션 하이재킹: 공격 기법(스니핑/예측/무차별 대입/고정/클라이언트 탈취/노출), 방어(엔트로피·TLS·재발급·타임아웃), Firesheep 사례
+
 ## 프로그래밍 일반
 
 - [[solid]] — SOLID 원칙: 정의, 위반 징후, 적용 기준
@@ -219,6 +219,9 @@ tags:
 - [[cqrs]] — CQRS: Command/Query 모델 분리 패턴
 - [[first-class-citizen]] — 일급 객체: 정의, 일급 함수, 언어별 지원
 - [[tps-improvement]] — 애플리케이션 서버 TPS 향상: 병목 진단(USE Method, DB vs 서버), Little's Law, 스레드 풀 사이징, CPU bound(스케일링) vs IO bound(비동기·가상 스레드) 대응
+- [[jmeter-introduction]] — Apache JMeter 소개: 목적·지원 프로토콜, 설치, GUI/CLI 실행 방법, 장단점
+- [[jmeter-components]] — JMeter 구성 요소: Thread Group, Controller(Sampler/Logic Controller), Listener, Timer, Assertion, Configuration Element, 실행 순서, Scoping Rules
+- [[load-testing]] — 부하 테스트: 개념·목적, 테스트 유형(Smoke/Average-load/Stress/Soak/Spike/Breakpoint), 주요 지표, 동시 사용자 수 산정, 실행 과정, 주요 도구, 주의사항
 
 ## AI
 
