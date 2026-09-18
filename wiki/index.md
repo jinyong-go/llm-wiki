@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-17 10:27:19
+updated: 2026-09-18 13:25:21
 tags:
   - meta
 ---
@@ -84,6 +84,8 @@ tags:
 - [[jni]] — Java JNI: native 메서드 선언, C 구현, 라이브러리 빌드/로드(java.library.path vs LD_LIBRARY_PATH), macOS quarantine 주의사항
 - [[bitwise-operators]] — Java 비트 연산자: &/|/^/~, 시프트(<<,>>,>>>)와 마스킹 규칙, 타입 승격, Integer/Long 비트 유틸리티
 - [[jdbc-connection-pool]] — JDBC 커넥션 풀: javax.sql SPI(DataSource/ConnectionPoolDataSource/PooledConnection), 커넥션 상태 모델(idle/allocated/eviction), 풀 관리(borrow/eviction/abandoned 회수), 구현체
+- [[project-reactor]] — Project Reactor: 의존성 설정(BOM), 주요 구성 요소(Flux/Mono/생성 방법/Schedulers/Sinks/Context), Publisher 구분(Cold/Hot, just·defer·share·replay)
+- [[reactor-operators]] — Reactor 연산자: 마블 다이어그램 읽는 법, 카테고리별 연산자(변환/필터링/결합/시간/버퍼링/부수효과/멀티캐스팅), 성능 이슈 유발 연산자(flatMap 동시성/concatMap/block()/무제한 버퍼링/디버깅 오버헤드/중첩 구독)
 
 - [[jvm-options]] — JVM 옵션 가이드 (메모리, GC, 로깅, 진단)
 - [[gc]] — 가비지 컬렉터 종류별 동작·장단점·선택 가이드
@@ -222,6 +224,7 @@ tags:
 - [[jmeter-introduction]] — Apache JMeter 소개: 목적·지원 프로토콜, 설치, GUI/CLI 실행 방법, 장단점
 - [[jmeter-components]] — JMeter 구성 요소: Thread Group, Controller(Sampler/Logic Controller), Listener, Timer, Assertion, Configuration Element, 실행 순서, Scoping Rules
 - [[load-testing]] — 부하 테스트: 개념·목적, 테스트 유형(Smoke/Average-load/Stress/Soak/Spike/Breakpoint), 주요 지표, 동시 사용자 수 산정, 실행 과정, 주요 도구, 주의사항
+- [[reactive-programming]] — 리액티브 프로그래밍: 개념, 배경, Reactive Streams·Reactive Manifesto, 동작 흐름, 리액티브 vs 논블로킹, 장단점, 대표 구현체(Reactor/RxJava/Akka/Vert.x), Virtual Threads 대안
 
 ## AI
 

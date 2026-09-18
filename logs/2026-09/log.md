@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-09-18 13:25:21
+
+- **생성**: `wiki/java/common/reactor-operators.md` — Reactor 연산자 신규 문서. 마블 다이어그램 읽는 법(ASCII 타임라인 표기), 카테고리별 연산자(변환: map/flatMap/concatMap/flatMapSequential, 필터링, 결합: concat/merge/zip/combineLatest, 시간 기반, 배치/윈도우, 부수효과, 멀티캐스팅), 성능 이슈 유발 연산자(flatMap 기본 동시성 256, concatMap 순차 처리 비용, block()류의 이벤트 루프 블로킹과 IllegalStateException, 무제한 버퍼링 연산자의 메모리 이슈, Hooks.onOperatorDebug()/checkpoint()/log()의 프로덕션 오버헤드, 중첩 구독 안티패턴)로 구성. `wiki/index.md` Java 섹션에 링크 추가
+
+## 2026-09-18 11:39:33
+
+- **생성**: `wiki/java/common/project-reactor.md` — Project Reactor 신규 문서(개요 성격, 에러 처리 연산자·테스트는 별도 문서로 추후 작성 예정). 의존성 추가(BOM 기반 Gradle/Maven), 주요 구성 요소(Flux/Mono와 생성 방법 표를 한 항목으로 통합, Schedulers 종류·publishOn/subscribeOn, Sinks 종류, Context), Publisher 구분(Cold/Hot 하위 항목으로 분리, just가 예외적으로 hot이라는 점과 defer/share/replay 전환 방법 상세 기술)으로 구성. `wiki/index.md` Java 섹션에 링크 추가
+
+## 2026-09-18 11:09:57
+
+- **생성**: `wiki/programming/reactive-programming.md` — 리액티브 프로그래밍 신규 문서. 개념(비동기의 하위 개념, CompletableFuture와의 구분), 배경(thread-per-request 한계, 콜백 조합·라이브러리 상호운용 문제), 원리(Observer 패턴 확장, Reactive Streams 3요소와 Mermaid 시퀀스 다이어그램·`java.util.concurrent.Flow` 최소 코드 예시, Reactive Manifesto 4원칙), 장단점(4.1/4.2 분리), 대표 구현체 비교표(Reactor/RxJava Observable-Flowable 구분/Flow/Akka Streams/Vert.x)와 Virtual Threads 대안, 기타(리액티브 vs 논블로킹 구분, 출처 간 강조점 차이 각주 표시)로 구성. `wiki/index.md` 프로그래밍 일반 섹션에 링크 추가
+
 ## 2026-09-17 10:33:57
 
 - **수정**: `wiki/programming/load-testing.md` — RPS/TPS 최초 언급 시 영문 전체 표기 병기(Requests Per Second, Transactions Per Second). §6 주요 도구의 Apache JMeter 항목을 "도구명 — 설명 (링크)" 순서로 재배열. §8을 "관련 문서"에서 "기타"로 변경하고 지속적 성능 테스트(CI/CD·cron 자동화)와 synthetic monitoring 구분 항목 추가(k6 Automated performance testing/Synthetic monitoring 가이드 근거). happy path 용어에 k6 용어집 정의 각주 추가. Sources에 관련 k6 문서 3건 추가
