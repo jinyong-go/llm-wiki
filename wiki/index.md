@@ -160,6 +160,7 @@ tags:
 - [[jpa-n-plus-one]] — JPA N+1 문제: 원인과 해결책
 - [[jpa-delete]] — JPA 삭제: 방식 비교, 벌크 DML, Soft Delete
 - [[jpa-transaction]] — @Transactional: 프록시 원리, 전파, 롤백 규칙
+- [[jpa-exceptions]] — JPA 리포지터리 예외: 변환 흐름, 발생 시점, 유형별 매핑
 - [[querydsl]] — QueryDSL 통합: 설정, 쿼리 API, Projection
 - [[mybatis]] — MyBatis 통합: 설정, 매핑, Dynamic SQL, 트랜잭션
 - [[ldap-java]] — Java LDAP 연동: JNDI 연결·검색·생성·변경, Spring LDAP(LdapTemplate/ODM) 비교와 예시 (개념은 [[ldap]])
