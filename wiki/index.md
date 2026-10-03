@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-09-18 13:25:21
+updated: 2026-10-03 23:18:30
 tags:
   - meta
 ---
@@ -226,6 +226,8 @@ tags:
 - [[jmeter-components]] — JMeter 구성 요소: Thread Group, Controller(Sampler/Logic Controller), Listener, Timer, Assertion, Configuration Element, 실행 순서, Scoping Rules
 - [[load-testing]] — 부하 테스트: 개념·목적, 테스트 유형(Smoke/Average-load/Stress/Soak/Spike/Breakpoint), 주요 지표, 동시 사용자 수 산정, 실행 과정, 주요 도구, 주의사항
 - [[reactive-programming]] — 리액티브 프로그래밍: 개념, 배경, Reactive Streams·Reactive Manifesto, 동작 흐름, 리액티브 vs 논블로킹, 장단점, 대표 구현체(Reactor/RxJava/Akka/Vert.x), Virtual Threads 대안
+- [[bfs]] — BFS (너비 우선 탐색): 큐 기반 동작, 거리·경로 복원, 0-1 BFS 등 변형, 장단점, 문제 예시
+- [[dfs]] — DFS (깊이 우선 탐색): 재귀·반복 구현, 시간 기록, 간선 분류, 사이클·위상 정렬·SCC·브리지, 문제 예시
 
 ## AI
 
