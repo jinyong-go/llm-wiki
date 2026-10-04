@@ -1,6 +1,6 @@
 ---
 title: DFS (깊이 우선 탐색)
-updated: 2026-10-03 23:33:29
+updated: 2026-10-04 23:07:21
 tags:
   - programming
   - algorithm
@@ -132,7 +132,7 @@ static boolean visit(List<List<Integer>> adj, int v, int[] color, List<Integer> 
 **브리지(bridge)** 는 제거하면 그래프가 분리되는 간선이다. `low[v]`를 $v$ 또는 그 자손에서 역방향 간선을 최대 한 번 써서 도달 가능한 최소 `tin`으로 정의하면, 트리 간선 $(v, to)$는 $low[to] > tin[v]$일 때 브리지이다. $to$의 서브트리가 $v$의 조상으로 우회할 수 없다는 뜻이다. 시간 복잡도는 $O(V+E)$이며 다중 간선이 있으면 부모로 가는 간선을 하나만 건너뛰도록 처리한다.
 
 ### 7.5 기타
-단절점(articulation point), 최소 공통 조상(LCA), 미로 탐색·생성, 백트래킹(순열·조합·N-Queens)에도 쓰인다. 단절점과 Tarjan SCC는 이 문서에서 다루지 않는다.
+단절점(articulation point), 최소 공통 조상(LCA), 미로 탐색·생성, [[backtracking]](순열·조합·N-Queens)에도 쓰인다. 단절점과 Tarjan SCC는 이 문서에서 다루지 않는다.
 
 ## 8. 장단점
 
@@ -261,6 +261,7 @@ void backtrack(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>
 ---
 ## Related pages
 - [[bfs]]
+- [[backtracking]]
 
 [^1]: 스택에 넣는 순서와 방문 처리 시점 때문에 반복형과 재귀형의 방문 순서가 다를 수 있다는 점은 구현 특성에서의 추론이다.
 [^2]: 인접 리스트 길이 합이 방향 그래프에서 $E$, 무방향 그래프에서 $2E$라는 점과 인접 행렬 표현의 $O(V^2)$는 출처에 직접 서술되어 있지 않으며 그래프 표현 방식에서 도출한 내용이다. CP-Algorithms는 $n$(정점 수), $m$(간선 수)으로 $O(n+m)$, Wikipedia는 $O(|V|+|E|)$로 표기한다.

@@ -228,6 +228,8 @@ tags:
 - [[reactive-programming]] — 리액티브 프로그래밍: 개념, 배경, Reactive Streams·Reactive Manifesto, 동작 흐름, 리액티브 vs 논블로킹, 장단점, 대표 구현체(Reactor/RxJava/Akka/Vert.x), Virtual Threads 대안
 - [[bfs]] — BFS (너비 우선 탐색): 큐 기반 동작, 거리·경로 복원, 0-1 BFS 등 변형, 장단점, 문제 예시
 - [[dfs]] — DFS (깊이 우선 탐색): 재귀·반복 구현, 시간 기록, 간선 분류, 사이클·위상 정렬·SCC·브리지, 문제 예시
+- [[backtracking]] — 백트래킹: 상태 공간 트리, 가지치기, 복잡도, 분기 한정 비교, 문제 예시
+- [[dynamic-programming]] — 동적 계획법: 적용 조건, 탑다운·바텀업, 설계 절차, 공간 최적화, 대표 유형, 문제 예시
 
 ## AI
 
