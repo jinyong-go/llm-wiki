@@ -1,6 +1,6 @@
 ---
 title: Garbage Collector (GC)
-updated: 2026-07-08 10:32:15
+updated: 2026-10-15 22:34:58
 tags:
   - java
   - jvm
@@ -140,5 +140,6 @@ ZGC의 핵심 기법. 64비트 **포인터의 여분 비트에 객체 상태 메
 ## Related pages
 - [[jvm-options]]
 - [[java-process-analysis-tools]]
+- [[gc-monitoring]]
 - [[java17-features]]
 - [[java21-features]]

@@ -1,6 +1,6 @@
 ---
 title: JVM 실행 옵션 — java 명령어
-updated: 2026-08-31 14:25:48
+updated: 2026-10-15 22:34:58
 tags:
   - java
   - jvm
@@ -106,6 +106,8 @@ java -Xlog:os+container=trace -jar app.jar
 
 > `-XX:+PrintGC`와 `-XX:+PrintGCDetails`는 Java 9에서 deprecated. `-Xlog`로 대체.  
 > `-verbose:gc`는 `-Xlog:gc`와 동일하며 여전히 사용 가능.
+
+GC 로그 해석과 모니터링 도구는 [[gc-monitoring]] 참고.
 
 ---
 

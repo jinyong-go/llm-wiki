@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-03 23:18:30
+updated: 2026-10-15 22:47:28
 tags:
   - meta
 ---
@@ -89,6 +89,7 @@ tags:
 
 - [[jvm-options]] — JVM 옵션 가이드 (메모리, GC, 로깅, 진단)
 - [[gc]] — 가비지 컬렉터 종류별 동작·장단점·선택 가이드
+- [[gc-monitoring]] — GC 지표와 로그 분석, JDK 진단 명령어, JFR, JMX·Micrometer
 - [[logging-frameworks]] — Java 로깅 프레임워크 비교 (Logback vs Log4j2)
 - [[java-version]] — Java 버전 확인·관리
 - [[java17-features]] — Java 17 LTS 주요 기능
@@ -136,6 +137,7 @@ tags:
 - [[junit-parameterized-test]] — JUnit 5 ParameterizedTest: 인자 소스, 변환, 집계
 - [[junit-test-execution-order]] — JUnit 테스트 실행 순서 제어와 순서 의존 통합 테스트
 - [[jacoco]] — JaCoCo 테스트 커버리지: 원리, 설정, 기준
+- [[mockserver]] — MockServer: HTTP 목 서버, JUnit 5·Spring 통합, Expectation, 검증, 병렬 테스트 격리
 
 ### Spring
 

@@ -1,6 +1,6 @@
 ---
 title: Java 테스트 라이브러리 개요 — 목적별 분류
-updated: 2026-07-14 11:26:44
+updated: 2026-10-15 22:22:49
 tags:
   - java
   - testing
@@ -18,7 +18,7 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 | 테스트 프레임워크 | **JUnit 5**, TestNG, Spock |
 | 단언(Assertion) | **AssertJ**, Hamcrest, JUnit 내장 |
 | 모킹(Mocking) | **Mockito**, EasyMock, JMockit |
-| 통합/외부 의존성 | **Testcontainers**, WireMock, 임베디드 DB |
+| 통합/외부 의존성 | **Testcontainers**, WireMock, MockServer, 임베디드 DB |
 | API/REST | REST Assured, Spring MockMvc |
 | 특수 목적 | jqwik, Cucumber, ArchUnit, PIT, JMH, Datafaker |
 | 커버리지 | [[jacoco]] |
@@ -66,6 +66,7 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 
 - **Testcontainers** — Docker 컨테이너로 **실제 DB·메시지 큐·브라우저** 등의 일회성(throwaway) 인스턴스를 코드로 띄운다. mock/인메모리가 아닌 **운영과 동일한 서비스**로 테스트하고, 매 실행이 알려진 상태에서 시작한다. DAO 통합 테스트·애플리케이션 통합 테스트에 사용. PostgreSQL/MySQL/Kafka 등 전용 모듈 제공.
 - **WireMock** — 외부 **HTTP API를 스텁/모킹**. 응답·지연·실패 시나리오를 정의해 클라이언트 코드를 격리 테스트. 독립 프로세스/JUnit 확장/컨테이너로 실행.
+- **MockServer**: 외부 HTTP API를 Expectation으로 모킹하고 수신 요청을 검증한다. JUnit 5 Extension과 Spring Test Listener를 제공하며 프록시로 실제 요청을 기록할 수 있다. 상세는 [[mockserver]].
 - **MockWebServer** (OkHttp) — 경량 HTTP 모킹 서버. 단순 요청/응답 검증에 적합.
 - **임베디드 DB** — **H2**(인메모리 RDB), Embedded PostgreSQL 등. 빠르지만 운영 DB와 방언 차이가 있어 정합성은 Testcontainers가 우위.[^2]
 - **Embedded Kafka / GreenMail** — 메시징·메일 등 특정 미들웨어의 임베디드 대체.
@@ -123,6 +124,7 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 - AssertJ — Fluent assertions: https://assertj.github.io/doc/
 - Baeldung — Mockito vs EasyMock vs JMockit: https://www.baeldung.com/mockito-vs-easymock-vs-jmockit
 - Baeldung — Introduction to WireMock: https://www.baeldung.com/introduction-to-wiremock
+- MockServer — Running MockServer: https://www.mock-server.com/mock_server/running_mock_server.html
 
 ---
 
@@ -135,3 +137,4 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 - [[good-test-practices]] — 좋은 테스트 코드 작성법(결과 검증·GWT·FIRST/Test Desiderata)
 - [[mockito-doreturn-vs-when]] — Mockito when().thenXxx() vs doXxx().when() 스터빙 구문
 - [[jmh]] — JMH 마이크로벤치마크(설정·어노테이션·결과 해석)
+- [[mockserver]]

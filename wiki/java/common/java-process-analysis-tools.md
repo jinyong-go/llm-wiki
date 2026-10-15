@@ -1,6 +1,6 @@
 ---
 title: 자바 프로세스 분석·진단 도구
-updated: 2026-08-31 14:25:48
+updated: 2026-10-15 22:34:58
 tags:
   - java
   - jvm
@@ -205,3 +205,4 @@ tags:
 - [[cpu-usage-troubleshooting]]
 - [[jvm-options]]
 - [[system-monitoring]]
+- [[gc-monitoring]]
