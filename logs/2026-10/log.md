@@ -2,6 +2,19 @@
 
 ---
 
+## 2026-10-19 22:50:33
+
+- **수정**: `wiki/programming/` 14개 문서의 구성·양식 정리. 7월 작성 문서(SOLID·GoF 패턴·CQRS)의 번호·구분선·표 형식을 통일하고 제목·목록의 대시 연결을 제거. 각주를 문서 최하단으로 옮기고 Related pages 보강. Adapter 예제 교체, Goetz 공식 LaTeX 전환, 리액티브 문서의 Virtual Threads 장 분리, JMeter 중복 서술·관련 문서 절 삭제, DFS 비교 절 삭제, 백트래킹 복잡도 각주 추가
+- **수정**: `wiki/index.md`의 프로그래밍 항목을 주제 수준으로 축약
+
+## 2026-10-19 22:48:02
+
+- **수정**: `wiki/programming/` 4개 문서의 문서 간 충돌을 정리. Spring Security 필터 체인을 Chain of Responsibility, SLF4J를 Facade로 통일하고 Command 사용처를 `javax.swing.Action`으로 교체. `ApplicationEventPublisher`의 Observer·Mediator 분류와 `JdbcTemplate`의 template-callback 방식을 각주로 설명. DFS 공간 복잡도의 재귀형·반복형 기준을 명시
+
+## 2026-10-19 22:47:14
+
+- **수정**: `wiki/programming/` 8개 문서에 lint 결과(`logs/lint/report-20261019-programming.md`)의 사실 오류·근거 부족 항목을 반영. Decorator 실행 순서 주석, Servlet API·Hibernate·Spring Security 타입명, JDBC 추상 팩토리 설명, Prototype 깊은 복사 예제 컴파일 오류를 정정. CQRS의 트랜잭션 이벤트 리스너·Outbox, Axon 예제, 서버 측 검증 서술을 수정. SOLID 약어 유래·SRP 재정의·ISP 예시·DIP 서술, Vert.x·Flow 표, 가상 스레드 pinning 조건을 보완
+
 ## 2026-10-19 18:01:14
 
 - **수정**: `wiki/security/web/` 10개 문서의 구성·문장 개선. CORS 설정 오류, CSRF Fetch Metadata·Spring Security 설정, XSS Trusted Types·CSP 설정, JWT 헤더 파라미터·명시적 타입, OAuth 확장 규격·리소스 서버 구현, OIDC 로그아웃·SAML 서명 래핑, WebAuthn Passkey, 재전송 방지 Redis 구현, 세션 Spring 설정 항목 추가

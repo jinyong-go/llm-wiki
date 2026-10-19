@@ -1,6 +1,6 @@
 ---
 title: 리액티브 프로그래밍
-updated: 2026-09-18 11:09:57
+updated: 2026-10-19 22:50:33
 tags:
   - reactive
   - reactive-streams
@@ -94,7 +94,7 @@ publisher.subscribe(new Flow.Subscriber<>() {
 
 Subscriber가 처리 속도에 맞춰 `request(n)` 호출 시점·개수를 조절하므로, 순수 push 모델이 **push-pull 하이브리드**로 바뀐다.
 
-### 3.3 Reactive Manifesto: 리액티브 "시스템"
+### 3.3 Reactive Manifesto
 
 Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스템 아키텍처 수준의 원칙이다. 네 가지 특성으로 정의된다.
 
@@ -118,7 +118,7 @@ Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스�
 
 - 로직을 콜백·연산자 체인으로 분해해야 해서, 반복문·try/catch 같은 언어의 기본 순차 제어 구조를 그대로 쓰기 어렵다.
 - 디버깅·프로파일링이 어렵다. 스택 트레이스가 실제 호출 경로를 반영하지 못하고, 디버거로 요청 처리 로직을 단계별로 따라가기 힘들다.
-- 체인 안에 blocking 호출이 섞이면(6.1 참고) 이벤트 루프 전체가 지연되는 등, 논블로킹 규율이 깨지면 이점이 사라진다.
+- 체인 안에 blocking 호출이 섞이면(7장 참고) 이벤트 루프 전체가 지연되는 등, 논블로킹 규율이 깨지면 이점이 사라진다.
 - CPU-bound 작업에는 이점이 없고 오히려 컨텍스트 전환·연산자 오버헤드만 늘어난다.
 
 ---
@@ -129,19 +129,19 @@ Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스�
 |---|---|---|---|
 | Project Reactor | 라이브러리 | 준수 | `Flux`/`Mono`가 `Publisher`를 직접 구현. Spring WebFlux 기반 |
 | RxJava | 라이브러리 | 타입에 따라 다름 | `Observable`(backpressure 미지원, 미준수) vs `Flowable`(준수). Android 생태계에서 널리 사용 |
-| `java.util.concurrent.Flow` (JDK 9+) | JDK 내장 표준 | 준수(사양 자체) | Publisher/Subscriber/Subscription/Processor. 구현체가 아닌 SPI |
+| `java.util.concurrent.Flow` (JDK 9+) | JDK 내장 표준 | 준수(사양 자체) | Publisher/Subscriber/Subscription/Processor 인터페이스 정의와 구현체 `SubmissionPublisher` 제공 |
 | Akka Streams | 툴킷 | 준수 | Actor 모델 기반 메시지 구동 애플리케이션 툴킷 |
-| Vert.x | 툴킷 | 준수 | 이벤트 루프 기반 polyglot 툴킷, actor 대신 verticle 단위 |
-
-### 5.1 대안: Virtual Threads (JDK 21, Project Loom)
-
-가상 스레드는 리액티브가 풀던 확장성 문제(스레드 수 제한)를, 다수의 가상 스레드를 소수의 OS 스레드에 매핑하는 방식으로 해결하되 코드는 기존과 같은 동기적(thread-per-request) 스타일을 유지한다. 4.2에서 언급한 리액티브 스타일의 디버깅·가독성 단점 없이 비슷한 확장성을 노릴 수 있어, 신규 서버 애플리케이션에서 리액티브 대신 검토되는 대안으로 언급된다.[^1]
+| Vert.x | 툴킷 | 별도 모듈 | 이벤트 루프 기반 polyglot 툴킷, actor 대신 verticle 단위. Reactive Streams 연동은 `vertx-reactive-streams` 모듈이 제공 |
 
 ---
 
-## 6. 기타
+## 6. Virtual Threads
 
-### 6.1 리액티브 ≠ 논블로킹
+JDK 21에서 정식 도입된 Project Loom의 가상 스레드는 리액티브가 풀던 확장성 문제(스레드 수 제한)를, 다수의 가상 스레드를 소수의 OS 스레드에 매핑하는 방식으로 해결하되 코드는 기존과 같은 동기적(thread-per-request) 스타일을 유지한다. 4.2에서 언급한 리액티브 스타일의 디버깅·가독성 단점 없이 비슷한 확장성을 노릴 수 있어, 신규 서버 애플리케이션에서 리액티브 대신 검토되는 대안으로 언급된다.[^1]
+
+---
+
+## 7. 리액티브와 논블로킹
 
 리액티브(선언적 스트림 조합 + backpressure)와 논블로킹(I/O가 즉시 반환되는 실행 모델)은 서로 다른 층위의 개념이다.[^2] Reactive Streams 스펙이 요구하는 "non-blocking"은 backpressure 신호(`request` 호출) 자체가 블로킹되어서는 안 된다는 뜻이며, 내부 I/O 구현까지 강제하지는 않는다.
 
@@ -158,6 +158,8 @@ Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스�
 - [Reactive Streams JVM specification](https://github.com/reactive-streams/reactive-streams-jvm)
 - [java.util.concurrent.Flow (Java SE 21 API)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Flow.html)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+- [Vert.x Reactive Streams Integration](https://vertx.io/docs/vertx-reactive-streams/java/)
+- [SubmissionPublisher (Java SE 21 API)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html)
 - [Backpressure in ReactiveX/RxJava and difference between Observable and Flowable](https://medium.com/@ajay.dewari/backpressure-in-reactivex-rxjava-and-difference-between-observable-and-flowable-6074c25234ea)
 - [Frameworks and toolkits to make Java reactive: RxJava, Spring Reactor, Akka and Vert.x overview](https://www.javacodegeeks.com/2018/08/frameworks-toolkits-make-java-reactive-rxjava-spring-reactor-akka-vert-x-overview.html)
 
@@ -166,6 +168,8 @@ Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스�
 ## Related pages
 - [[netty]]
 - [[tps-improvement]]
+- [[project-reactor]]
+- [[reactor-operators]]
 
 [^1]: JEP 444 본문의 직접 서술이 아니라, Motivation 절(스레드 수 병목, 리액티브 스타일의 순차 합성 포기·디버깅 도구 한계 서술)과 가상 스레드의 목표(thread-per-request 스타일 유지)로부터 도출한 설명임.
 [^2]: 리액티브 시스템 대부분이 논블로킹 I/O 위에서 구현된다는 서술과, Reactive Streams 스펙이 backpressure 신호의 non-blocking만 요구한다는 서술이 출처마다 강조점이 달라(일부는 둘을 사실상 동일시) 정리한 구분임.

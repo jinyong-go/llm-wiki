@@ -1,6 +1,6 @@
 ---
 title: JMeter 구성 요소
-updated: 2026-09-17 09:32:50
+updated: 2026-10-19 22:50:33
 tags:
   - performance
   - testing
@@ -39,7 +39,7 @@ Thread Group과 같은 레벨의 특수 Controller로, Module Controller나 Incl
 ## 7. Configuration Element
 Sampler와 함께 동작하며 요청 자체를 보내지는 않고(HTTP(S) Test Script Recorder 제외) 요청 내용을 추가·수정한다. 배치된 트리 분기 내에서만 접근 가능하며, 하위 분기의 설정이 상위 분기의 동일 설정보다 우선한다. User Defined Variables는 예외로, 위치와 무관하게 테스트 시작 시 처리된다.
 
-## 8. Pre-Processor / Post-Processor
+## 8. Processor
 - Pre-Processor: Sampler 실행 직전에 동작. 요청 설정 변경, 응답 외 변수 갱신 등에 사용
 - Post-Processor: Sampler 실행 직후에 동작. 주로 응답 데이터에서 값을 추출하는 데 사용(예: Regular Expression Extractor)
 
@@ -53,7 +53,7 @@ Controller·Sampler는 트리 순서대로 처리되며, 하나의 Sampler에 �
 6. Assertions (SampleResult가 null이 아닌 경우)
 7. Listeners (SampleResult가 null이 아닌 경우)
 
-## 10. Scoping Rules
+## 10. 적용 범위
 Listener, Configuration Element, Pre/Post-Processor, Assertion, Timer는 계층적으로 적용된다. 부모가 Sampler면 그 Sampler에만, 부모가 Controller면 그 하위 모든 Sampler에 적용된다. Header Manager, Cookie Manager, Authorization Manager 같은 Manager 계열 Configuration Element는 병합되지 않아 scope 내 여러 개가 있으면 그중 하나만 사용되며 어떤 것이 사용될지는 지정할 수 없다(Default 계열 Configuration Element는 병합됨).
 
 ## 11. Properties와 Variables
@@ -62,7 +62,7 @@ Listener, Configuration Element, Pre/Post-Processor, Assertion, Timer는 계층�
 
 Test Plan과 User Defined Variables에서 정의한 값은 시작 시 전체 스레드에 복사되며, 이후 같은 이름으로 재정의하면 해당 스레드에만 적용된다. `__setProperty` 함수로 Property를 정의하면 스레드 간 정보 전달에 사용할 수 있다. Property/Variable 모두 대소문자를 구분한다.
 
-## 12. 변수를 이용한 테스트 파라미터화
+## 12. 파라미터화
 반복 실행 사이에 값이 바뀔 수 있는 항목(호스트명, 스레드 수 등)은 변수로 정의해 `${VAR}` 형태로 참조한다. `__P` 함수를 사용하면 커맨드라인에서 `-J옵션=값`으로 값을 오버라이드할 수 있다.
 ```
 HOST    ${__P(host,www.example.com)}
@@ -78,3 +78,4 @@ jmeter … -Jhost=www3.example.org
 ---
 ## Related pages
 - [[jmeter-introduction]]
+- [[load-testing]]

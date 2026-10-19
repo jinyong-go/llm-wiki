@@ -1,6 +1,6 @@
 ---
 title: CQRS
-updated: 2026-08-11 17:04:12
+updated: 2026-10-19 22:50:33
 tags:
   - programming
   - architecture
@@ -10,7 +10,6 @@ tags:
 ---
 
 ## 1. 개요
-
 **CQRS(Command Query Responsibility Segregation)**는 데이터 변경(Command)과 데이터 조회(Query)를 별도의 모델로 분리하는 아키텍처 패턴이다. Greg Young이 ~2010년 제안했으며, Bertrand Meyer의 **CQS(Command Query Separation)** 원칙을 객체/서비스 모델 수준으로 확장한 것이다.
 
 - **CQS** (Meyer, 1988): 메서드 수준. 상태를 변경하는 메서드(Command)는 값을 반환하지 않고, 값을 반환하는 메서드(Query)는 상태를 변경하지 않는다.
@@ -18,12 +17,8 @@ tags:
 
 > "you can use a different model to update information than the model you use to read information." — Martin Fowler
 
----
-
 ## 2. 핵심 개념
-
-### 2.1. Command (쓰기 모델)
-
+### 2.1 Command (쓰기 모델)
 - 비즈니스 의도를 표현한다. `"SetReservationStatus = Reserved"` 대신 `"BookHotelRoom"`.
 - 도메인 유효성 검사와 비즈니스 규칙을 포함한다.
 - 트랜잭션 정합성을 보장한다.
@@ -52,8 +47,7 @@ public class BookHotelRoomHandler {
 }
 ```
 
-### 2.2. Query (읽기 모델)
-
+### 2.2 Query (읽기 모델)
 - 비즈니스 로직·유효성 검사를 포함하지 않는다.
 - 프레젠테이션에 최적화된 DTO/프로젝션을 반환한다.
 - 부작용(Side Effect)이 없다.
@@ -75,12 +69,8 @@ public class GetRoomAvailabilityHandler {
 }
 ```
 
----
-
 ## 3. 구현 수준
-
-### 3.1. Level 1 — 동일 DB, 분리된 모델
-
+### 3.1 동일 저장소[^1]
 단일 데이터 저장소를 사용하되 읽기/쓰기 로직만 분리한다. 가장 낮은 오버헤드이며, CQRS 도입의 첫 단계로 적합하다.
 
 ```
@@ -97,7 +87,8 @@ public void placeOrder(PlaceOrderCommand cmd) {
     orderRepository.save(order);
 }
 
-// 읽기: JPA 인터페이스 프로젝션으로 직접 DTO 반환 (도메인 객체 생략)
+// 읽기: Spring Data JPA 인터페이스 프로젝션으로 DTO 반환 (도메인 객체 생략)
+// OrderSummaryDto는 getId()·getStatus()·getTotal()만 선언한 인터페이스
 public interface OrderSummaryRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o.id AS id, o.status AS status, SUM(i.price) AS total " +
            "FROM Order o JOIN o.items i WHERE o.customerId = :customerId " +
@@ -106,8 +97,9 @@ public interface OrderSummaryRepository extends JpaRepository<Order, Long> {
 }
 ```
 
-### 3.2. Level 2 — 분리된 저장소
+프로젝션 방식은 [[repository-projection]] 참고.
 
+### 3.2 저장소 분리[^1]
 쓰기 저장소(정규화된 RDBMS)와 읽기 저장소(역정규화된 문서 DB, Redis, Elasticsearch 등)를 분리한다. 쓰기 이벤트로 읽기 저장소를 동기화한다.
 
 ```
@@ -129,19 +121,20 @@ Command ──► Write DB (RDB)
 public void placeOrder(PlaceOrderCommand cmd) {
     Order order = new Order(cmd.customerId(), cmd.items());
     orderRepository.save(order);
-    eventPublisher.publish(new OrderPlacedEvent(order.getId(), order.getItems()));
+    eventPublisher.publishEvent(new OrderPlacedEvent(order.getId(), order.getCustomerId(), order.getItems(), order.getTotal()));
 }
 
-// 읽기 저장소 동기화
-@EventListener
+// 커밋 후 읽기 저장소 동기화
+@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 public void on(OrderPlacedEvent event) {
     OrderReadModel readModel = OrderReadModel.from(event);
     orderReadRepository.save(readModel);  // MongoDB 등 읽기 전용 저장소
 }
 ```
 
-### 3.3. Level 3 — Event Sourcing 결합
+AFTER_COMMIT 리스너는 커밋 후 실행되므로 롤백된 변경은 읽기 저장소에 반영되지 않는다. 리스너가 실패하면 읽기 저장소 갱신만 누락되므로 유실을 막으려면 이벤트를 같은 트랜잭션에서 outbox 테이블에 저장하고 별도 프로세스가 브로커로 발행하는 Transactional Outbox 패턴을 쓴다.
 
+### 3.3 Event Sourcing 결합[^1]
 이벤트 저장소가 쓰기 모델의 단일 진실 공급원이 된다. 읽기 모델은 이벤트를 재생(Replay)해 구축한 Materialized View다.
 
 ```
@@ -152,24 +145,18 @@ Command ──► Aggregate ──► Event Store (append-only)
                           Projection ──► Read Store
 ```
 
----
-
 ## 4. CQRS vs Event Sourcing
-
 두 패턴은 **독립적**이다. 함께 사용하면 시너지가 크지만 각각 단독으로도 적용 가능하다.
 
-| | CQRS | Event Sourcing |
+| 구분 | CQRS | Event Sourcing |
 | :--- | :--- | :--- |
 | 핵심 | 읽기/쓰기 모델 분리 | 상태를 이벤트 스트림으로 저장 |
 | 필수 관계 | ✗ | ✗ |
 | 함께 사용 시 | 이벤트 저장소 = 쓰기 모델, Materialized View = 읽기 모델 | |
 | 독립 사용 | 동일 DB에서도 CQRS 적용 가능 | CQRS 없이 Event Sourcing만 사용 가능 |
 
----
-
 ## 5. 동기 vs 비동기 Command 처리
-
-| | 동기 | 비동기 |
+| 구분 | 동기 | 비동기 |
 | :--- | :--- | :--- |
 | 처리 방식 | HTTP 요청 내에서 즉시 처리 | 메시지 큐에 적재 후 별도 처리 |
 | 일관성 | 즉시 | 최종 일관성(Eventual) |
@@ -177,12 +164,9 @@ Command ──► Aggregate ──► Event Store (append-only)
 | 클라이언트 | 즉시 결과 수신 | polling / webhook / SSE로 결과 확인 |
 | 사용 예 | 단순 도메인, 즉시 피드백 필요 | 대용량 처리, 긴 트랜잭션 |
 
-비동기 처리 시 명백한 오류(입력값 검증 등)는 클라이언트 측에서 선제 검증해 큐 부하를 줄인다. 서버는 경쟁 조건 등 비즈니스 예외만 처리한다.
-
----
+비동기 처리 시 입력값 오류처럼 명백한 실패는 클라이언트에서 먼저 걸러 실패할 Command가 큐에 쌓이는 것을 줄인다. 클라이언트 검증은 우회할 수 있으므로 서버도 같은 검증을 수행한다.
 
 ## 6. 최종 일관성(Eventual Consistency)
-
 분리된 저장소를 사용하면 읽기 모델이 쓰기 모델보다 뒤처질 수 있다.
 
 **처리 전략**:
@@ -190,12 +174,8 @@ Command ──► Aggregate ──► Event Store (append-only)
 - **버전 체크**: 읽기 응답에 버전 번호 포함 → Command 전송 시 함께 전달 → 서버에서 충돌 감지
 - **멱등성 소비자**: 메시지 중복 전달에 대비해 이벤트 핸들러를 멱등하게 구현
 
----
-
 ## 7. Java/Spring 구현
-
-### 7.1. 수동 디스패치 패턴
-
+### 7.1 수동 디스패치 패턴
 프레임워크 없이 직접 구현하는 방식이다.
 
 ```java
@@ -243,8 +223,7 @@ public class QueryBus {
 }
 ```
 
-### 7.2. Axon Framework
-
+### 7.2 Axon Framework
 Java 생태계에서 CQRS + Event Sourcing을 가장 완전하게 지원하는 프레임워크다.
 
 ```groovy
@@ -252,7 +231,15 @@ implementation 'org.axonframework:axon-spring-boot-starter:4.10.3'
 ```
 
 ```java
+// Command·Event·Query
+public record PlaceOrderCommand(@TargetAggregateIdentifier String orderId, String customerId, List<OrderItem> items) {}
+public record ConfirmOrderCommand(@TargetAggregateIdentifier String orderId) {}
+public record OrderPlacedEvent(String orderId, String customerId, List<OrderItem> items, BigDecimal total) {}
+public record OrderConfirmedEvent(String orderId) {}
+public record GetOrderSummaryQuery(String orderId) {}
+
 // Aggregate (Command 처리 + Event 발행)
+// import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Aggregate
 public class OrderAggregate {
 
@@ -260,9 +247,11 @@ public class OrderAggregate {
     private String orderId;
     private OrderStatus status;
 
+    protected OrderAggregate() { } // Axon이 이벤트 재생 시 사용
+
     @CommandHandler
     public OrderAggregate(PlaceOrderCommand cmd) {
-        apply(new OrderPlacedEvent(cmd.getOrderId(), cmd.getCustomerId(), cmd.getItems()));
+        apply(new OrderPlacedEvent(cmd.orderId(), cmd.customerId(), cmd.items(), OrderItem.sum(cmd.items())));
     }
 
     @CommandHandler
@@ -273,7 +262,7 @@ public class OrderAggregate {
 
     @EventSourcingHandler
     public void on(OrderPlacedEvent event) {
-        this.orderId = event.getOrderId();
+        this.orderId = event.orderId();
         this.status  = OrderStatus.PENDING;
     }
 
@@ -292,18 +281,18 @@ public class OrderSummaryProjection {
 
     @EventHandler
     public void on(OrderPlacedEvent event) {
-        repository.save(new OrderSummary(event.getOrderId(), OrderStatus.PENDING, event.getTotal()));
+        repository.save(new OrderSummary(event.orderId(), OrderStatus.PENDING, event.total()));
     }
 
     @EventHandler
     public void on(OrderConfirmedEvent event) {
-        repository.findById(event.getOrderId())
+        repository.findById(event.orderId())
             .ifPresent(s -> { s.setStatus(OrderStatus.CONFIRMED); repository.save(s); });
     }
 
     @QueryHandler
     public OrderSummary handle(GetOrderSummaryQuery query) {
-        return repository.findById(query.getOrderId()).orElseThrow();
+        return repository.findById(query.orderId()).orElseThrow();
     }
 }
 
@@ -315,7 +304,8 @@ public class OrderController {
 
     @PostMapping("/orders")
     public String placeOrder(@RequestBody PlaceOrderRequest req) {
-        return commandGateway.sendAndWait(new PlaceOrderCommand(UUID.randomUUID().toString(), req));
+        return commandGateway.sendAndWait(
+            new PlaceOrderCommand(UUID.randomUUID().toString(), req.customerId(), req.items()));
     }
 
     @GetMapping("/orders/{id}")
@@ -327,8 +317,7 @@ public class OrderController {
 }
 ```
 
-### 7.3. Spring만으로 최소 적용
-
+### 7.3 Spring만으로 최소 적용
 서비스 레이어를 Command/Query로 명시적 분리하는 것만으로도 CQRS의 이점을 얻을 수 있다.
 
 ```java
@@ -352,48 +341,45 @@ public class OrderQueryService {
 }
 ```
 
----
-
 ## 8. 장단점
-
-| | |
+| 구분 | 내용 |
 | :--- | :--- |
 | **장점** | 읽기/쓰기 독립 확장, 각 모델 최적화(정규화된 쓰기 / 역정규화된 읽기), 복잡한 도메인 로직 격리, 보안 분리(읽기 전용 역할), 읽기 쿼리 단순화(Materialized View) |
 | **단점** | 복잡도 증가(특히 Event Sourcing 결합 시), 최종 일관성 → UX 설계 필요, 메시지 인프라 요구(분리 저장소), ORM 자동 생성 도구와 궁합 안 맞음 |
 
----
-
 ## 9. 적용 판단 기준
-
 **적합한 경우**
 
-- 읽기/쓰기 부하가 크게 다른 시스템 (읽기 100 : 쓰기 1)
+- 읽기 요청이 쓰기보다 훨씬 많아 읽기 성능을 별도로 튜닝해야 하는 시스템
 - 복잡한 도메인 로직이 있는 Bounded Context (DDD)
 - 다수의 사용자가 동일 데이터를 동시에 수정하는 협업 도메인
 - 읽기 모델의 스키마가 쓰기 모델과 크게 다를 때 (복잡한 JOIN 다수)
 
 **부적합한 경우** (Fowler: "be very cautious")
 
-- 단순 CRUD 도메인 — 복잡도 증가가 이득을 압도
-- 전체 시스템에 일괄 적용 — 특정 Bounded Context에만 국소 적용이 원칙
+- 복잡도 증가가 이득보다 큰 단순 CRUD 도메인
+- 시스템 전체에 일괄 적용하는 경우. CQRS는 특정 Bounded Context에만 적용한다
 - 팀이 최종 일관성을 다룰 준비가 되지 않은 경우
 
 > 읽기 전용 DB 분리(Reporting Database)만으로도 충분한 경우가 많다. CQRS는 그보다 더 많은 복잡성을 수반한다.
 
 ---
-
 ## Sources
-
 - [CQRS — Martin Fowler](https://martinfowler.com/bliki/CQRS.html)
 - [CQRS pattern — Microsoft Azure Architecture](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)
 - [CQRS Documents — Greg Young (2010)](https://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf)
 - [Axon Framework Reference Guide](https://docs.axoniq.io/reference-guide/)
+- [Pattern: Transactional outbox (microservices.io)](https://microservices.io/patterns/data/transactional-outbox.html)
+- [Transaction-bound Events (Spring Framework Reference)](https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html)
+- [Input Validation Cheat Sheet (OWASP)](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html)
 
 ---
-
 ## Related pages
-
 - [[design-patterns]]
 - [[design-patterns-behavioral]]
 - [[jpa-transaction]]
 - [[aop]]
+- [[spring-event]]
+- [[repository-projection]]
+
+[^1]: Level 1~3 구분은 Fowler·Microsoft 문서의 명시적 분류가 아니며 읽기·쓰기 저장소의 분리 정도와 Event Sourcing 결합 여부에 따라 정리한 것이다.

@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-19 17:26:20
+updated: 2026-10-19 22:50:33
 tags:
   - meta
 ---
@@ -217,22 +217,22 @@ tags:
 
 ## 프로그래밍 일반
 
-- [[solid]] — SOLID 원칙: 정의, 위반 징후, 적용 기준
-- [[design-patterns]] — GoF 디자인 패턴 23개 목록표
-- [[design-patterns-creational]] — GoF 생성 패턴 5종
-- [[design-patterns-structural]] — GoF 구조 패턴 7종
-- [[design-patterns-behavioral]] — GoF 행동 패턴 11종
-- [[cqrs]] — CQRS: Command/Query 모델 분리 패턴
-- [[first-class-citizen]] — 일급 객체: 정의, 일급 함수, 언어별 지원
-- [[tps-improvement]] — 애플리케이션 서버 TPS 향상: 병목 진단(USE Method, DB vs 서버), Little's Law, 스레드 풀 사이징, CPU bound(스케일링) vs IO bound(비동기·가상 스레드) 대응
-- [[jmeter-introduction]] — Apache JMeter 소개: 목적·지원 프로토콜, 설치, GUI/CLI 실행 방법, 장단점
-- [[jmeter-components]] — JMeter 구성 요소: Thread Group, Controller(Sampler/Logic Controller), Listener, Timer, Assertion, Configuration Element, 실행 순서, Scoping Rules
-- [[load-testing]] — 부하 테스트: 개념·목적, 테스트 유형(Smoke/Average-load/Stress/Soak/Spike/Breakpoint), 주요 지표, 동시 사용자 수 산정, 실행 과정, 주요 도구, 주의사항
-- [[reactive-programming]] — 리액티브 프로그래밍: 개념, 배경, Reactive Streams·Reactive Manifesto, 동작 흐름, 리액티브 vs 논블로킹, 장단점, 대표 구현체(Reactor/RxJava/Akka/Vert.x), Virtual Threads 대안
-- [[bfs]] — BFS (너비 우선 탐색): 큐 기반 동작, 거리·경로 복원, 0-1 BFS 등 변형, 장단점, 문제 예시
-- [[dfs]] — DFS (깊이 우선 탐색): 재귀·반복 구현, 시간 기록, 간선 분류, 사이클·위상 정렬·SCC·브리지, 문제 예시
-- [[backtracking]] — 백트래킹: 상태 공간 트리, 가지치기, 복잡도, 분기 한정 비교, 문제 예시
-- [[dynamic-programming]] — 동적 계획법: 적용 조건, 탑다운·바텀업, 설계 절차, 공간 최적화, 대표 유형, 문제 예시
+- [[solid]] — SOLID 원칙
+- [[design-patterns]] — GoF 디자인 패턴 분류
+- [[design-patterns-creational]] — GoF 생성 패턴
+- [[design-patterns-structural]] — GoF 구조 패턴
+- [[design-patterns-behavioral]] — GoF 행동 패턴
+- [[cqrs]] — Command·Query 모델 분리
+- [[first-class-citizen]] — 일급 객체와 일급 함수
+- [[tps-improvement]] — TPS 병목 진단과 대응
+- [[jmeter-introduction]] — JMeter 설치와 실행
+- [[jmeter-components]] — JMeter 테스트 계획 구성 요소
+- [[load-testing]] — 부하 테스트 유형과 지표
+- [[reactive-programming]] — 리액티브 프로그래밍과 Reactive Streams
+- [[bfs]] — 너비 우선 탐색
+- [[dfs]] — 깊이 우선 탐색
+- [[backtracking]] — 백트래킹과 가지치기
+- [[dynamic-programming]] — 동적 계획법
 
 ## AI
 

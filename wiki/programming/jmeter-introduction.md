@@ -1,6 +1,6 @@
 ---
 title: JMeter 소개
-updated: 2026-09-17 09:30:05
+updated: 2026-10-19 22:50:33
 tags:
   - performance
   - testing
@@ -54,7 +54,7 @@ apache-jmeter-X.Y/
 ## 3. 실행 방법
 
 ### 3.1 GUI 모드
-`bin/jmeter.bat`(Windows) 또는 `bin/jmeter`(Unix)를 실행하면 GUI가 뜬다. GUI 모드는 테스트 계획 작성, 브라우저·네이티브 애플리케이션 레코딩(File → Templates... → Recording), 디버깅(Run → Start no pauses, Run → Start, Thread Group 단위 Validate, View Results Tree)에 사용한다. 공식 문서는 부하 테스트 자체는 GUI 모드로 실행하지 말 것을 명시한다. 리소스 소모가 크기 때문이다.
+`bin/jmeter.bat`(Windows) 또는 `bin/jmeter`(Unix)를 실행하면 GUI가 뜬다. GUI 모드는 테스트 계획 작성, 브라우저·네이티브 애플리케이션 레코딩(File → Templates... → Recording), 디버깅(Run → Start no pauses, Run → Start, Thread Group 단위 Validate, View Results Tree)에 사용한다.
 
 ### 3.2 CLI 모드 (Command-Line/Non-GUI 모드)
 부하 테스트는 GUI 모드로도 실행할 수 있지만, 리소스 소모가 커 공식 문서는 CLI 모드 사용을 권장한다.
@@ -79,7 +79,8 @@ CLI 모드는 결과를 CSV/XML로 남기고, 실행 중에는 기본적으로 �
 ### 3.3 서버 모드(분산 테스트)
 원격 노드에서 `jmeter-server[.bat]`를 실행해 서버 모드로 띄운 뒤, GUI 또는 CLI(`-r`/`-R`)로 컨트롤한다.
 
-## 4. 장단점[^1]
+## 4. 장단점
+공식 문서의 기능 소개와 실행 모드 안내를 근거로 정리했다.[^1]
 
 장점:
 - 오픈소스이며 100% Java로 작성되어 Java가 동작하는 모든 OS에서 크로스플랫폼으로 실행
@@ -92,9 +93,6 @@ CLI 모드는 결과를 CSV/XML로 남기고, 실행 중에는 기본적으로 �
 - GUI 모드는 리소스 소모가 커 대규모 부하 테스트에는 부적합해 CLI 모드로 전환이 필요
 - 기본 힙 크기가 1GB로 제한되어 있어 스레드 수·시나리오 규모가 크면 별도 튜닝이 필요
 
-## 5. 관련 문서
-JMeter의 세부 구성 요소(Thread Group, Sampler, Listener 등)는 [[jmeter-components]] 참고.
-
 ---
 ## Sources
 - [Apache JMeter](https://jmeter.apache.org/)
@@ -104,5 +102,6 @@ JMeter의 세부 구성 요소(Thread Group, Sampler, Listener 등)는 [[jmeter-
 ## Related pages
 - [[jmeter-components]]
 - [[tps-improvement]]
+- [[load-testing]]
 
 [^1]: 공식 문서는 "장점/단점"을 별도 목록으로 제시하지 않는다. 위 항목은 홈페이지의 기능 소개(features)와 "JMeter is not a browser" 절, Getting Started의 GUI/CLI 모드 안내를 근거로 정리한 것이다.

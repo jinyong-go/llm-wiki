@@ -1,6 +1,6 @@
 ---
 title: TPS 향상 전략
-updated: 2026-09-16 09:58:29
+updated: 2026-10-19 22:50:33
 tags:
   - performance
   - scaling
@@ -22,7 +22,7 @@ Brendan Gregg의 USE Method: 모든 자원(CPU, 메모리, 디스크 I/O, 네트
 - 서버 CPU·메모리 사용률이 높고 APM에서 특정 함수 실행 시간이 길면 서버(연산) 병목
 - 슬로우 쿼리 로그, EXPLAIN, 커넥션 풀의 Active/Idle/Wait Time 지표로 DB 병목 여부 확인 ([[jdbc-connection-pool]], [[hikari-pool-sizing]])
 
-## 3. 처리량의 이론적 한계: Little's Law
+## 3. Little's Law
 $$L = \lambda W$$
 - $L$: 시스템 내 동시 처리 중인 요청 수(concurrency)
 - $\lambda$: 요청 도착률(처리량, TPS)
@@ -33,14 +33,14 @@ $$L = \lambda W$$
 ## 4. 스레드 풀 사이징
 
 ### 4.1 Goetz 공식
-```
-스레드 수 = 코어 수 × (1 + 대기시간/서비스시간)
-```
-- 서비스시간: 실제 CPU 연산에 쓰는 시간, 대기시간: I/O·락 대기 등 블로킹 시간
-- 대기시간/서비스시간 비율을 blocking coefficient라 한다
+$$N_{threads} = N_{cpu} \times \left(1 + \frac{W}{C}\right)$$
+- $C$: 서비스시간(실제 CPU 연산에 쓰는 시간), $W$: 대기시간(I/O·락 대기 등 블로킹 시간)
+- $W/C$ 비율을 blocking coefficient라 한다
 - CPU bound 작업은 blocking coefficient가 0에 가까워 스레드 수 ≈ 코어 수. 코어 수 이상 늘려도 처리량은 늘지 않는다
-- 예: 4코어, 외부 호출 대기 50ms + 처리 5ms → `4 × (1 + 50/5) = 44`
-- 여러 스레드 풀을 운영하며 목표 CPU 사용률을 별도로 두려면 계수를 곱한다: `코어 수 × 목표 CPU 사용률(0~1) × (1 + 대기시간/서비스시간)`
+- 예: 4코어, 외부 호출 대기 50ms, 처리 5ms이면 $4 \times (1 + 50/5) = 44$
+- 여러 스레드 풀을 운영하며 목표 CPU 사용률 $U_{cpu}$($0 \le U_{cpu} \le 1$)를 별도로 두려면 계수를 곱한다.
+
+$$N_{threads} = N_{cpu} \times U_{cpu} \times \left(1 + \frac{W}{C}\right)$$
 
 ### 4.2 풀 크기와 처리량의 관계
 스레드 풀 크기가 정해지면 Little's Law로 이론적 처리 가능 TPS를 역산할 수 있다: `풀 크기 / 평균 응답시간(초)`. §4.1 예시(44 스레드, 응답시간 55ms)를 대입하면 `44 / 0.055 ≈ 800 TPS`. 이론적 상한이며 실측 부하테스트로 조정해야 한다.
@@ -70,7 +70,7 @@ $$S(n) = \frac{1}{(1-p) + p/n}$$
 I/O 대기 중 스레드를 반환하고 콜백으로 완료를 통지하는 방식(Netty 이벤트 루프 등, [[netty]]). OS 스레드 수 제약 없이 높은 동시성을 낼 수 있지만, 요청 처리 로직을 콜백·파이프라인으로 쪼개야 해 스택 트레이스·디버깅·프로파일링이 어려워진다.
 
 ### 6.2 경량 스레드(Java 가상 스레드)
-JDK 21(JEP 444)에서 정식화된 가상 스레드는 OS 스레드에 1:1로 매핑되지 않는 M:N 스케줄링 스레드다. 블로킹 I/O 호출 시 런타임이 논블로킹 시스템 콜로 전환하고 가상 스레드를 언마운트해, thread-per-request 스타일을 유지하면서 비동기 수준의 처리량을 얻는다.
+JDK 21(JEP 444)에서 정식화된 가상 스레드는 OS 스레드에 1:1로 매핑되지 않는 M:N 스케줄링 스레드다. 블로킹 소켓 I/O 호출 시 런타임이 가상 스레드를 캐리어 스레드에서 언마운트해 thread-per-request 스타일을 유지하면서 비동기 수준의 처리량을 얻는다. 파일 I/O와 JDK 24 이전의 `synchronized` 블록 내 블로킹은 캐리어 스레드를 점유(pinning)해 이점이 줄어든다.
 - 스레드당 자원 비용이 낮아 요청마다 새로 생성하며 풀링하지 않는다
 - CPU bound 작업에는 효과가 없다(코어 수 이상 늘려도 무의미, §5)
 - 동시 작업 수가 많고(수천 이상) I/O 대기 비중이 큰 워크로드에서 효과가 크다
@@ -83,13 +83,12 @@ JDK 21(JEP 444)에서 정식화된 가상 스레드는 OS 스레드에 1:1로 �
 | 서버 · CPU bound | 연산 자체가 느림, 코어 포화 | 알고리즘 최적화 → 수직/수평 스케일링 |
 | 서버 · IO bound | 스레드가 I/O 대기로 블로킹 | 스레드 풀 사이징 조정, 비동기·경량 스레드 도입 |
 
-[^1]: Amdahl's Law는 원래 단일 시스템 내 다중 프로세서 병렬화를 대상으로 한다. 노드 간 통신·코디네이션 비용이 있는 분산 수평 확장에도 "직렬 구간이 병목이 된다"는 동일 원리가 유추적으로 적용되나, 이를 더 정밀하게(코디네이션 오버헤드까지) 모델링한 것은 Universal Scalability Law(USL)다.
-
 ---
 ## Sources
 - [Little's law (Wikipedia)](https://en.wikipedia.org/wiki/Little's_law)
 - [How to set an ideal thread pool size (Zalando Engineering)](https://engineering.zalando.com/posts/2019/04/how-to-set-an-ideal-thread-pool-size.html)
 - [JEP 444: Virtual Threads](https://openjdk.org/jeps/444)
+- [JEP 491: Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491)
 - [The USE Method (Brendan Gregg)](https://www.brendangregg.com/usemethod.html)
 - [Amdahl's law (Wikipedia)](https://en.wikipedia.org/wiki/Amdahl's_law)
 - [Horizontal vs Vertical Scaling in AWS (CloudKeeper)](https://www.cloudkeeper.com/insights/blog/horizontal-vs-vertical-scaling)
@@ -104,3 +103,6 @@ JDK 21(JEP 444)에서 정식화된 가상 스레드는 OS 스레드에 1:1로 �
 - [[load-balancer]]
 - [[gc]]
 - [[jvm-options]]
+- [[load-testing]]
+
+[^1]: Amdahl's Law는 원래 단일 시스템 내 다중 프로세서 병렬화를 대상으로 한다. 노드 간 통신·코디네이션 비용이 있는 분산 수평 확장에도 "직렬 구간이 병목이 된다"는 동일 원리가 유추적으로 적용되나, 이를 더 정밀하게(코디네이션 오버헤드까지) 모델링한 것은 Universal Scalability Law(USL)다.
