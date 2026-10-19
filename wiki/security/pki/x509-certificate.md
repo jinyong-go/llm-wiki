@@ -1,6 +1,6 @@
 ---
 title: X.509 인증서
-updated: 2026-09-08 23:03:19
+updated: 2026-10-19 17:47:41
 tags:
   - crypto
   - pki
@@ -91,7 +91,7 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 
 | OID               | 이름                    | 용도                                                              |
 | ----------------- | --------------------- | --------------------------------------------------------------- |
-| 1.3.6.1.5.5.7.3.1 | `serverAuth`          | **TLS 서버 인증** — HTTPS 서버 인증서의 필수 EKU. 브라우저는 이 EKU 없는 서버 인증서를 거부 |
+| 1.3.6.1.5.5.7.3.1 | `serverAuth`          | **TLS 서버 인증** — 공개 신뢰 HTTPS 서버 인증서의 필수 EKU(CA/B Forum BR) |
 | 1.3.6.1.5.5.7.3.2 | `clientAuth`          | **TLS 클라이언트 인증** — mTLS에서 클라이언트 신원 증명                           |
 | 1.3.6.1.5.5.7.3.3 | `codeSigning`         | **실행 코드 서명** — Authenticode, JAR 서명 등 배포 코드의 출처·무결성 증명          |
 | 1.3.6.1.5.5.7.3.4 | `emailProtection`     | **S/MIME** — 이메일 서명·암호화 ([[cms]])                               |
@@ -162,8 +162,6 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 2. **상위(발급자) 인증서의 공개키**로 `signatureValue`를 검증 연산[^1]
 3. 두 결과 비교 — 일치하면 서명 유효
 
-[^1]: "공개키로 복호화"라는 관례적 설명은 RSA에 한정된 표현이다. ECDSA/EdDSA 등에서는 복호화가 아닌 서명 검증 연산으로 일반화된다.
-
 ### 4.2. 경로 검증 요소 (RFC 5280)
 
 - **서명 검증** — 체인 각 단계에서 상위 인증서 공개키로 하위 서명 확인
@@ -181,10 +179,10 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 | 계층 | 설명 |
 |---|---|
 | **루트 인증서** | 체인 최상위. **자체 서명**(issuer = subject). 클라이언트 신뢰 저장소에 사전 배포 |
-| **중간 인증서** | 루트 CA가 발급. 최종 인증서 발급 권한 보유 (루트 키 노출 위험 격리) |
+| **중간 인증서** | 루트 CA 또는 상위 중간 CA가 발급. 여러 단계로 둘 수 있으며 `pathLenConstraint`로 단계 수를 제한 (루트 키 노출 위험 격리)[^2] |
 | **최종 엔터티 인증서** | 중간 CA가 발급. 서버/클라이언트가 직접 사용 |
 
-**체인 검증 순서**: 최종 인증서 서명 검증(발급자 = 중간 CA 확인) → 중간 인증서 서명 검증(발급자 = 루트 CA 확인) → 루트가 신뢰 저장소에 있는지 확인 → 전 단계 유효하면 신뢰 성립.
+**체인 검증 순서**: 최종 인증서 서명 검증(발급자 = 중간 CA 확인) → 중간 인증서 서명 검증(발급자 = 상위 CA 확인, 중간 CA가 여러 단계면 반복) → 루트가 신뢰 저장소에 있는지 확인 → 전 단계 유효하면 신뢰 성립.
 
 ---
 
@@ -211,6 +209,7 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 - `raw/crypto/X.509.md`
 - [RFC 5280: Internet X.509 PKI Certificate and CRL Profile](https://datatracker.ietf.org/doc/html/rfc5280)
 - [OpenSSL x509v3_config](https://docs.openssl.org/3.6/man5/x509v3_config/)
+- [CA/Browser Forum TLS Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
 
 ---
 
@@ -225,3 +224,8 @@ Key Usage보다 구체적인 **응용 수준 용도**를 OID 목록으로 제한
 - [[openssl-overview]]
 - [[openssl-keygen]]
 - [[openssl-pkcs12]]
+
+---
+
+[^1]: "공개키로 복호화"라는 관례적 설명은 RSA에 한정된 표현이다. ECDSA/EdDSA 등에서는 복호화가 아닌 서명 검증 연산으로 일반화된다.
+[^2]: `raw/crypto/X.509.md`는 중간 인증서를 루트가 발급하는 단일 계층으로 서술하나, RFC 5280 §6.1 경로 검증은 임의 길이의 경로를 다룬다. RFC를 따름.

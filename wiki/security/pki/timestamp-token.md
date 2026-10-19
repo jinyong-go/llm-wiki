@@ -1,6 +1,6 @@
 ---
 title: 타임스탬프 토큰 (Time-Stamp Token)
-updated: 2026-07-14 11:44:34
+updated: 2026-10-19 17:47:41
 tags:
   - crypto
   - pki
@@ -84,8 +84,6 @@ PKIStatusInfo ::= SEQUENCE {
 - `unacceptedExtension(16)` — 요청 확장 미지원
 - `systemFailure(25)` — 시스템 오류
 
-[^1]: grantedWithMods가 반환되는 구체적 상황(예: 다른 정책으로 대체 발급)은 RFC에 명시가 없으며 구현·정책에 따른다.
-
 ---
 
 ## 4. 토큰 구조
@@ -137,7 +135,7 @@ TSA의 `SignerInfo`에는 서명자 인증서를 식별하는 **SigningCertifica
 1. 응답 `status` 확인
 2. 토큰의 `messageImprint`가 요청(또는 원본 재계산 해시)과 일치하는지 확인
 3. 요청에 nonce를 넣었으면 토큰의 nonce와 일치 확인
-4. CMS SignedData 서명 검증 ([[cms]] 5.2와 동일) + ESSCertID(v2)로 TSA 인증서 일치 확인
+4. CMS SignedData 서명 검증 ([[cms]] 3.2와 동일) + ESSCertID(v2)로 TSA 인증서 일치 확인
 5. TSA 인증서 검증 — 경로 검증([[x509-certificate]]), 폐기 확인([[certificate-revocation]])
 6. `policy`가 응용에서 수용 가능한지 확인
 
@@ -160,8 +158,6 @@ TSA의 `SignerInfo`에는 서명자 인증서를 식별하는 **SigningCertifica
 
 OpenSSL CLI 사용법은 [[openssl-ts]] 참고.
 
-[^2]: "실사용 드묾"은 추론임. 현재 공개 TSA는 대부분 HTTP를 사용한다.
-
 ---
 
 ## Sources
@@ -177,3 +173,8 @@ OpenSSL CLI 사용법은 [[openssl-ts]] 참고.
 - [[x509-certificate]]
 - [[certificate-revocation]]
 - [[cmp]]
+
+---
+
+[^1]: grantedWithMods가 반환되는 구체적 상황(예: 다른 정책으로 대체 발급)은 RFC에 명시가 없으며 구현·정책에 따른다.
+[^2]: "실사용 드묾"은 추론임. 현재 공개 TSA는 대부분 HTTP를 사용한다.

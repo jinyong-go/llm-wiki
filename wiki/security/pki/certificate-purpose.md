@@ -1,6 +1,6 @@
 ---
 title: 인증서 용도
-updated: 2026-09-08 23:03:19
+updated: 2026-10-19 17:47:41
 tags:
   - crypto
   - pki
@@ -37,7 +37,7 @@ tags:
 
 ### 2.2. 실사용
 
-HTTPS 웹서버, 리버스 프록시·로드밸런서의 TLS 종단, API 게이트웨이, 쿠버네티스 Ingress 등에서 사용한다. 브라우저는 SAN(dNSName)이 없거나 `serverAuth` EKU가 없는 서버 인증서를 거부한다. CN 매칭 방식은 더 이상 사용되지 않는다(deprecated). 공개 신뢰(Public Trust) 인증서는 CA/Browser Forum Baseline Requirements를 따르며, DV/OV/EV 검증 수준 차이는 발급 정책의 차이일 뿐 Key Usage·EKU 값 자체와는 무관하다.
+HTTPS 웹서버, 리버스 프록시·로드밸런서의 TLS 종단, API 게이트웨이, 쿠버네티스 Ingress 등에서 사용한다. CA/B Forum BR은 공개 신뢰 서버 인증서에 `serverAuth` EKU를 필수로 요구하며, 브라우저는 SAN(dNSName)이 없는 서버 인증서를 거부한다. CN 매칭 방식은 더 이상 사용되지 않는다(deprecated). 공개 신뢰(Public Trust) 인증서는 CA/Browser Forum Baseline Requirements를 따르며, DV/OV/EV 검증 수준 차이는 발급 정책의 차이일 뿐 Key Usage·EKU 값 자체와는 무관하다.
 
 ---
 
@@ -89,7 +89,7 @@ PDF/전자문서 서명, 전자계약, 전자결재, 세금계산서 등 공공�
 
 ### 6.2. 실사용
 
-Windows Authenticode(exe/msi/드라이버), macOS 코드 서명·공증, [[jar-signing]], 모바일 앱 서명(APK/IPA) 등 배포 코드의 출처·무결성 증명에 쓰인다. 타임스탬프와 조합하면 서명 인증서가 만료된 뒤에도 서명 유효성이 유지된다(RFC 3161). EV 코드서명 인증서는 개인키를 HSM에 강제 보관하고, 발급 즉시 OS 평판 시스템(SmartScreen 등)의 신뢰를 얻는 특징이 있다.
+Windows Authenticode(exe/msi/드라이버), macOS 코드 서명·공증, [[jar-signing]], 모바일 앱 서명(APK/IPA) 등 배포 코드의 출처·무결성 증명에 쓰인다. 타임스탬프와 조합하면 서명 인증서가 만료된 뒤에도 서명 유효성이 유지된다(RFC 3161). 2023-06-01부터 CA/B Forum 코드서명 BR §6.2.7.4는 OV·EV 구분 없이 개인키를 하드웨어 암호 모듈에서 생성·보관하도록 요구한다. EV 인증서가 SmartScreen 평판을 즉시 얻던 동작은 2024년 Microsoft Trusted Root Program 변경 이후 없어졌고, 평판은 인증서 종류와 무관하게 파일별로 누적된다[^2].
 
 ---
 
@@ -110,7 +110,7 @@ Windows Authenticode(exe/msi/드라이버), macOS 코드 서명·공증, [[jar-s
 
 ### 8.1. 설정
 
-- **Key Usage**: `digitalSignature`/`nonRepudiation`만 허용, 다른 비트 배제
+- **Key Usage**: `digitalSignature`/`nonRepudiation`만 허용, 다른 비트 배제[^3]
 - **EKU**: `timeStamping`(1.3.6.1.5.5.7.3.8) **단독**, **critical 필수**
 
 ### 8.2. 실사용
@@ -171,8 +171,9 @@ CLI 예시는 [[openssl-x509]] §8 참고.
 - [RFC 5280: Internet X.509 PKI Certificate and CRL Profile](https://datatracker.ietf.org/doc/html/rfc5280)
 - [OpenSSL openssl-verification-options](https://docs.openssl.org/master/man1/openssl-verification-options/)
 - [DigiCert/QuoVadis — eIDAS Qualified Key Usages](https://knowledge.digicert.com/quovadis/general-information/eIDAS-Qualified-KUEs.html)
-
-[^1]: 서명용/암호화용 인증서 분리는 "부인방지 키는 백업 불가"라는 원칙(ETSI EN 319 412-2, RFC 5280 nonRepudiation 정의)에서 도출되는 일반적 PKI 설계 관행이며, 특정 국내 서비스의 실제 발급 정책을 직접 확인한 근거는 아니다.
+- [CA/Browser Forum Code Signing Baseline Requirements](https://cabforum.org/working-groups/code-signing/requirements/)
+- [CA/Browser Forum TLS Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/requirements/)
+- [Microsoft Q&A: Issue with Microsoft SmartScreen and DigiCert](https://learn.microsoft.com/en-us/answers/questions/5883575/issue-with-microsoft-smartscreen-and-digicert)
 
 ---
 
@@ -183,3 +184,9 @@ CLI 예시는 [[openssl-x509]] §8 참고.
 - [[cms]]
 - [[jar-signing]]
 - [[openssl-x509]]
+
+---
+
+[^1]: 서명용/암호화용 인증서 분리는 "부인방지 키는 백업 불가"라는 원칙(ETSI EN 319 412-2, RFC 5280 nonRepudiation 정의)에서 도출되는 일반적 PKI 설계 관행이며, 특정 국내 서비스의 실제 발급 정책을 직접 확인한 근거는 아니다.
+[^2]: Microsoft Trusted Root Program 요건 원문은 직접 확인하지 못했으며, 이를 인용한 Microsoft Q&A 답변과 업계 자료에 근거함.
+[^3]: RFC 3161 §2.3은 EKU 요건(`id-kp-timeStamping` 단독, critical)만 규정하고 Key Usage는 규정하지 않는다. KU 제한은 CA/B Forum 코드서명 BR 등 인증서 정책 문서에서 온다.

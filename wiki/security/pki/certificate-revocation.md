@@ -1,6 +1,6 @@
 ---
-title: 인증서 폐기 — 사유·CRL·OCSP
-updated: 2026-07-14 14:28:58
+title: 인증서 폐기
+updated: 2026-10-19 17:47:41
 tags:
   - crypto
   - pki
@@ -46,7 +46,7 @@ RFC 5280 §5.3.1에 정의된 값:
 
 ## 3. 전달 방식 — CRL
 
-**개념**: CA(또는 CRL 발급자)가 **폐기된 인증서 일련번호 목록**에 서명해 공개 저장소에 배포한다. 검증자는 CRL을 받아 대상 serial이 목록에 있는지 확인한다. 유효기간은 보통 24시간 이하.
+**개념**: CA(또는 CRL 발급자)가 **폐기된 인증서 일련번호 목록**에 서명해 공개 저장소에 배포한다. 검증자는 CRL을 받아 대상 serial이 목록에 있는지 확인한다. 공개 신뢰 인증서의 경우 CA/B Forum BR이 최종 엔터티용 CRL을 7일 이내에 재발행하고 `nextUpdate`를 `thisUpdate`로부터 10일 이내로 두도록 규정한다[^1].
 
 **X.509 구조 (RFC 5280 §5)**
 ```
@@ -142,6 +142,8 @@ OCSPResponse → 서명된 CertStatus:
 - RFC 6066 — TLS Certificate Status Request (Stapling): https://datatracker.ietf.org/doc/html/rfc6066
 - RFC 7633 — TLS Feature Extension (Must-Staple): https://datatracker.ietf.org/doc/html/rfc7633
 - Let's Encrypt — Ending OCSP Support in 2025: https://letsencrypt.org/2024/12/05/ending-ocsp
+- [CA/Browser Forum S/MIME Baseline Requirements](https://cabforum.org/working-groups/smime/requirements/)
+- [CA/Browser Forum BR 1.4.4](https://cabforum.org/uploads/CA-Browser-Forum-BR-1.4.4.pdf)
 
 ---
 
@@ -151,3 +153,7 @@ OCSPResponse → 서명된 CertStatus:
 - [[crl-java]] — Java로 CRL 생성·파싱·검증 (BouncyCastle)
 - [[openssl-crl]] — OpenSSL CLI로 CRL 조회·검증
 - [[cmp]] — 인증서 폐기 요청(rr) 프로토콜
+
+---
+
+[^1]: 7일·10일 기준은 TLS BR 1.4.4와 현행 S/MIME BR에서 확인함. 현행 TLS BR 원문의 해당 조항은 직접 확인하지 못함. CA 인증서용 CRL은 이보다 긴 주기가 허용된다.

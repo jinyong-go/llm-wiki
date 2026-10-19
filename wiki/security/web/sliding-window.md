@@ -1,6 +1,6 @@
 ---
-title: Sliding Window (Anti-Replay Window)
-updated: 2026-09-03 22:35:48
+title: 재전송 방지 윈도우
+updated: 2026-10-19 18:01:14
 tags:
   - security
   - network
@@ -10,160 +10,136 @@ tags:
 
 ## 1. 개요
 
-Sliding Window(Anti-Replay Window)는 순서가 보장되지 않는 채널에서 **순증가 시퀀스 번호**와 **수신 여부 비트맵**으로 중복·재전송 패킷을 판별하는 기법이다. IPsec AH/ESP([RFC 4303](https://www.rfc-editor.org/rfc/rfc4303.html))가 표준 메커니즘으로 정의하며, 순서 있는 시퀀스 번호를 부여할 수 있는 채널이면 IPsec 외에도 적용 가능하다. [[replay-attack]]의 방어 기법 중 하나다.
+재전송 방지 윈도우는 순서가 뒤바뀔 수 있는 채널에서 시퀀스 번호와 수신 비트맵으로 중복 패킷을 거부하는 기법이다. IPsec AH·ESP가 사용하며, [[replay-attack]]의 방어 기법 중 하나다. 상태는 Security Association별로 관리한다.
 
 ## 2. 구조
 
-- 송신자는 패킷마다 1씩 증가하는 시퀀스 번호를 부여
-- 수신자는 **N**(지금까지 무결성 검증에 성공한 최고 시퀀스 번호)과 **W**(윈도우 크기)를 유지
-- `[N-W+1, N]` 구간의 수신 여부를 비트맵으로 기록 — 인덱스 0이 N, 인덱스 W-1이 N-W+1에 대응
-- RFC 4303 기준 기본 윈도우 크기는 **64**(최소 32) 패킷. 순서 뒤바뀜이 잦은 고속·다중 경로 환경일수록 윈도우를 키워야 함
+수신자는 무결성 검증에 성공한 최고 시퀀스 번호 $N$과 윈도우 크기 $W$를 유지한다. 비트맵은 $[N-W+1, N]$의 수신 여부를 나타낸다. RFC 4303은 32비트 시퀀스 번호에서 최소 32패킷 윈도우 지원을 요구하고, 기본값으로 64를 권고한다. 수신자는 순서 뒤바뀜의 범위에 따라 크기를 늘릴 수 있다.
 
-### 2.1 확장 시퀀스 번호(ESN)
-
-64비트 시퀀스 번호(ESN, Extended Sequence Number) 사용 시 헤더에는 하위 32비트만 실어 보낸다. 수신자는 자신이 유지하는 상위 비트 카운터로 전체 64비트 값을 복원하며, 수신한 하위 32비트가 자신이 알고 있는 하위 비트보다 작으면 상위 비트가 1 증가한 것으로 간주해 오버플로를 처리한다.
-
-## 3. 판정 규칙
-
-| 조건 | 판정 |
+| 조건 | 처리 |
 |---|---|
-| `seq > N` | 윈도우보다 신규 — 무결성 검증 통과 시 수용, 윈도우를 seq까지 슬라이드 |
-| `N-W < seq ≤ N` | 윈도우 내부 — 비트맵에 이미 표시돼 있으면 중복 거부, 아니면 수용 후 표시 |
-| `seq ≤ N-W` | 윈도우보다 오래됨 — 무조건 거부 |
+| $seq > N$ | 무결성 검증 후 윈도우를 전진하고 수신 표시 |
+| $N-W < seq \le N$ | 이미 수신한 번호면 거부하고, 미수신이면 검증 후 표시 |
+| $seq \le N-W$ | 오래된 패킷으로 거부 |
 
-윈도우는 **무결성 검증에 성공한 패킷만** 반영해 슬라이드한다. 검증에 실패한 패킷은 판정에만 쓰이고 윈도우 상태를 바꾸지 않는다 — 위조된 시퀀스 번호로 윈도우를 조작해 정상 패킷을 거부하게 만드는 공격을 막기 위함이다.
+무결성 검증 전에는 상태를 바꾸지 않는다. 검증 후에는 최신 상태를 기준으로 중복 여부를 다시 검사하고 수신 표시를 원자적으로 수행해야 한다.[^1]
 
-## 4. 구현: 비트 시프트 방식 (RFC 4303)
+### 2.1. ESN
 
-전통적인 구현은 비트맵을 고정폭 정수(또는 비트 배열)로 두고, 윈도우가 슬라이드할 때마다 비트를 시프트한다. 윈도우 크기를 64로 두면 언어의 64비트 정수 타입 하나로 비트맵을 표현할 수 있어 구현이 단순하다.
+확장 시퀀스 번호(Extended Sequence Number, ESN)는 64비트 번호의 하위 32비트만 전송한다. 수신자는 윈도우 위치와 수신한 하위 비트로 이전·현재·다음 상위 비트 후보를 결정하고 무결성을 검증한다. 하위 값이 작다는 이유만으로 상위 값을 증가시키면 순서가 뒤바뀐 패킷을 잘못 해석한다. 상세 알고리즘은 RFC 4303 부록 A를 따른다.
 
-### 4.1 Java 구현 예제
+## 3. 비트 시프트
+
+아래 예제는 ESN을 사용하지 않는 32비트 시퀀스 번호를 Java `long`으로 표현한다. 유효 범위는 1부터 $2^{32}-1$까지이며, 번호를 소진하기 전에 새 SA를 설정해야 한다. 시퀀스 번호 0은 거부한다.
 
 ```java
 public final class AntiReplayWindow {
+    private static final int WINDOW_SIZE = 64;
+    private static final long MAX_SEQUENCE = 0xffff_ffffL;
+    private long highest;
+    private long bitmap;
 
-    private static final int WINDOW_SIZE = 64; // long 한 워드로 표현
-    private long highest = -1L;                // 아직 수신 없음
-    private long bitmap = 0L;                  // bit i == (highest - i) 수신 여부
-
-    /** 무결성 검증 전 1차 판정. true면 검증 진행, false면 즉시 폐기 */
-    public synchronized boolean accept(long seq) {
-        if (highest < 0) return true;              // 첫 패킷
+    public synchronized boolean mayAccept(long seq) {
+        if (seq <= 0 || seq > MAX_SEQUENCE) return false;
+        if (seq > highest) return true;
         long offset = highest - seq;
-        if (offset >= WINDOW_SIZE) return false;    // 윈도우보다 오래됨
-        if (offset < 0) return true;                // 윈도우보다 신규
-        return ((bitmap >>> offset) & 1L) == 0L;     // 0이면 미수신(중복 아님)
+        return offset < WINDOW_SIZE && ((bitmap >>> offset) & 1L) == 0;
     }
 
-    /** 무결성 검증 성공 후에만 호출 — 윈도우를 갱신한다 */
-    public synchronized void markReceived(long seq) {
-        if (highest < 0) {
+    // 무결성 검증에 성공한 패킷에만 호출한다.
+    public synchronized boolean commitAuthenticated(long seq) {
+        if (!mayAccept(seq)) return false;
+        if (seq > highest) {
+            long shift = seq - highest;
+            bitmap = shift >= WINDOW_SIZE ? 0L : bitmap << shift;
             highest = seq;
-            bitmap = 1L;
-            return;
-        }
-        long offset = highest - seq;
-        if (offset < 0) {                           // 신규 → 슬라이드
-            long shift = -offset;
-            // long의 <<는 시프트 값을 64로 나눈 나머지만 적용하므로
-            // WINDOW_SIZE 이상이면 명시적으로 0 처리해야 한다
-            bitmap = (shift >= WINDOW_SIZE) ? 0L : (bitmap << shift);
             bitmap |= 1L;
-            highest = seq;
-        } else {                                     // 윈도우 내부 → 비트만 표시
-            bitmap |= (1L << offset);
+        } else {
+            bitmap |= 1L << (highest - seq);
         }
+        return true;
     }
 }
 ```
 
-사용 예:
+`mayAccept()`는 불필요한 암호 연산을 줄이는 사전 검사다. 다른 스레드가 검증 중에 윈도우를 갱신할 수 있으므로, 실제 처리 여부는 `commitAuthenticated()`의 반환값으로 결정한다.[^1]
 
 ```java
-AntiReplayWindow window = new AntiReplayWindow();
-
 long seq = extractSequenceNumber(packet);
-if (!window.accept(seq)) {
-    drop(packet);
-} else if (verifyIntegrity(packet)) {
-    window.markReceived(seq);
+if (window.mayAccept(seq)
+        && verifyIntegrity(packet)
+        && window.commitAuthenticated(seq)) {
     process(packet);
 } else {
-    drop(packet); // 무결성 실패 — 윈도우 상태 불변
+    drop(packet);
 }
 ```
 
-## 5. RFC 6479 개선: 블록 기반 순환 비트맵
+`extractSequenceNumber`, `verifyIntegrity`, `process`, `drop`에 해당하는 처리는 프로토콜 구현이 제공해야 한다. 클래스는 재전송 상태 관리만 담당하며 패킷의 무결성을 검증하지 않는다.
 
-비트 시프트 방식은 패킷마다 비트맵을 갱신해야 해 고속 환경에서 비효율적이다. [RFC 6479](https://datatracker.ietf.org/doc/html/rfc6479)는 비트맵을 **N비트 블록 M개로 구성된 원형(circular) 구조**로 바꾼다.
+## 4. 순환 비트맵
 
-- 시퀀스 번호의 하위 비트로 블록 인덱스를 직접 계산 — 윈도우 하단 인덱스에 의존하지 않음
-- 새 시퀀스 번호가 블록 경계를 넘으면 해당 블록 전체를 한 번에 0으로 초기화(비트 단위 시프트 불필요)
-- 결과적으로 비트맵 갱신 횟수가 1/N로 줄어 고속 처리에 유리
+RFC 6479는 비트 시프트 대신 블록을 순환시킨다. 블록 수 $M$과 블록당 비트 수 $B$에 대해 저장 공간은 $MB$비트이며, 지원 윈도우는 $(M-1)B$패킷이다. 예를 들어 32비트 워드 32개를 사용하면 저장 공간은 1024비트, 지원 윈도우는 992패킷이다. 여분의 한 블록은 새 블록 진입 시 초기화해도 유효 범위의 수신 기록을 보존하기 위해 필요하다.
 
-### 5.1 Java 구현 예제
-
-RFC 6479는 32비트 워드 32개(총 1024비트 윈도우)를 예시로 든다. 4.1의 64비트 단일 워드 예제보다 실무에 가까운 크기다.
+각 수신 패킷의 비트는 계속 갱신하지만, 블록 초기화는 경계를 넘을 때 수행한다. 순차 수신 시 블록 초기화 빈도가 패킷당 비트 시프트보다 낮다. 전체 비트맵 갱신 횟수가 1/B로 줄어드는 것은 아니다.
 
 ```java
 public final class Rfc6479AntiReplayWindow {
-
     private static final int BITS_PER_WORD = 32;
-    private static final int WORD_COUNT = 32;                  // 32*32 = 1024비트 윈도우
-    private static final int REDUNDANT_BIT_SHIFTS = 5;         // log2(BITS_PER_WORD)
-    private static final int BITMAP_INDEX_MASK = WORD_COUNT - 1;
-    private static final int BITMAP_LOC_MASK = BITS_PER_WORD - 1;
-
+    private static final int WORD_COUNT = 32;
+    private static final int WINDOW_SIZE = (WORD_COUNT - 1) * BITS_PER_WORD;
+    private static final long MAX_SEQUENCE = 0xffff_ffffL;
     private final int[] bitmap = new int[WORD_COUNT];
-    private long lastSeq = -1L; // 아직 수신 없음
+    private long highest;
 
-    public synchronized boolean accept(long seq) {
-        if (lastSeq < 0) return true;
-        if (seq > lastSeq) return true;                                   // 신규
-        if (seq + (long) WORD_COUNT * BITS_PER_WORD <= lastSeq) return false; // 윈도우보다 오래됨
-        int bitLocation = (int) (seq & BITMAP_LOC_MASK);
-        int index = (int) ((seq >>> REDUNDANT_BIT_SHIFTS) & BITMAP_INDEX_MASK);
-        return (bitmap[index] & (1 << bitLocation)) == 0;                 // 0이면 미수신
+    public synchronized boolean mayAccept(long seq) {
+        if (seq <= 0 || seq > MAX_SEQUENCE) return false;
+        if (seq > highest) return true;
+        if (highest - seq >= WINDOW_SIZE) return false;
+        int index = (int) ((seq >>> 5) & (WORD_COUNT - 1));
+        int mask = 1 << (seq & (BITS_PER_WORD - 1));
+        return (bitmap[index] & mask) == 0;
     }
 
-    /** 무결성 검증 성공 후에만 호출 */
-    public synchronized void markReceived(long seq) {
-        if (lastSeq < 0) {
-            lastSeq = seq;
-        } else if (seq > lastSeq) {
-            long blockCur = lastSeq >>> REDUNDANT_BIT_SHIFTS;
-            long blockNew = seq >>> REDUNDANT_BIT_SHIFTS;
-            long toClear = Math.min(blockNew - blockCur, WORD_COUNT);     // 시프트 대신 블록 통째로 초기화
-            for (long i = 1; i <= toClear; i++) {
-                bitmap[(int) ((blockCur + i) & BITMAP_INDEX_MASK)] = 0;
+    // 무결성 검증에 성공한 패킷에만 호출한다.
+    public synchronized boolean commitAuthenticated(long seq) {
+        if (!mayAccept(seq)) return false;
+        if (seq > highest) {
+            long oldBlock = highest >>> 5;
+            long newBlock = seq >>> 5;
+            long count = Math.min(newBlock - oldBlock, WORD_COUNT);
+            for (long i = 1; i <= count; i++) {
+                bitmap[(int) ((oldBlock + i) & (WORD_COUNT - 1))] = 0;
             }
-            lastSeq = seq;
+            highest = seq;
         }
-        int bitLocation = (int) (seq & BITMAP_LOC_MASK);
-        int index = (int) ((seq >>> REDUNDANT_BIT_SHIFTS) & BITMAP_INDEX_MASK);
-        bitmap[index] |= (1 << bitLocation);
+        int index = (int) ((seq >>> 5) & (WORD_COUNT - 1));
+        bitmap[index] |= 1 << (seq & (BITS_PER_WORD - 1));
+        return true;
     }
 }
 ```
 
-4.1과의 차이: 비트맵을 통째로 시프트하는 대신, 새 시퀀스 번호가 진입한 블록까지만 `bitmap[idx] = 0`으로 초기화한다. 시프트 연산이 사라지고 블록 단위로만 갱신하므로 윈도우가 클수록 이득이 커진다.
+이 예제도 3장의 호출 순서를 사용하며 ESN은 지원하지 않는다. 64패킷 시프트 구현과 992패킷 순환 구현은 허용하는 순서 뒤바뀜 범위가 다르다.
 
-## 6. 활용 예시
+## 5. 활용
 
-Sliding window 기반 anti-replay는 순서를 보장하지 않는 전송 위에서, 무결성 검증과 별개로 재전송을 걸러내야 하는 프로토콜에 널리 쓰인다.
-
-- **IPsec AH/ESP** — [RFC 4303](https://www.rfc-editor.org/rfc/rfc4303.html)/RFC 4302가 정의하는 원 사용처. 2~5장이 이 스펙 기준
-- **DTLS(Datagram TLS)** — UDP 위에서 동작해 TCP 기반 TLS보다 순서 뒤섞임·중복 문제가 크다. [RFC 6347](https://datatracker.ietf.org/doc/html/rfc6347)이 IPsec과 동일한 방식의 비트맵 윈도우 기반 레코드 재생 탐지를 옵션으로 정의
-- **SRTP(Secure RTP)** — [RFC 3711](https://datatracker.ietf.org/doc/html/rfc3711). RTP의 16비트 시퀀스 번호에 32비트 Rollover Counter(ROC)를 더해 48비트 시퀀스 번호를 구성하고, 이를 기준으로 재생 방지 윈도우를 적용
+- IPsec AH·ESP는 SA별 재전송 방지 윈도우를 사용한다.
+- DTLS 1.2는 RFC 6347에서 레코드 중복 탐지를 위한 윈도우를 설명한다.
+- SRTP는 RTP 시퀀스 번호와 Rollover Counter로 패킷 인덱스를 구성하고 재전송을 검사한다.
 
 ---
 
 ## Sources
-- [RFC 4303 — IP Encapsulating Security Payload (ESP)](https://www.rfc-editor.org/rfc/rfc4303.html)
-- [RFC 6479 — IPsec Anti-Replay Algorithm without Bit Shifting](https://datatracker.ietf.org/doc/html/rfc6479)
-- [RFC 6347 — Datagram Transport Layer Security Version 1.2](https://datatracker.ietf.org/doc/html/rfc6347)
-- [RFC 3711 — The Secure Real-time Transport Protocol (SRTP)](https://datatracker.ietf.org/doc/html/rfc3711)
+- [RFC 4303 §3.4.3, Appendix A](https://www.rfc-editor.org/rfc/rfc4303.html)
+- [RFC 6479 §2–3](https://www.rfc-editor.org/rfc/rfc6479.html)
+- [RFC 6347 §4.1.2.6](https://www.rfc-editor.org/rfc/rfc6347.html#section-4.1.2.6)
+- [RFC 3711 §3.3.2](https://www.rfc-editor.org/rfc/rfc3711.html#section-3.3.2)
 
 ---
 ## Related pages
 - [[replay-attack]]
+
+---
+
+[^1]: 코드 분석에 따른 구현 판단. 사전 검사와 갱신을 각각 동기화해도 두 호출 사이에 다른 스레드가 실행될 수 있다. 검증 후 중복 검사와 상태 갱신을 같은 임계 구역에서 수행하고, 성공한 호출만 패킷을 처리하도록 구성했다. 프로세스가 상태를 공유하는 경우에도 동등한 원자성이 필요하다.

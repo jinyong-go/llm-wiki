@@ -2,6 +2,34 @@
 
 ---
 
+## 2026-10-19 18:01:14
+
+- **수정**: `wiki/security/web/` 10개 문서의 구성·문장 개선. CORS 설정 오류, CSRF Fetch Metadata·Spring Security 설정, XSS Trusted Types·CSP 설정, JWT 헤더 파라미터·명시적 타입, OAuth 확장 규격·리소스 서버 구현, OIDC 로그아웃·SAML 서명 래핑, WebAuthn Passkey, 재전송 방지 Redis 구현, 세션 Spring 설정 항목 추가
+- **수정**: XSS 실행 예제를 클라이언트 렌더링 항목으로, JWT의 JWE를 서명 알고리즘 뒤로, 재전송 공격을 대상·방어·구현 순으로, 세션 하이재킹 공격 기법을 OWASP 분류 순으로 재배치. WebAuthn 벤더 목록 압축, 사례·각주·구분선 정리
+
+## 2026-10-19 17:50:53
+
+- **수정**: `wiki/security/web/cors.md`의 SOP 풀 이름과 요청·응답 헤더 설명을 보완. 개요·단순 요청 조건을 다듬고 Spring 경로 패턴을 복원. no-cors·응답 헤더 노출·오류 진단 항목 추가
+
+## 2026-10-19 17:47:41
+
+- **수정**: `wiki/security/crypto/cms.md` 구조 개편. 콘텐츠 타입 표와 구조 상세를 타입별 하위 항목으로 통합하고 DigestedData·EncryptedData·AuthenticatedData·AuthEnvelopedData 설명과 ASN.1을 보강. 규격 계보·알고리즘·상위 규격을 관련 규격 항목으로 이동
+- **수정**: `wiki/security/pki/` 5개 문서에 lint 결과(`logs/lint/report-20261019-pki.md`)를 반영. 코드서명 HSM·SmartScreen 서술, CRL 갱신 주기, 다단계 중간 CA 설명을 정정하고 CMP 대화 잔재 문장을 삭제. 인증서 폐기·CMP 제목을 단순화하고 각주를 문서 최하단으로 이동. timestamp-token의 CMS 절 참조를 갱신
+
+## 2026-10-19 17:26:20
+
+- **생성**: `wiki/security/web/xss.md`에 XSS 유형별 예제, 출력 인코딩·HTML 정제·CSP·쿠키 방어, MySpace·Twitter·TweetDeck 사고 사례를 작성
+- **수정**: `wiki/index.md`에 XSS 항목 추가
+
+## 2026-10-19 17:18:36
+
+- **수정**: `wiki/security/crypto/` 7개 문서에 lint 결과(`logs/lint/report-20261019.md`)를 반영. ML-DSA 서명 의사코드의 κ 증가 위치와 개인키 크기 공식, 근거 없는 서술을 정정하고 CMS detached 서명 설명을 RFC 5652에 맞춰 수정. 해시 함수의 SHA-3 권장·BLAKE3 표준·Git SHA-256 현황을 갱신하고 PBKDF2 출처를 RFC 8018로, SSLv3 설명을 정정. 각주를 문서 최하단으로 이동
+
+## 2026-10-19 17:18:00
+
+- **수정**: `wiki/security/web/` 9개 문서의 CORS·쿠키 전송, CSRF 조건, JWT 검증·폐기, OAuth PKCE·토큰 보관, SSO 흐름, WebAuthn Level 3 검증, 세션·재전송 방어 설명을 정정. 재전송 방지 Java 예제의 동시성·윈도우 크기를 수정하고 출처·제목·중복 요약을 정리
+- **수정**: `wiki/index.md`의 웹 보안 항목을 주제 수준으로 축약
+
 ## 2026-10-15 22:47:28
 
 - **수정**: `wiki/java/common/gc-monitoring.md` — GCTimeRatio·Unified Logging 기본값·JDK 8 옵션 대체·jcmd attach 조건을 정정. 도구 영향도와 지표 설명을 명확히 하고 Sources 링크를 Markdown으로 통일

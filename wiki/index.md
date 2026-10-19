@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-15 22:47:28
+updated: 2026-10-19 17:26:20
 tags:
   - meta
 ---
@@ -204,15 +204,16 @@ tags:
 
 ### Web
 
-- [[cors]] — CORS: SOP 완화 메커니즘, 프리플라이트, 설정
-- [[csrf]] — CSRF: 성립 조건, GET/POST 취약성, 방어(토큰·SameSite·Origin 검증·Custom Header), 실제 사고 사례(Netflix/YouTube/uTorrent 등)
-- [[jwt]] — JWT: 구조, 서명 방식, 검증, 보안
-- [[oauth2]] — OAuth 2.0: 역할, Grant Type, PKCE, 보안 BCP
-- [[sso]] — SSO: IdP/SP 모델, SAML 2.0/OpenID Connect/Kerberos 비교
-- [[webauthn]] — WebAuthn: 공개키 기반 등록·인증 Ceremony, Attestation, Authenticator 분류, FIDO2/Passkey
-- [[replay-attack]] — Replay Attack: 재전송 공격과 방어(Nonce/타임스탬프/조합), Sliding Window 개요
-- [[sliding-window]] — Sliding Window(Anti-Replay Window): 구조·판정 규칙, RFC 4303/6479 구현(Java 예제), IPsec/DTLS/SRTP 활용 예시
-- [[session-hijacking]] — 세션 하이재킹: 공격 기법(스니핑/예측/무차별 대입/고정/클라이언트 탈취/노출), 방어(엔트로피·TLS·재발급·타임아웃), Firesheep 사례
+- [[cors]] — CORS와 교차 출처 요청
+- [[csrf]] — CSRF와 요청 위조 방어
+- [[xss]] — XSS 유형과 방어
+- [[jwt]] — JWT 구조와 검증
+- [[oauth2]] — OAuth 2.0과 PKCE
+- [[sso]] — SAML·OIDC·Kerberos 기반 SSO
+- [[webauthn]] — WebAuthn과 패스키 인증
+- [[replay-attack]] — 재전송 공격과 방어
+- [[sliding-window]] — 재전송 방지 윈도우
+- [[session-hijacking]] — 세션 하이재킹과 방어
 
 ## 프로그래밍 일반
 
