@@ -1,6 +1,6 @@
 ---
 title: vi/vim 모드 체계
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - vim
@@ -69,3 +69,4 @@ Command-line 모드에서 실행한다.
 - [[vim-03-editing]]
 - [[vim-04-search-replace]]
 - [[vim-05-practical]]
+- [[readline-shortcuts]]

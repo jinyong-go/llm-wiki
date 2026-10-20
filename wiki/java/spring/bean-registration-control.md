@@ -1,6 +1,6 @@
 ---
 title: 설정 기반 동적 빈 등록 제어
-updated: 2026-07-14 11:26:44
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring-boot
@@ -141,7 +141,7 @@ public class DefaultsSelector implements DeferredImportSelector, EnvironmentAwar
 ### 5.3. 한계
 
 - 반환이 FQCN 문자열이라 컴파일 타임 타입 안전성이 없다. 오타·이름 변경은 런타임에 발견된다.
-- 등록 단위가 `@Configuration` 클래스다. 임의 빈 정의를 직접 만들 수는 없다(그 용도는 6장).
+- 등록 단위가 `@Configuration` 클래스다. 임의 빈 정의를 직접 만들 수는 없다(그 용도는 §6).
 - 셀렉터 자체는 정식 빈이 아니므로 일반 DI를 받을 수 없다. `Environment` 등 지원되는 4종만 접근 가능하다.
 
 ## 6. ImportBeanDefinitionRegistrar — 빈 정의 직접 생성
@@ -220,7 +220,6 @@ public class DynamicRegistrarProcessor
 - 진입점이 어노테이션에 드러나지 않아 어디서 빈이 등록되는지 코드 추적이 어렵다.[^1]
 - 기존 빈 정의까지 수정할 수 있는 강한 권한만큼 남용 시 구성 파악이 어려워진다.[^1]
 
-[^1]: 출처의 직접 서술이 아니라 BeanFactoryPostProcessor의 조기 인스턴스화·프로그래밍 방식 등록이라는 동작 특성으로부터 도출한 실무 권고임.
 
 ## 8. ApplicationContextInitializer — refresh 이전 개입
 
@@ -285,7 +284,7 @@ public class MyConfiguration { }
 ### 9.2. 한계
 
 - Spring Framework 7.0(Spring Boot 4)부터만 사용할 수 있다. 이전 버전과 호환되지 않는다.
-- 6장 `ImportBeanDefinitionRegistrar`와 달리 `AnnotationMetadata`를 받지 않으므로 `@EnableXxx(속성)` 형태의 어노테이션 속성 기반 분기에는 부적합하다.
+- §6 `ImportBeanDefinitionRegistrar`와 달리 `AnnotationMetadata`를 받지 않으므로 `@EnableXxx(속성)` 형태의 어노테이션 속성 기반 분기에는 부적합하다.
 
 ## 10. 커스텀 자동 구성 모듈 — 라이브러리 배포 형태
 
@@ -319,7 +318,6 @@ com.mycorp.libx.autoconfigure.LibXAutoConfiguration
 - 자동 구성 클래스는 imports 파일로만 로드되어야 하며 컴포넌트 스캔 대상이 되면 안 된다. 별도 모듈/패키지 분리가 필요하다.
 - 단일 애플리케이션 내부의 단순 분기 목적으로는 구조가 과하다.[^2]
 
-[^2]: 자동 구성 모듈의 구조 요구(별도 모듈 분리, imports 파일 로드)로부터 도출한 실무 권고임.
 
 ## 11. 선택 기준
 
@@ -352,3 +350,8 @@ com.mycorp.libx.autoconfigure.LibXAutoConfiguration
 - [[configuration-properties]]
 - [[mybatis]]
 - [[enable-annotations]]
+
+---
+
+[^1]: 출처의 직접 서술이 아니라 BeanFactoryPostProcessor의 조기 인스턴스화·프로그래밍 방식 등록이라는 동작 특성으로부터 도출한 실무 권고임.
+[^2]: 자동 구성 모듈의 구조 요구(별도 모듈 분리, imports 파일 로드)로부터 도출한 실무 권고임.

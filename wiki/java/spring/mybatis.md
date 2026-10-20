@@ -1,6 +1,6 @@
 ---
 title: MyBatis — 설정·의존성, 매핑, 트랜잭션, 키 생성
-updated: 2026-07-09 16:42:53
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -31,7 +31,7 @@ MyBatis는 SQL을 직접 작성하고 Java 객체와 매핑하는 **SQL 매핑 �
 </dependency>
 ```
 
-**`mybatis-config.xml`** — 단독 사용 시에는 `<environments>`/`<dataSource>`/`<transactionManager>`를 **직접 정의**한다 (Spring 통합 시에는 무시됨, 3장 참고).
+**`mybatis-config.xml`** — 단독 사용 시에는 `<environments>`/`<dataSource>`/`<transactionManager>`를 **직접 정의**한다 (Spring 통합 시에는 무시됨, §3 참고).
 
 ```xml
 <configuration>
@@ -67,7 +67,7 @@ try (SqlSession session = factory.openSession()) {   // autoCommit=false (기본
 }
 ```
 
-> `openSession()`의 기본 `autoCommit=false` → 변경은 `commit()` 전까지 반영되지 않으며 예외 시 `rollback()`. `openSession(true)`로 열면 문장마다 자동 커밋된다 (5장).
+> `openSession()`의 기본 `autoCommit=false` → 변경은 `commit()` 전까지 반영되지 않으며 예외 시 `rollback()`. `openSession(true)`로 열면 문장마다 자동 커밋된다 (§5).
 
 ### 2.2. Spring Boot 자동 설정
 
@@ -245,7 +245,7 @@ SQL을 정의하고 결과를 객체로 받는 방법을 다룬다 — Mapper �
 
 ### 4.1. Mapper 작성
 
-#### 애너테이션 방식
+#### 4.1.1. 애너테이션 방식
 
 ```java
 @Insert("INSERT INTO person(name) VALUES (#{name})")
@@ -261,7 +261,7 @@ void updatePerson(Person person);
 void deletePersonById(Integer personId);
 ```
 
-#### XML 방식
+#### 4.1.2. XML 방식
 
 ```xml
 <mapper namespace="com.example.mapper.PersonMapper">
@@ -279,10 +279,10 @@ void deletePersonById(Integer personId);
 
 ### 4.2. 결과값 객체 매핑
 
-#### 컬럼명 자동 매핑
+#### 4.2.1. 컬럼명 자동 매핑
 `mapUnderscoreToCamelCase=true`면 `first_name` 컬럼이 `firstName` 프로퍼티에 자동 매핑된다. 그 외에는 SELECT 별칭이나 명시적 매핑이 필요하다.
 
-#### 명시적 매핑 (@Results / XML resultMap)
+#### 4.2.2. 명시적 매핑 (@Results / XML resultMap)
 
 ```java
 @Select("SELECT person_id, name FROM person WHERE person_id = #{id}")
@@ -309,7 +309,7 @@ Person getPersonById(Integer id);
 </select>
 ```
 
-#### 연관 관계 매핑
+#### 4.2.3. 연관 관계 매핑
 
 ```java
 // 1:N — @Many (중첩 select)
@@ -328,7 +328,7 @@ XML에서는 `<association>`(N:1·1:1), `<collection>`(1:N)으로 표현한다. 
 
 INSERT 후 DB가 생성한 PK를 파라미터 객체의 프로퍼티로 되돌려 받는다.
 
-#### MySQL 등 AUTO_INCREMENT — `useGeneratedKeys`
+#### 4.3.1. MySQL 등 AUTO_INCREMENT — `useGeneratedKeys`
 
 JDBC 드라이버의 `getGeneratedKeys()`를 사용한다. 생성된 키는 `keyProperty`가 가리키는 파라미터 객체 필드에 채워진다.
 
@@ -347,7 +347,7 @@ void save(Person person);   // 호출 후 person.getPersonId()에 생성된 PK�
 
 전역 적용: `mybatis.configuration.use-generated-keys=true`.
 
-#### 시퀀스/미지원 DB — `<selectKey>` / `@SelectKey`
+#### 4.3.2. 시퀀스/미지원 DB — `<selectKey>` / `@SelectKey`
 
 `useGeneratedKeys`는 DB의 AUTO_INCREMENT 지원이 전제다. Oracle 시퀀스처럼 미지원이거나 커스텀 키 로직이 필요하면 `selectKey`를 사용한다.
 
@@ -372,7 +372,7 @@ void save(Person person);
 
 ### 4.4. Dynamic SQL
 
-#### XML 태그
+#### 4.4.1. XML 태그
 
 ```xml
 <select id="search" resultType="Person">
@@ -390,7 +390,7 @@ void save(Person person);
 
 `<where>`는 선행 `AND`/`OR`를 자동 제거한다. 그 외 `<choose>/<when>/<otherwise>`, `<set>`, `<trim>` 등을 제공한다.
 
-#### 애너테이션 방식 (Provider)
+#### 4.4.2. 애너테이션 방식 (Provider)
 
 ```java
 @SelectProvider(type = PersonSqlProvider.class, method = "getPersonByName")

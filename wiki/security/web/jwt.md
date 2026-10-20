@@ -1,6 +1,6 @@
 ---
 title: JWT
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 18:00:44
 tags:
   - web
   - jwt
@@ -13,7 +13,7 @@ tags:
 
 JWT(JSON Web Token, RFC 7519)는 두 당사자 간에 클레임(claim)을 전달하기 위한 컴팩트하고 URL-safe한 토큰 규격이다. 클레임은 JSON으로 표현한다. JWS는 서명 또는 MAC으로 무결성을 보호하고, JWE는 인증된 암호화로 기밀성과 무결성을 보호한다.
 
-핵심: JWT는 "데이터 포맷"이지 프로토콜이 아니다. 발급·전달·검증 방법은 이를 쓰는 애플리케이션이 정한다. OAuth 2.0의 토큰 포맷으로 쓰일 수 있지만(→ [[oauth2]] §8.2), OAuth와 무관하게 자체 세션 토큰·서비스 간 주장 전달에도 쓴다.
+핵심: JWT는 "데이터 포맷"이지 프로토콜이 아니다. 발급·전달·검증 방법은 이를 쓰는 애플리케이션이 정한다. OAuth 2.0의 토큰 포맷으로 쓰일 수 있지만([[oauth2]] §8.2), OAuth와 무관하게 자체 세션 토큰·서비스 간 주장 전달에도 쓴다.
 
 용도: 인가(로그인 후 자원 접근 자격), 정보 교환(서명으로 위·변조 검증 가능한 데이터 전달).
 
@@ -29,15 +29,18 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9   ← header
 .dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk  ← signature
 ```
 
-- base64url은 암호화가 아니라 인코딩이다. header·payload는 누구나 디코딩해 읽을 수 있다(JWS 기준). 서명은 위·변조를 막을 뿐 내용을 숨기지 않는다.
+- base64url은 암호화가 아닌 인코딩이기 때문에 JWS의 header와 payload는 누구나 디코딩해 읽을 수 있다. 서명은 위·변조를 검증하는 데 사용되며, 내용을 숨기지는 않는다.
 
-### 2.1. JOSE Header
+### 2.1. Header
+
+정식 명칭은 JOSE Header이며, JWT에 적용하는 서명·암호화 알고리즘과 토큰 타입 등의 정보를 담는다.
+
 ```json
 { "alg": "HS256", "typ": "JWT" }
 ```
 - `alg`: JWS의 서명·MAC 알고리즘 또는 JWE의 키 관리 알고리즘을 나타낸다. JWS에서는 HS256·RS256·ES256 등을 사용한다. JWE의 콘텐츠 암호화 알고리즘은 `enc`에 지정한다.
 - `typ`: 토큰 타입을 나타낸다. 일반 JWT는 `JWT`, OAuth JWT access token 프로파일은 `at+jwt`를 사용한다.
-- `kid`: 검증 키를 선택하기 위한 식별자다. 신뢰하는 키 집합 안에서만 해석한다(8장).
+- `kid`: 검증 키를 선택하기 위한 식별자다. 신뢰하는 키 집합 안에서만 해석한다(§8).
 
 ### 2.2. Payload
 ```json
@@ -76,7 +79,18 @@ IANA "JSON Web Token Claims" 레지스트리에 등록된 클레임이다. 사�
 
 ### 3.3. 비공개 클레임
 
-발급자와 검증자가 상호 합의해 사용하는 클레임으로, 등록 클레임도 공개 클레임도 아닌 이름이다. 충돌 방지 장치가 없으므로 당사자 간에만 통용되도록 주의해서 사용해야 한다.
+발급자와 검증자가 이름과 의미를 합의해 사용하는 클레임으로, 등록 클레임이나 공개 클레임에 해당하지 않는다. ‘비공개’는 합의한 당사자 사이에서 사용하는 이름이라는 뜻이며, 값이 암호화되거나 숨겨진다는 뜻은 아니다.
+
+아래는 서비스 내부의 테넌트 식별자와 권한 목록을 자체 정의한 예시다.
+
+```json
+{
+  "app_tenant_id": "tenant-42",
+  "app_permissions": ["orders:read", "orders:write"]
+}
+```
+
+이 예시에서 `app_tenant_id`는 사용자가 속한 테넌트를, `app_permissions`는 허용된 작업 목록을 나타낸다. 다른 서비스에서는 같은 이름을 다른 의미나 자료형으로 사용할 수 있으므로, 토큰을 주고받는 서비스 간에 정의를 일치시켜야 한다.
 
 ---
 
@@ -100,7 +114,15 @@ IANA "JSON Web Token Claims" 레지스트리에 등록된 클레임이다. 사�
 
 JWE(JSON Web Encryption, RFC 7516)는 페이로드를 암호화해 기밀성을 보장하는 방식이다. §2의 서명형(JWS)은 header·payload가 base64url 인코딩일 뿐이라 누구나 읽을 수 있고 서명은 위·변조만 막는 반면, JWE는 페이로드 자체를 암호화하므로 제3자가 내용을 읽을 수 없다.
 
-구조도 다르다. JWS는 `header.payload.signature` 3-segment인 반면, JWE는 Compact Serialization 기준 `BASE64URL(Protected Header) || '.' || BASE64URL(Encrypted Key) || '.' || BASE64URL(IV) || '.' || BASE64URL(Ciphertext) || '.' || BASE64URL(Authentication Tag)`, 5-segment 구조다(RFC 7516 §3.1).
+JWE는 Compact Serialization 기준으로 다음 다섯 부분을 `.`으로 연결한다. `||`는 연결 연산을 뜻하며, 아래 줄들을 이어 붙이면 하나의 문자열이 된다(RFC 7516 §3.1).
+
+```text
+BASE64URL(UTF8(Protected Header)) || '.' ||
+BASE64URL(Encrypted Key) || '.' ||
+BASE64URL(IV) || '.' ||
+BASE64URL(Ciphertext) || '.' ||
+BASE64URL(Authentication Tag)
+```
 
 통상 "JWT"라고 하면 JWS 형태를 가리키며 대부분의 인증 토큰이 여기 해당한다. JWE는 민감한 데이터를 토큰에 직접 담아야 할 때 사용한다.
 
@@ -131,7 +153,7 @@ JWE(JSON Web Encryption, RFC 7516)는 페이로드를 암호화해 기밀성을 
 - `Secure`: HTTPS 연결에서만 전송.
 - `SameSite=Strict` 또는 `Lax`: 크로스사이트 요청에 자동 첨부되지 않도록 제한. CSRF에 대한 심층 방어 수단이며 CSRF 토큰을 대체하지는 않는다. `SameSite=None`은 반드시 `Secure`와 함께 사용해야 한다.
 
-교차 출처 요청의 쿠키 전송 조건은 [[cors]] 6장을 참고한다. 클라이언트 타입별 저장 위치 비교는 [[oauth2]] 7.2절을 참고한다.
+교차 출처 요청의 쿠키 전송 조건은 [[cors]] §6을 참고한다. 클라이언트 타입별 저장 위치 비교는 [[oauth2]] §7.2를 참고한다.
 
 `HttpOnly; Secure; SameSite` 쿠키를 우선 사용하거나 BFF(Backend-for-Frontend)[^1] 패턴을 사용하는 것이 권장된다.
 
@@ -144,8 +166,8 @@ JS 변수(메모리)에만 두면 새로고침 시 소실되지만 탈취 노출
 
 RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
-- `alg: none` 공격: 서명을 제거하고 `alg`를 `none`으로 바꾼 토큰을 서버가 그대로 신뢰하면 위조 성공. → `none` 허용 금지.
-- 알고리즘 혼동(RS256 → HS256): 공격자가 `alg`를 HS256으로 바꾸면, 서버가 RSA 공개키를 HMAC 비밀로 오용해 검증이 뚫린다. → 서버가 기대하는 `alg`를 고정/allowlist로 강제(토큰의 `alg`를 신뢰하지 말 것).
+- `alg: none` 공격: 서명을 제거하고 `alg`를 `none`으로 바꾼 토큰을 서버가 그대로 신뢰하면 위조 성공. `none`은 허용하지 않는다.
+- 알고리즘 혼동(RS256에서 HS256으로 변경): 공격자가 `alg`를 HS256으로 바꾸면, 서버가 RSA 공개키를 HMAC 비밀로 오용해 검증이 뚫린다. 서버가 기대하는 `alg`를 고정/allowlist로 강제하고 토큰의 `alg`는 신뢰하지 않는다.
 - 알고리즘 allowlist: 라이브러리는 허용 알고리즘 집합을 지정하게 하고 그 외엔 쓰지 않아야 한다(MUST).
 - 모든 클레임 검증: `iss`/`sub`/`aud` 등을 검증해 토큰 치환 공격 방지.
 - 키 엔트로피: HS256의 키로 사람이 외우는 비밀번호를 직접 쓰지 말 것(MUST NOT). 충분히 랜덤한 키 사용.
@@ -157,16 +179,18 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 
 ## 9. 장단점
 
-장점
+### 9.1. 장점
+
 - Stateless·자기 완결형: 서버가 세션을 저장하지 않고 토큰만으로 검증(DB 조회 불필요).
 - 분산·교차 도메인: 공개키만 배포하면 여러 서비스가 독립 검증(비대칭).
 - 표준·언어 무관 생태계.
 
-단점
+### 9.2. 단점
+
 - 폐기: 자체 검증만으로는 발급된 access token이 만료 전에 폐기됐는지 알 수 없다. 즉시 차단하려면 거부 목록 등 서버 측 상태를 확인해야 한다. 짧은 만료는 노출 기간을 제한하고, refresh token 회전은 갱신 자격의 재사용을 탐지한다. 회전만으로 기존 access token이 즉시 폐기되지는 않는다.
 - payload 노출: 서명형은 내용이 읽힌다(민감정보 금지).
 - 크기: 쿠키/헤더로 매 요청 전송 시 오버헤드.
-- 잘못 쓰기 쉬움: alg 혼동·검증 누락 등 구현 함정. 6장과 8장을 참고한다.
+- 잘못 쓰기 쉬움: alg 혼동·검증 누락 등 구현 함정. §6과 §8을 참고한다.
 
 ---
 
@@ -192,6 +216,7 @@ RFC 8725(JWT Best Current Practices)이 정리한 권고 사항이다.
 - [[oauth2]]
 - [[openssl-dgst]]
 - [[openssl-keygen]]
+- [[padding-oracle-attack]]
 
 ---
 

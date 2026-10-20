@@ -1,6 +1,6 @@
 ---
 title: 모듈 시스템
-updated: 2026-08-24 17:40:06
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - commonjs
@@ -48,7 +48,7 @@ console.log(area(4));
 |---|---|---|
 | 로드 시점 | `require()` 호출 시 동기적으로 읽고 즉시 실행 | 정적 분석으로 의존성 그래프 구성 후 비동기 로드·실행 |
 | 정적/동적 | 런타임 함수 호출 → 조건문·반복문 안에서도 호출 가능(동적) | 최상위에서만 선언 가능(정적). 동적 로딩은 `import()` |
-| 모듈 해석 | 확장자 생략·자동 탐색(`.js`→`.json`→`.node`) 가능, 디렉토리의 `index.js` 자동 해석 지원 | 확장자 명시 필수, 디렉토리 자동 해석 없음(`exports` 필드로만 하위 진입점 정의, 4.3장 참고) |
+| 모듈 해석 | 확장자 생략·자동 탐색(`.js`→`.json`→`.node`) 가능, 디렉토리의 `index.js` 자동 해석 지원 | 확장자 명시 필수, 디렉토리 자동 해석 없음(`exports` 필드로만 하위 진입점 정의, §4.3 참고) |
 | 내보낸 값 | 내보낸 시점의 스냅숏 (재할당 반영 안 됨, 객체 프로퍼티 변경은 반영) | live binding (원본 값 변경이 자동 반영, 재할당은 불가) |
 | 최상위 `this` | `module.exports`(빈 객체) | `undefined` |
 | top-level await | 미지원 | 지원 |
@@ -106,11 +106,10 @@ CommonJS는 불가능하지만 ES Module은 가능하다.
 
 **`imports` 필드**: `#`로 시작하는 키만 허용되는, 패키지 **내부 전용** 매핑이다(`import '#dep'`). `exports`와 달리 외부 패키지로도 매핑할 수 있어, Node 전용 구현과 폴리필을 조건부로 분기하는 등의 용도로 쓴다.
 
-**dual package hazard**: `"import"`/`"require"` 조건이 서로 다른 파일(예: `index.mjs`/`index.cjs`)을 가리키면, 같은 패키지를 CJS와 ESM 양쪽에서 각각 로드했을 때 두 개의 독립된 모듈 인스턴스가 생길 수 있다.[^1] `instanceof` 검사나 모듈 내부의 싱글턴 상태가 두 인스턴스 사이에 공유되지 않아 예기치 않은 버그로 이어질 수 있다. `"module-sync"` 조건(4.2절의 `require(esm)`과 함께 도입)은 ESM 파일 하나를 `import`·`require()` 양쪽에서 공유해 이 문제를 줄이는 방법이다.
+**dual package hazard**: `"import"`/`"require"` 조건이 서로 다른 파일(예: `index.mjs`/`index.cjs`)을 가리키면, 같은 패키지를 CJS와 ESM 양쪽에서 각각 로드했을 때 두 개의 독립된 모듈 인스턴스가 생길 수 있다.[^1] `instanceof` 검사나 모듈 내부의 싱글턴 상태가 두 인스턴스 사이에 공유되지 않아 예기치 않은 버그로 이어질 수 있다. `"module-sync"` 조건(§4.2의 `require(esm)`과 함께 도입)은 ESM 파일 하나를 `import`·`require()` 양쪽에서 공유해 이 문제를 줄이는 방법이다.
 
 ---
 
-[^1]: 추론. Node.js 공식 문서(packages.html)는 conditional exports가 "hazard"를 유발할 수 있다고만 언급하고, 상세 메커니즘은 외부 예제 저장소(nodejs/package-examples)로 위임한다. 여기서는 Node.js의 모듈 레지스트리가 resolve된 파일 경로 기준으로 캐시된다는 사실([[commonjs]] 3.1장)로부터, `import`/`require` 조건이 서로 다른 파일을 가리키면 캐시 키(경로)가 달라져 별도 인스턴스가 생긴다는 결론을 유추함.
 
 ## Sources
 - [MDN — JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
@@ -127,3 +126,7 @@ CommonJS는 불가능하지만 ES Module은 가능하다.
 - [[commonjs]]
 - [[es-module]]
 - [[tsconfig]] — `module`/`moduleResolution` 컴파일러 옵션
+
+---
+
+[^1]: 추론. Node.js 공식 문서(packages.html)는 conditional exports가 "hazard"를 유발할 수 있다고만 언급하고, 상세 메커니즘은 외부 예제 저장소(nodejs/package-examples)로 위임한다. 여기서는 Node.js의 모듈 레지스트리가 resolve된 파일 경로 기준으로 캐시된다는 사실([[commonjs]] §3.1)로부터, `import`/`require` 조건이 서로 다른 파일을 가리키면 캐시 키(경로)가 달라져 별도 인스턴스가 생긴다는 결론을 유추함.

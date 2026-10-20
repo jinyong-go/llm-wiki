@@ -1,6 +1,6 @@
 ---
 title: Java KeyStore
-updated: 2026-07-16 13:31:34
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - crypto
@@ -18,13 +18,13 @@ tags:
 | JKS | Java 전용 레거시 형식 |
 | JCEKS | 대칭키 저장을 지원하는 JKS 확장. 레거시 |
 
-엔트리는 대소문자 구분 없는 alias 문자열로 식별한다 (엔트리 유형은 2절 참고). PKCS#12 파일의 CLI 조작은 [[openssl-pkcs12]] 참고.
+엔트리는 대소문자 구분 없는 alias 문자열로 식별한다 (엔트리 유형은 §2 참고). PKCS#12 파일의 CLI 조작은 [[openssl-pkcs12]] 참고.
 
 ## 2. Entry
 
 `KeyStore.Entry`는 KeyStore에 저장되는 엔트리를 표현하는 인터페이스다. `setEntry`/`getEntry`가 이 타입을 주고받으며, 구현 클래스에 따라 저장되는 객체가 다르다. 조회 시 비밀번호는 `ProtectionParameter`(대표 구현 `PasswordProtection`)로 전달한다.
 
-### 2.1 PrivateKeyEntry
+### 2.1. PrivateKeyEntry
 
 개인키(`PrivateKey`)와 인증서 체인(`Certificate[]`)을 하나의 엔트리에 함께 담는다.
 
@@ -37,7 +37,7 @@ if (e instanceof KeyStore.PrivateKeyEntry pke) {
 }
 ```
 
-### 2.2 TrustedCertificateEntry
+### 2.2. TrustedCertificateEntry
 
 신뢰 인증서(`Certificate`) 1개만 담는다. 개인키가 없으므로 조회 시 `ProtectionParameter`는 null을 전달한다.
 
@@ -48,7 +48,7 @@ if (e instanceof KeyStore.TrustedCertificateEntry tce) {
 }
 ```
 
-### 2.3 SecretKeyEntry
+### 2.3. SecretKeyEntry
 
 대칭키(`SecretKey`)를 담는다.
 
@@ -60,7 +60,7 @@ KeyStore.Entry e = ks.getEntry("aes-key", new KeyStore.PasswordProtection(keyPas
 SecretKey k = ((KeyStore.SecretKeyEntry) e).getSecretKey();
 ```
 
-### 2.4 getKey와의 차이
+### 2.4. getKey와의 차이
 
 - `getKey`·`getCertificate`·`getCertificateChain`은 엔트리의 일부만 반환하는 구형 API고, `getEntry`는 엔트리 전체를 반환한다. 성능 차이는 없다 (둘 다 호출 시 키 복호화 수행).
 - `getEntry`는 `PasswordProtection` 외에 `CallbackHandlerProtection`(콜백으로 비밀번호 지연 획득)을 쓸 수 있어 PKCS#11 토큰 등 비밀번호가 문자열이 아닌 저장소에도 대응한다.
@@ -121,7 +121,6 @@ while (aliases.hasMoreElements()) {
 - **반복 조회 성능**: `getKey`는 호출할 때마다 저장된 암호화 키의 복호화를 수행한다. 요청 처리 경로에서 매번 KeyStore를 조회하면 CPU 부하가 커지므로, 기동 시 조회해 필드나 `Map<String, PrivateKey>`로 캐시한다.[^1]
 - 인증서 검증 활용은 [[cert-path-validation]], 인증서 구조는 [[x509-certificate]] 참고.
 
-[^1]: 운영 사례(`raw/troubleshoot/keystore and cpu usage.md`)에서 요청마다 KeyStore에서 인증서·개인키를 조회하도록 변경한 후 CPU 사용량이 상승했고, alias를 키로 한 Map 캐시로 전환해 정상화됐다. 호출마다 복호화가 수행된다는 원인 설명은 PKCS#12가 키를 PBE(비밀번호 기반 암호화)로 저장하는 구조에서 도출한 추론이다.
 
 ---
 ## Sources
@@ -137,3 +136,7 @@ while (aliases.hasMoreElements()) {
 - [[openssl-pkcs12]]
 - [[cert-path-validation]]
 - [[cpu-usage-troubleshooting]]
+
+---
+
+[^1]: 운영 사례(`raw/troubleshoot/keystore and cpu usage.md`)에서 요청마다 KeyStore에서 인증서·개인키를 조회하도록 변경한 후 CPU 사용량이 상승했고, alias를 키로 한 Map 캐시로 전환해 정상화됐다. 호출마다 복호화가 수행된다는 원인 설명은 PKCS#12가 키를 PBE(비밀번호 기반 암호화)로 저장하는 구조에서 도출한 추론이다.

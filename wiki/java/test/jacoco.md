@@ -1,6 +1,6 @@
 ---
 title: JaCoCo — Java 테스트 커버리지 측정
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - testing
@@ -20,7 +20,6 @@ tags:
 
 > 커버리지는 "테스트가 실행한 코드 비율"이지 "테스트가 검증한 정확성"이 아니다. 높은 커버리지가 단언(assert) 품질을 보장하지 않는다.[^1]
 
-[^1]: 커버리지의 측정 대상이 "실행 여부"라는 정의로부터 도출한 일반적 주장임. 출처가 단언 품질을 직접 다루지는 않는다.
 
 ---
 
@@ -185,7 +184,7 @@ check.dependsOn jacocoTestCoverageVerification   // check에 검증 연결(기�
 - **`jacocoTestReport`** — `test` 태스크 결과(`jacoco.exec`)로 리포트 생성. 기본 출력 `build/reports/jacoco/test/`.
 - **`jacocoTestCoverageVerification`** — `violationRules` 기준 검증. **기본적으로 `check`의 의존이 아니므로** 위처럼 직접 연결해야 한다.
 
-#### 태스크 공통 설정
+#### 5.2.1. 태스크 공통 설정
 
 두 태스크는 모두 `JacocoReportBase`를 상속하므로 분석 입력을 동일한 항목으로 제어한다.
 
@@ -195,7 +194,7 @@ check.dependsOn jacocoTestCoverageVerification   // check에 검증 연결(기�
 - `additionalClassDirs` / `additionalSourceDirs` — 다른 모듈의 클래스·소스 병합 (멀티모듈 통합 리포트)
 - `sourceSets(sourceSets.main)` — 소스셋 지정으로 클래스·소스 디렉터리 일괄 설정
 
-#### jacocoTestReport 설정
+#### 5.2.2. jacocoTestReport 설정
 
 전용 항목은 `reports`이며, 나머지는 위 공통 설정이다. `reports`의 `html`/`xml`/`csv` 각각에 다음을 지정한다.
 
@@ -211,7 +210,7 @@ jacocoTestReport {
 }
 ```
 
-#### jacocoTestCoverageVerification 설정
+#### 5.2.3. jacocoTestCoverageVerification 설정
 
 전용 항목은 `violationRules`이며, 나머지는 위 공통 설정이다. 계층은 `violationRules > rule > limit`이다.
 
@@ -226,7 +225,7 @@ jacocoTestReport {
 - `limit { }` — 한 규칙에 카운터별로 여러 개 정의 가능
 
 **`limit`** — 임계값 (JacocoLimit)
-- `counter` (기본 `INSTRUCTION`) — 검사할 카운터: `INSTRUCTION` / `LINE` / `BRANCH` / `METHOD` / `CLASS` / `COMPLEXITY` (3장의 커버리지 카운터와 대응)
+- `counter` (기본 `INSTRUCTION`) — 검사할 카운터: `INSTRUCTION` / `LINE` / `BRANCH` / `METHOD` / `CLASS` / `COMPLEXITY` (§3의 커버리지 카운터와 대응)
 - `value` (기본 `COVEREDRATIO`) — 측정 방식: `COVEREDRATIO`(커버 비율 0~1) / `MISSEDRATIO`(미커버 비율) / `COVEREDCOUNT`(커버 절대 수) / `MISSEDCOUNT`(미커버 절대 수) / `TOTALCOUNT`(전체 수)
 - `minimum` / `maximum` (기본 없음) — 하한/상한. 측정값이 범위를 벗어나면 위반. 예: `MISSEDCOUNT` + `maximum = 0` → 하나라도 놓치면 실패
 
@@ -262,7 +261,7 @@ jacocoTestCoverageVerification {
 
 불필요한 대상은 exclusion으로 제외한다. DTO·설정·생성 코드 등 의미 없는 대상이 해당된다.
 
-#### Maven
+#### 5.3.1. Maven
 
 플러그인 `configuration`의 `excludes`에 클래스 경로 패턴을 지정한다. `report`·`check` 골에 공통 적용된다.
 
@@ -275,7 +274,7 @@ jacocoTestCoverageVerification {
 </configuration>
 ```
 
-#### Gradle
+#### 5.3.2. Gradle
 
 리포트 태스크의 `classDirectories`를 `fileTree(exclude:)`로 재구성한다([§5.2](#52-gradle--task) 공통 설정).
 
@@ -320,17 +319,8 @@ mvn verify                              # check 골 평가 → 미달 시 빌드
 - **SonarQube 기본 Quality Gate**(Sonar way): **신규 코드 커버리지 80% 이상**
 - 실무에서는 위 예시(`minimum = 0.80`)처럼 **라인 커버리지 80%** 를 게이트로 쓰는 경우가 많다.[^2]
 
-[^2]: SonarQube 기본 Quality Gate(신규 코드 80%)와 업계 관행에 근거한 일반화임.
 
 주의: 커버리지 수치를 목표로 강제하면 단언 없는 무의미한 테스트가 늘 수 있다. 수치는 미검증 영역을 찾는 신호로 쓰고, 테스트 품질은 [[good-test-practices]]와 변이 테스트(PIT)로 보완한다.
-
----
-
-## 8. 요약
-
-- JaCoCo는 Java agent로 바이트코드에 프로브를 주입해 `.exec`에 실행 데이터를 모으고 HTML/XML/CSV 리포트를 만든다.
-- 카운터: Instructions(C0)·Branches(C1)·Lines·Methods·Classes·Cyclomatic Complexity. Lines는 디버그 정보 필요.
-- Maven은 `jacoco-maven-plugin`의 `prepare-agent`+`report`(+`check`), Gradle은 `jacoco` 플러그인의 `jacocoTestReport`+`jacocoTestCoverageVerification`. 검증을 `check`/`verify`에 연결해 품질 게이트로 쓴다.
 
 ---
 
@@ -352,3 +342,8 @@ mvn verify                              # check 골 평가 → 미달 시 빌드
 ## Related pages
 - [[java-testing-libraries]] — Java 테스트 라이브러리 개요(JaCoCo의 위치)
 - [[jvm-options]] — `-javaagent` 등 JVM 에이전트 옵션
+
+---
+
+[^1]: 커버리지의 측정 대상이 "실행 여부"라는 정의로부터 도출한 일반적 주장임. 출처가 단언 품질을 직접 다루지는 않는다.
+[^2]: SonarQube 기본 Quality Gate(신규 코드 80%)와 업계 관행에 근거한 일반화임.

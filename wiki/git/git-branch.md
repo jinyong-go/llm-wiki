@@ -1,6 +1,6 @@
 ---
 title: git branch — 브랜치 관리
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - git
   - vcs
@@ -192,3 +192,4 @@ upstream
 - [[git-detached-head]]
 - [[git-revisions]]
 - [[git-log]]
+- [[git-fetch-pull-push]]

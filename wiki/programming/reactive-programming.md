@@ -1,6 +1,6 @@
 ---
 title: 리액티브 프로그래밍
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:54:47
 tags:
   - reactive
   - reactive-streams
@@ -13,7 +13,7 @@ tags:
 
 리액티브(Reactive) 프로그래밍은 데이터 스트림과 그 변화의 전파를 다루는 비동기 프로그래밍 패러다임이다. 즉 리액티브는 비동기의 하위 개념으로, 비동기 실행 위에 **데이터 스트림을 선언적으로 조합**하는 방법론을 더한 것이다.
 
-모든 비동기 코드가 리액티브는 아니다. 예를 들어 `CompletableFuture`는 비동기 결과를 콜백으로 조합할 수 있지만, 스트림·backpressure 개념이 없어 3장에서 다룰 리액티브의 정의를 충족하지 않는다.
+모든 비동기 코드가 리액티브는 아니다. 예를 들어 `CompletableFuture`는 비동기 결과를 콜백으로 조합할 수 있지만, 스트림·backpressure 개념이 없어 §3에서 다룰 리액티브의 정의를 충족하지 않는다.
 
 ---
 
@@ -27,11 +27,11 @@ I/O-bound 워크로드(외부 API 호출, DB 조회, 네트워크 통신 등)에
 
 ## 3. 원리
 
-### 3.1 Observer 패턴의 확장
+### 3.1. Observer 패턴의 확장
 
 리액티브 프로그래밍은 Iterator 패턴과 대칭적인 Observer 패턴 위에, 시퀀스를 선언적으로 조합할 수 있는 연산자(map/filter/flatMap 등)를 더한 것이다. Iterable(pull 방식)과 Observable(push 방식)은 동일한 고차 연산자를 대칭적으로 지원한다.
 
-### 3.2 Reactive Streams와 동작 흐름
+### 3.2. Reactive Streams와 동작 흐름
 
 여러 리액티브 라이브러리 간 상호 운용 문제를 해결하기 위해 **Reactive Streams** 표준이 정의됐다. 핵심 구성 요소는 세 가지다.
 
@@ -94,7 +94,7 @@ publisher.subscribe(new Flow.Subscriber<>() {
 
 Subscriber가 처리 속도에 맞춰 `request(n)` 호출 시점·개수를 조절하므로, 순수 push 모델이 **push-pull 하이브리드**로 바뀐다.
 
-### 3.3 Reactive Manifesto
+### 3.3. Reactive Manifesto
 
 Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스템 아키텍처 수준의 원칙이다. 네 가지 특성으로 정의된다.
 
@@ -107,18 +107,18 @@ Reactive Streams가 API 수준의 표준이라면, Reactive Manifesto는 시스�
 
 ## 4. 장단점
 
-### 4.1 장점
+### 4.1. 장점
 
 - 적은 스레드로 높은 동시성 처리 → I/O-bound 워크로드에서 스레드 자원 효율과 처리량(TPS) 향상
 - backpressure로 생산자가 소비자 처리 속도를 초과해 과부하시키는 상황 방지
 - 연산자 체이닝으로 복잡한 비동기 흐름(재시도, 병합, 타임아웃 등)을 선언적으로 표현
 - Reactive Streams 표준을 따르는 구현체끼리는 상호 운용 가능
 
-### 4.2 단점
+### 4.2. 단점
 
 - 로직을 콜백·연산자 체인으로 분해해야 해서, 반복문·try/catch 같은 언어의 기본 순차 제어 구조를 그대로 쓰기 어렵다.
 - 디버깅·프로파일링이 어렵다. 스택 트레이스가 실제 호출 경로를 반영하지 못하고, 디버거로 요청 처리 로직을 단계별로 따라가기 힘들다.
-- 체인 안에 blocking 호출이 섞이면(7장 참고) 이벤트 루프 전체가 지연되는 등, 논블로킹 규율이 깨지면 이점이 사라진다.
+- 체인 안에 blocking 호출이 섞이면(§7 참고) 이벤트 루프 전체가 지연되는 등, 논블로킹 규율이 깨지면 이점이 사라진다.
 - CPU-bound 작업에는 이점이 없고 오히려 컨텍스트 전환·연산자 오버헤드만 늘어난다.
 
 ---
@@ -170,6 +170,8 @@ JDK 21에서 정식 도입된 Project Loom의 가상 스레드는 리액티브�
 - [[tps-improvement]]
 - [[project-reactor]]
 - [[reactor-operators]]
+
+---
 
 [^1]: JEP 444 본문의 직접 서술이 아니라, Motivation 절(스레드 수 병목, 리액티브 스타일의 순차 합성 포기·디버깅 도구 한계 서술)과 가상 스레드의 목표(thread-per-request 스타일 유지)로부터 도출한 설명임.
 [^2]: 리액티브 시스템 대부분이 논블로킹 I/O 위에서 구현된다는 서술과, Reactive Streams 스펙이 backpressure 신호의 non-blocking만 요구한다는 서술이 출처마다 강조점이 달라(일부는 둘을 사실상 동일시) 정리한 구분임.

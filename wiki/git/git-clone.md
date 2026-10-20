@@ -1,6 +1,6 @@
 ---
 title: git clone — 저장소 복제
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - git
   - vcs
@@ -166,7 +166,7 @@ clone과 동시에 로컬 설정을 주입한다. CI 환경에서 전역 설정 
 
 ---
 
-## 10. 실용 패턴 요약
+## 10. 실용 패턴
 
 ```bash
 # 일반 개발 시작 (SSH 권장)
@@ -198,3 +198,4 @@ git clone --recurse-submodules git@github.com:company/monorepo.git
 - [[git-init]]
 - [[git-internals]]
 - [[git-file-states]]
+- [[git-fetch-pull-push]]

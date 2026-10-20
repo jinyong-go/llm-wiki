@@ -1,6 +1,6 @@
 ---
 title: JUnit 테스트 실행 순서
-updated: 2026-09-15 23:23:14
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - junit
@@ -18,7 +18,7 @@ JUnit Jupiter는 기본적으로 테스트 클래스와 메서드를 **결정적
 
 ## 2. 메서드 순서
 
-### 2.1 설정
+### 2.1. 설정
 
 테스트 클래스 또는 테스트 인터페이스에 `@TestMethodOrder`를 붙이고 사용할 `MethodOrderer` 구현을 지정한다.
 
@@ -42,7 +42,7 @@ class OrderedTestsDemo {
 }
 ```
 
-### 2.2 내장 MethodOrderer
+### 2.2. 내장 MethodOrderer
 
 | 구현 | 정렬 기준 |
 |------|-----------|
@@ -53,11 +53,11 @@ class OrderedTestsDemo {
 
 `MethodOrderer` 인터페이스를 직접 구현해 커스텀 정렬을 쓸 수도 있다.
 
-### 2.3 @Nested 상속
+### 2.3. @Nested 상속
 
 클래스에 설정한 `MethodOrderer`는 그 안의 `@Nested` 클래스에 **재귀적으로 상속**된다. 중첩 클래스마다 애너테이션을 반복할 필요가 없다. 특정 중첩 클래스만 상속을 끊으려면 `@TestMethodOrder(MethodOrderer.Default.class)`를 명시한다.
 
-### 2.4 전역 설정
+### 2.4. 전역 설정
 
 `src/test/resources/junit-platform.properties`에 기본 Orderer의 FQCN을 지정한다. `@TestMethodOrder`가 상위 클래스나 인터페이스에 있으면 그쪽이 우선한다.
 
@@ -70,7 +70,7 @@ junit.jupiter.testmethod.order.default = \
 
 ## 3. 클래스 순서
 
-### 3.1 내장 ClassOrderer
+### 3.1. 내장 ClassOrderer
 
 | 구현 | 정렬 기준 |
 |------|-----------|
@@ -79,7 +79,7 @@ junit.jupiter.testmethod.order.default = \
 | `ClassOrderer.DisplayName` | 표시 이름의 영숫자 순 |
 | `ClassOrderer.Random` | 유사난수. 커스텀 시드 설정 가능 |
 
-### 3.2 전역 설정
+### 3.2. 전역 설정
 
 **최상위 클래스의 순서는 설정 파라미터로만 지정할 수 있다.** 클래스에 `@Order`를 붙여도 `ClassOrderer.OrderAnnotation`을 등록하지 않으면 무시된다.
 
@@ -90,7 +90,7 @@ junit.jupiter.testclass.order.default = \
 
 정렬 범위는 계층별로 나뉜다. 최상위 클래스는 최상위끼리, `@Nested` 클래스는 **같은 enclosing 클래스를 공유하는 중첩 클래스끼리** 정렬된다. 서로 다른 최상위 클래스의 중첩 클래스 사이에는 순서가 성립하지 않는다.
 
-### 3.3 @TestClassOrder
+### 3.3. @TestClassOrder
 
 `@Nested` 클래스의 순서는 바깥 클래스에 `@TestClassOrder`를 붙여 지역적으로 지정한다. 지역 선언은 상속된 선언이나 전역 설정을 항상 덮어쓴다.
 
@@ -128,13 +128,13 @@ junit.jupiter.testinstance.lifecycle.default = per_class
 
 ## 5. Spring 통합 테스트
 
-### 5.1 트랜잭션 롤백
+### 5.1. 트랜잭션 롤백
 
 Spring TestContext에서 `@Transactional`이 붙은 테스트는 **완료 시 자동 롤백**된다. 단계별로 데이터를 쌓아 가는 시나리오 테스트에 붙이면 앞 단계의 결과가 사라져 다음 단계가 실패한다. 시나리오 테스트에는 `@Transactional`을 쓰지 않고 `@Sql` 스크립트나 `@AfterAll`에서 명시적으로 정리한다.
 
 일부만 커밋이 필요하다면 `@Commit`/`@Rollback`으로 선언적으로 뒤집거나, `TestTransaction`의 정적 메서드로 트랜잭션을 직접 시작·종료한다.
 
-### 5.2 예시
+### 5.2. 예시
 
 ```java
 @SpringBootTest
@@ -175,7 +175,7 @@ class OrderScenarioIT {
 }
 ```
 
-### 5.3 태그 분리
+### 5.3. 태그 분리
 
 순서 의존 테스트는 `@Tag`로 분리해 일반 테스트 실행에서 제외한다. 태그 표현식과 빌드 도구 필터링은 [[junit-test-suite]] 참고.
 
@@ -270,25 +270,21 @@ public class OrderedTest {
 
 ## 10. 주의점
 
-### 10.1 개별 실행 시 실패
+### 10.1. 개별 실행 시 실패
 
 순서 의존 테스트는 IDE에서 메서드 하나만 골라 실행하면 선행 상태가 없어 실패한다. 디버깅 비용이 높으므로 시나리오 단위를 너무 길게 만들지 않는다.
 
-### 10.2 @Order 값 간격
+### 10.2. @Order 값 간격
 
 `@Order(1)`, `@Order(2)`처럼 촘촘하게 매기면 중간에 단계를 끼워 넣을 때 이후 값을 모두 수정해야 한다. 10 단위로 띄우면 재번호 없이 삽입할 수 있다.
 
-### 10.3 클래스 @Order 무시
+### 10.3. 클래스 @Order 무시
 
 §3.2대로 최상위 클래스의 `@Order`는 `junit.jupiter.testclass.order.default` 설정 없이는 아무 효과가 없다. 애너테이션만 붙이고 동작하지 않는다면 이 설정을 먼저 확인한다.
 
-### 10.4 원칙과의 상충
+### 10.4. 원칙과의 상충
 
 순서 의존은 [[good-test-practices]]의 Independent·Isolated 속성을 의도적으로 포기하는 선택이다. 단위 테스트에는 적용하지 않고, E2E 시나리오 검증에 한정해 §5.3처럼 태그로 분리해 운영한다.
-
----
-
-[^1]: 가이드는 `DynamicTest`가 지연 실행된다고만 기술하고 실패 시 후속 요소의 처리는 명시하지 않는다. 각 `DynamicTest`가 독립된 테스트 노드로 보고된다는 점에 근거한 추론이다.
 
 ---
 
@@ -308,3 +304,7 @@ public class OrderedTest {
 - [[junit-test-suite]] — JUnit 테스트 스위트와 태그 필터링
 - [[junit-parameterized-test]] — JUnit 5 매개변수화 테스트
 - [[java-testing-libraries]] — Java 테스트 라이브러리 전체 개요
+
+---
+
+[^1]: 가이드는 `DynamicTest`가 지연 실행된다고만 기술하고 실패 시 후속 요소의 처리는 명시하지 않는다. 각 `DynamicTest`가 독립된 테스트 노드로 보고된다는 점에 근거한 추론이다.

@@ -1,6 +1,6 @@
 ---
 title: Gradle 의존성 Configuration
-updated: 2026-08-31 17:33:58
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - gradle
@@ -160,7 +160,6 @@ Resolvable Configuration(`compileClasspath`/`runtimeClasspath`/`testCompileClass
 4. **컴파일에만 필요하면 `compileOnly`(+ 필요 시 `annotationProcessor`).** 런타임엔 컨테이너 등 다른 경로로 제공되거나, 코드 생성 후 사라지는 의존성에 적합하다.
 5. **테스트 전용 의존성은 `test` 접두사 Configuration으로 격리.** 프로덕션 아티팩트(JAR)에 테스트 의존성이 섞이지 않는다.
 
-[^1]: ABI(바이너리 인터페이스)는 소스 재컴파일 없이 바이너리(컴파일된 클래스 파일) 수준에서 유지되어야 하는 호환 규약이다. 여기서는 라이브러리의 컴파일된 클래스가 외부에 노출하는 타입 시그니처(상속 관계, public 메서드의 파라미터·반환 타입, public 필드, 애노테이션 타입)를 뜻한다.
 
 ---
 
@@ -177,3 +176,7 @@ Resolvable Configuration(`compileClasspath`/`runtimeClasspath`/`testCompileClass
 - [[gradle]] — Gradle 개요(§7.2 Configuration 요약, §9.3 Maven scope 대응)
 - [[gradle-task]] — Gradle Task
 - [[gradle-multi-project]] — Gradle 멀티 프로젝트
+
+---
+
+[^1]: ABI(바이너리 인터페이스)는 소스 재컴파일 없이 바이너리(컴파일된 클래스 파일) 수준에서 유지되어야 하는 호환 규약이다. 여기서는 라이브러리의 컴파일된 클래스가 외부에 노출하는 타입 시그니처(상속 관계, public 메서드의 파라미터·반환 타입, public 필드, 애노테이션 타입)를 뜻한다.

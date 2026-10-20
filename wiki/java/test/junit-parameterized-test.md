@@ -1,6 +1,6 @@
 ---
 title: JUnit 5 ParameterizedTest — 매개변수화 테스트, 인자 소스·변환·집계·표시 이름
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - junit
@@ -340,14 +340,6 @@ static List<Arguments> sets = List.of(
 void multiSource(String arg) { }
 ```
 - 파라미터 선언 순서 규칙: **① 인덱스 인자 → ② 집계자(`ArgumentsAccessor`/`@AggregateWith`) → ③ 그 외 `ParameterResolver`가 주입하는 인자(`TestInfo` 등)** 순으로 선언한다.
-
----
-
-## 8. 요약
-
-- `@ParameterizedTest` + 인자 소스로 하나의 테스트를 여러 입력으로 반복. 의존성은 `junit-jupiter-params`.
-- 소스: 단일 리터럴은 `@ValueSource`, null/빈값은 `@NullSource`/`@EmptySource`, enum은 `@EnumSource`, 동적·복합은 `@MethodSource`/`@FieldSource`, 표 기반은 `@CsvSource`/`@CsvFileSource`, 커스텀은 `@ArgumentsSource`.
-- 변환(`@ConvertWith`/`@JavaTimeConversionPattern`)·집계(`ArgumentsAccessor`/`@AggregateWith`)·표시 이름(`name` 플레이스홀더·`named`)으로 가독성과 표현력을 높인다.
 
 ---
 

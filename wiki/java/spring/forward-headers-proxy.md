@@ -1,6 +1,6 @@
 ---
 title: Forward Headers — 리버스 프록시 뒤 redirect 문제
-updated: 2026-07-14 11:26:44
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -38,7 +38,6 @@ server:
 - Cloud Foundry / Heroku / Kubernetes 환경: 기본 `native`
 - 그 외 일반 환경: 기본 `none` → **직접 설정하지 않으면 헤더를 무시**하므로 위 문제가 발생
 
-[^1]: 기본값 서술은 Spring Boot의 실행 환경(클라우드 플랫폼) 자동 감지 동작으로부터 추론.
 
 ## 3. nginx 짝 설정
 
@@ -85,3 +84,7 @@ server:
 
 - [[reverse-proxy]] — 리버스 프록시 개념·X-Forwarded-* 전달(이 문제의 상위 맥락)
 - [[externalized-configuration]]
+
+---
+
+[^1]: 기본값 서술은 Spring Boot의 실행 환경(클라우드 플랫폼) 자동 감지 동작으로부터 추론.

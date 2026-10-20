@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 렉시컬 스코프
-updated: 2026-08-11 17:56:14
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - scope
@@ -281,3 +281,4 @@ function test() {
 - [[variable-declaration]] — var/let/const의 스코프·호이스팅 차이
 - [[es-module]] — 모듈 스코프
 - [[first-class-citizen]] — 일급 함수와 클로저
+- [[function-declaration]]

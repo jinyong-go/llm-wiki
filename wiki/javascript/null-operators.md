@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 Null 관련 연산자 (옵셔널 체이닝, 널 병합)
-updated: 2026-08-10 17:25:03
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - null
@@ -102,3 +102,4 @@ const city = customer?.city ?? "Unknown city";
 
 ## Related pages
 - [[truthy-falsy]]
+- [[template-literals]]

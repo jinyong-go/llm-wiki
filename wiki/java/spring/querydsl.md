@@ -1,6 +1,6 @@
 ---
 title: QueryDSL — 타입 안전 쿼리, 동적 조건, 빌드 설정
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -58,7 +58,7 @@ queryFactory.selectFrom(user).where(builder).fetch();
 > 분리한 `BooleanExpression`은 `.and()`/`.or()`로 조합·재사용할 수 있어 BooleanBuilder보다 의도가 드러난다.
 
 ### 2.3. 복잡 쿼리·가독성
-조인·서브쿼리·집계를 fluent API로 표현해 Criteria API보다 간결하다 (6장 예시).
+조인·서브쿼리·집계를 fluent API로 표현해 Criteria API보다 간결하다 (§6 예시).
 
 ---
 
@@ -443,7 +443,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserQueryRepo
 ## Sources
 - [Intro to Querydsl | Baeldung](https://www.baeldung.com/intro-to-querydsl)
 - [A Guide to Querydsl with JPA | Baeldung](https://www.baeldung.com/querydsl-with-jpa-tutorial)
-- [[Gradle] SpringBoot 3.x + QueryDSL 적용하기 | velog](https://velog.io/@kimsundae/Gradle-SpringBoot-3.x-QueryDSL-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+- [velog: Gradle SpringBoot 3.x + QueryDSL 적용하기](https://velog.io/@kimsundae/Gradle-SpringBoot-3.x-QueryDSL-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
 - [OpenFeign QueryDSL 기본 설정 및 사용법](https://rebugs.tistory.com/900)
 - [OpenFeign QueryDSL 6.11 + KSP | velog](https://velog.io/@csh0034/OpenFeign-QueryDSL-KSP)
 

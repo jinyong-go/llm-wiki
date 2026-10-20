@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 재시작·스킵·재시도
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -48,7 +48,6 @@ public Job footballJob(JobRepository jobRepository) {
 
 이미 **완료(COMPLETED)** 된 `JobInstance`를 동일한 식별 파라미터로 다시 실행하면 새 `JobInstance`가 생기지 않아 거부되며 **`JobInstanceAlreadyCompleteException`** 이 발생한다. 즉, 재시작은 **실패(FAILED)·중단(STOPPED)** 상태의 잡을 이어서 실행하는 경우에만 성립한다.[^1]
 
-[^1]: JobInstanceAlreadyCompleteException(완료된 인스턴스 재실행)과 JobRestartException(restartable=false 재시작)의 발생 조건 구분으로부터 추론.
 
 ---
 
@@ -181,7 +180,6 @@ return new StepBuilder("step1", jobRepository)
 
 같은 예외를 retry와 skip 모두로 선언하면, **재시도 한도를 모두 소진한 뒤 skip 대상으로 넘어간다**.[^2] 즉 "n회 재시도 후에도 실패하면 건너뛴다"를 표현할 수 있다.
 
-[^2]: 출처에 순서의 직접 명시는 없으며, retry 한도 소진 후 예외가 다시 던져질 때 skip 판정이 적용되는 처리 구조로부터 추론.
 
 ---
 
@@ -207,7 +205,7 @@ chunk 1개는 트랜잭션 1개다([[batch-chunk]]). **write 도중 예외가 �
 
 ---
 
-## 6. 요약
+## 6. 기능별 API
 
 | 기능 | 핵심 API | 기본값 | 적용 범위 |
 |------|----------|--------|-----------|
@@ -242,3 +240,8 @@ chunk 1개는 트랜잭션 1개다([[batch-chunk]]). **write 도중 예외가 �
 - [[batch-tasklet]] — Tasklet은 항목 단위 내결함성 없음
 - [[jpa-transaction]] — 트랜잭션 경계·롤백 규칙
 - [[hikari-deadlock]] — 재시도 대상 데드락 예외의 근본 원인·해결
+
+---
+
+[^1]: JobInstanceAlreadyCompleteException(완료된 인스턴스 재실행)과 JobRestartException(restartable=false 재시작)의 발생 조건 구분으로부터 추론.
+[^2]: 출처에 순서의 직접 명시는 없으며, retry 한도 소진 후 예외가 다시 던져질 때 skip 판정이 적용되는 처리 구조로부터 추론.

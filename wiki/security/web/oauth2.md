@@ -1,6 +1,6 @@
 ---
 title: OAuth 2.0
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 18:00:44
 tags:
   - web
   - oauth
@@ -14,7 +14,7 @@ tags:
 
 OAuth 2.0(RFC 6749)은 사용자의 자격증명을 제3자 앱에 넘기지 않고, 제한된 권한(scope)을 위임해 자원에 접근하게 하는 인가(authorization) 프레임워크다. 예를 들어 A 서비스가 사용자의 구글 계정 프로필만 읽도록 허용할 때, 사용자는 A에게 구글 비밀번호를 주지 않는다.
 
-> 주의: OAuth 2.0은 인가 프로토콜이지 인증(로그인) 프로토콜이 아니다. 사용자 인증·신원 확인은 그 위에 얹은 OpenID Connect(OIDC)가 담당한다(8.1절). 또한 JWT는 프로토콜이 아니라 토큰 규격이며 OAuth와 층위가 다르다(8.2절).
+> 주의: OAuth 2.0은 인가 프로토콜이지 인증(로그인) 프로토콜이 아니다. 사용자 인증·신원 확인은 그 위에 얹은 OpenID Connect(OIDC)가 담당한다(§8.1). 또한 JWT는 프로토콜이 아니라 토큰 규격이며 OAuth와 층위가 다르다(§8.2).
 
 ---
 
@@ -33,17 +33,23 @@ OAuth 2.0(RFC 6749)은 사용자의 자격증명을 제3자 앱에 넘기지 않
 
 ### 3.1. 클라이언트 타입
 - Confidential: 자격증명(client_secret)을 안전하게 보관 가능(서버 사이드 앱).
-- Public: 비밀 보관 불가(SPA, 모바일/네이티브 앱). → Authorization Code 사용 시 PKCE 필수.
+- Public: 비밀 보관 불가(SPA, 모바일/네이티브 앱). Authorization Code 사용 시 PKCE 필수.
 
 ### 3.2. 엔드포인트
 - Authorization Endpoint: 사용자 인증·동의를 받는 곳(브라우저 리다이렉트).
 - Token Endpoint: 인가 코드/리프레시 토큰을 액세스 토큰으로 교환.
 - Redirection Endpoint(redirect_uri): AS가 결과를 되돌려주는 클라이언트 주소.
 
-### 3.3. 토큰·파라미터
+### 3.3. 토큰
+
 - Access Token: 자원 접근용 자격. 짧은 수명, `scope`로 권한 한정. 보통 `Authorization: Bearer`로 전달(RFC 6750).
 - Refresh Token: 액세스 토큰 만료 시 재발급용. 선택적, 수명이 김.
-- scope: 위임 권한 범위. state: CSRF 방지 난수. PKCE(code_verifier/code_challenge): 코드 주입 방지.
+
+### 3.4. 파라미터
+
+- `scope`: 클라이언트가 요청하는 권한 범위. 공백으로 구분하며, 실제 부여된 범위는 요청과 다를 수 있다.
+- `state`: 인가 요청과 콜백을 연결하는 값. 예측 불가능한 일회성 값을 요청을 시작한 브라우저 세션에 연결해 보관하고, 콜백에서 일치 여부를 검증해 CSRF를 방어한다.
+- PKCE 파라미터: `code_challenge`와 `code_challenge_method`는 인가 요청에, `code_verifier`는 토큰 요청에 포함한다. PKCE의 정의와 검증 절차는 §6에서 설명한다.
 
 ---
 
@@ -119,25 +125,25 @@ sequenceDiagram
 - 만료 감지: ① 선제적: 발급 시 받은 `expires_in`/JWT `exp`로 만료 시각을 추적해 미리 갱신. ② 반응적: 리소스 서버가 `401 Unauthorized`(`invalid_token`)를 반환하면 그때 갱신.
 - 갱신 요청 상대: 리소스 서버가 아니라 Authorization Server의 토큰 엔드포인트. 리소스 서버는 토큰 검증만 한다.
 - 사용자 개입 없음: refresh_token이 유효한 동안엔 재로그인 없이 갱신된다(이것이 refresh_token의 존재 이유).
-- Refresh Token Rotation: 갱신 시 새 refresh_token을 함께 발급하고 이전 것을 무효화한다. 공개 클라이언트는 회전 또는 sender-constrained MUST(7장). 무효화된 refresh_token이 재사용되면 탈취 가능성을 탐지하고 관련 활성 refresh token을 폐기한다. 기존 access token까지 즉시 폐기되는 것은 아니다.
+- Refresh Token Rotation: 갱신 시 새 refresh_token을 함께 발급하고 이전 것을 무효화한다. 공개 클라이언트는 회전 또는 sender-constrained MUST(§7). 무효화된 refresh_token이 재사용되면 탈취 가능성을 탐지하고 관련 활성 refresh token을 폐기한다. 기존 access token까지 즉시 폐기되는 것은 아니다.
 - refresh_token 만료·폐기 시: 갱신이 `invalid_grant`로 실패하므로, 클라이언트는 Authorization Code + PKCE 인가 흐름을 다시 시작해야 한다. AS의 로그인 세션과 정책에 따라 사용자의 자격증명 재입력은 생략될 수 있다.
 
 ---
 
 ## 6. PKCE
 
-인가 코드가 탈취되어도 토큰 교환을 막는 확장이다.
+PKCE(Proof Key for Code Exchange)는 인가 요청마다 생성한 임시 비밀값으로 인가 요청과 토큰 교환을 연결하는 OAuth 확장이다. 토큰을 요청하는 측이 인가 요청 때 만든 비밀값을 보유했는지 검증하므로, 공격자가 인가 코드만 탈취해서는 토큰으로 교환할 수 없다.
 
 1. 클라이언트가 임의의 `code_verifier` 생성.
 2. `code_challenge = BASE64URL(SHA256(ASCII(code_verifier)))` (method `S256`)를 인가 요청에 포함.
-3. 토큰 교환 시 원본 `code_verifier`를 제시 → AS가 `BASE64URL(SHA256(ASCII(code_verifier))) == code_challenge`를 검증.
+3. 토큰 교환 시 원본 `code_verifier`를 제시하면 AS가 `BASE64URL(SHA256(ASCII(code_verifier))) == code_challenge`를 검증.
 
-- 탈취자는 `code_verifier`를 모르므로 코드만으로 토큰을 못 받는다 → 코드 가로채기/주입 공격 방어.
+- 탈취자는 `code_verifier`를 모르므로 코드만으로 토큰을 못 받으므로 코드 가로채기/주입 공격을 막는다.
 - 모든 클라이언트에 권장(공개 클라이언트는 필수). 단, "PKCE는 클라이언트 인증이 아니며 client_secret의 대체도 아니다": 둘은 병행한다.
 
 ### 6.1. code_verifier / code_challenge
 
-- `code_verifier`: 클라이언트가 인가 요청마다 새로 만드는 고엔트로피 난수 문자열(예측 불가능한 임시 비밀). RFC 7636 규격: unreserved 문자(`[A-Z][a-z][0-9]-._~`), 43~128자, 권장 생성법은 32바이트 이상 난수 → base64url(패딩 없음).
+- `code_verifier`: 클라이언트가 인가 요청마다 새로 만드는 고엔트로피 난수 문자열(예측 불가능한 임시 비밀). RFC 7636 규격: unreserved 문자(`[A-Z][a-z][0-9]-._~`), 43~128자, 권장 생성법은 32바이트 이상 난수를 base64url(패딩 없음)로 인코딩.
 - `code_challenge`: 난수가 아니라 `code_verifier`를 해시한 파생값: `BASE64URL( SHA-256( ASCII(code_verifier) ) )` (해시 대상은 verifier 문자열의 ASCII 바이트).
 
 누가 무엇을 보유/전송하는가
@@ -195,7 +201,7 @@ SPA의 저장 방식은 다음 특성을 가진다.
 | 메모리(JS 변수) | XSS 지속 탈취 어려움 | 새로고침 시 소실(access_token용) |
 | HttpOnly · Secure · SameSite 쿠키 | JS가 못 읽음(XSS 토큰 절도 완화) | CSRF 방어 필요(SameSite·CSRF 토큰) |
 
-→ JS 접근 저장소(localStorage)는 XSS에, 쿠키는 CSRF에 노출된다. 브라우저에 둘수록 공격면이 넓어지므로 가능하면 서버로 밀어낸다.
+JS 접근 저장소(localStorage)는 XSS에, 쿠키는 CSRF에 노출된다. 브라우저에 둘수록 공격면이 넓어지므로 가능하면 서버로 밀어낸다.
 
 네이티브 앱은 OS의 보안 저장 기능을 사용한다.
 - 토큰과 토큰 보호용 키는 플랫폼의 보안 저장 API로 관리하고 평문 파일에 저장하지 않는다.
@@ -237,31 +243,12 @@ OAuth 2.0은 OIDC·JWT와 자주 혼동된다. 각각 층위와 역할이 다르
 |---|---|
 | RFC 7009 | Token Revocation. 클라이언트가 토큰 폐기를 AS에 요청 |
 | RFC 7662 | Token Introspection. RS가 opaque 토큰의 활성 상태·속성을 AS에 조회 |
-| RFC 8628 | Device Authorization Grant (4장 Device Code) |
+| RFC 8628 | Device Authorization Grant (§4 Device Code) |
 | RFC 9126 | PAR(Pushed Authorization Requests). 인가 요청 파라미터를 백채널로 먼저 전송 |
 | RFC 9449 | DPoP. 토큰을 클라이언트 키에 바인딩하는 애플리케이션 계층 sender-constraining |
 | RFC 8705 | mTLS 클라이언트 인증과 인증서 바인딩 토큰 |
 | RFC 9207 | 인가 응답의 `iss` 파라미터 (mix-up 방어) |
 | RFC 9068 | access token용 JWT 프로파일 |
-
----
-
-## 10. 리소스 서버 구현
-
-Spring Security는 JWT access token을 검증하는 리소스 서버 설정을 제공한다. `issuer-uri`로 OP 설정과 공개키(JWK Set)를 조회해 서명·`iss`·`exp`를 검증한다. `aud` 검증은 별도 validator로 추가한다.
-
-```yaml
-spring.security.oauth2.resourceserver.jwt.issuer-uri: https://idp.example.com
-```
-
-```java
-@Bean
-SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())
-        .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()));
-    return http.build();
-}
-```
 
 ---
 
@@ -282,7 +269,6 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 - [RFC 9449: OAuth 2.0 Demonstrating Proof of Possession (DPoP)](https://www.rfc-editor.org/rfc/rfc9449)
 - [RFC 8705: OAuth 2.0 Mutual-TLS Client Authentication](https://www.rfc-editor.org/rfc/rfc8705)
 - [RFC 9207: OAuth 2.0 Authorization Server Issuer Identification](https://www.rfc-editor.org/rfc/rfc9207)
-- [Spring Security: OAuth 2.0 Resource Server JWT](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)
 
 ---
 

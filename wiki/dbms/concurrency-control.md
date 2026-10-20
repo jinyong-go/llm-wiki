@@ -1,6 +1,6 @@
 ---
 title: DBMS 동시성 제어
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:54:47
 tags:
   - dbms
   - sql
@@ -181,3 +181,4 @@ tags:
 - [[optimizer-statistics]]
 - [[oracle-hints]]
 - [[jpa-transaction]]
+- [[upsert-merge]]

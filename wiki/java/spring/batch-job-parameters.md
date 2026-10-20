@@ -1,6 +1,6 @@
 ---
 title: Spring Batch JobParameters
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -37,7 +37,6 @@ JobParameter가 지원하는 타입은 **Spring Batch 5.0에서 크게 바뀌었
 > [!note] 호환성
 > 4.x의 `addDate(java.util.Date)`는 5.x에서도 존재하지만, 5.x부터는 `java.time` 타입(`LocalDate` 등)을 직접 쓸 수 있다. 임의 타입을 쓰려면 해당 타입에 대한 변환기(Converter)가 `ConversionService`에 등록되어 있어야 한다.[^1]
 
-[^1]: 5.x가 임의 타입 파라미터를 문자열로 영속화하고 ConversionService로 변환한다는 방식(§2 표)으로부터 추론.
 
 ---
 
@@ -158,3 +157,7 @@ public RepeatStatus execute(StepContribution contribution, ChunkContext chunkCon
 - [[batch-scope]] — StepScope·JobScope에서 파라미터 Late Binding
 - [[batch-fault-tolerance]] — 식별 파라미터와 JobInstance 재시작 판정
 - [[jpa-transaction]] — 스텝 트랜잭션 경계
+
+---
+
+[^1]: 5.x가 임의 타입 파라미터를 문자열로 영속화하고 ConversionService로 변환한다는 방식(§2 표)으로부터 추론.

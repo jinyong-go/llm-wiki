@@ -1,6 +1,6 @@
 ---
 title: NestJS 요청 파이프라인
-updated: 2026-08-24 16:08:18
+updated: 2026-10-20 17:46:04
 tags:
   - nodejs
   - nestjs
@@ -202,7 +202,6 @@ create() {}
 
 `catch(exception, host: ArgumentsHost)`가 받는 두 번째 인자다. HTTP·마이크로서비스·WebSocket 등 어떤 실행 컨텍스트에서도 동작하는 유틸리티로, `switchToHttp()`로 전환한 뒤 `getRequest()`/`getResponse()`로 요청·응답 객체를 꺼낸다. Guard·Interceptor가 받는 `ExecutionContext`([§3.1](#31-executioncontext))는 이 타입을 확장해 `getHandler()`/`getClass()`를 추가한 것이다.
 
-[^1]: `Reflector`는 `@nestjs/core`가 제공하는 클래스로, 데코레이터가 핸들러·클래스에 부착한 메타데이터를 런타임에 읽어오는 유틸리티다. `reflector.get(메타데이터-키, context.getHandler())`처럼 호출해 특정 대상에 붙은 값을 꺼낸다.
 
 ---
 
@@ -221,3 +220,7 @@ create() {}
 - [[nestjs-controllers]] — 컨트롤러, 요청 처리 순서
 - [[nestjs-dependency-injection]] — Provider, 토큰
 - [[nestjs-modules]] — 모듈 provider 등록
+
+---
+
+[^1]: `Reflector`는 `@nestjs/core`가 제공하는 클래스로, 데코레이터가 핸들러·클래스에 부착한 메타데이터를 런타임에 읽어오는 유틸리티다. `reflector.get(메타데이터-키, context.getHandler())`처럼 호출해 특정 대상에 붙은 값을 꺼낸다.

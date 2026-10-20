@@ -1,6 +1,6 @@
 ---
 title: Log4j2 — Spring Boot 설정
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -125,7 +125,7 @@ dependencies {
 <Property name="appName">${spring:spring.application.name}</Property>
 ```
 
-`logging.level.*` 등 `logging.*` 프로퍼티는 구현체 무관하게 그대로 동작한다 ([[logback]] 2장과 동일. 단 `logging.logback.*`는 제외).
+`logging.level.*` 등 `logging.*` 프로퍼티는 구현체 무관하게 그대로 동작한다 ([[logback]] §2와 동일. 단 `logging.logback.*`는 제외).
 
 ---
 
@@ -137,7 +137,7 @@ dependencies {
 | `File` | 단일 파일 출력 (롤링 없음) |
 | `RollingFile` | 파일 출력 + 롤링 (운영 표준) |
 | `RollingRandomAccessFile` | RollingFile의 상시 버퍼 변형 — 처리량 더 높음 |
-| `Async` | 다른 appender를 비동기로 래핑 (6장) |
+| `Async` | 다른 appender를 비동기로 래핑 (§6) |
 | `Failover` | 주 appender 실패 시 보조 appender로 전환 |
 | `Routing` | ThreadContext(MDC)·lookup 값에 따라 appender 동적 라우팅 |
 | `SMTP` | 이벤트 발생 시 이메일 발송 |
@@ -170,7 +170,7 @@ dependencies {
 | `bufferedIO` / `bufferSize` | 버퍼링 사용·크기 | `true` / 8192 |
 | `locking` | OS 파일 락 사용 (다중 프로세스 기록, 성능 비용) | `false` |
 
-**RollingFile** — `fileName`(활성 파일) + `filePattern`(롤링 파일 패턴, **`.gz`/`.zip` 확장자면 자동 압축**)을 지정하고, 롤링 시점·방식은 5장의 Policy/Strategy로 제어한다.
+**RollingFile** — `fileName`(활성 파일) + `filePattern`(롤링 파일 패턴, **`.gz`/`.zip` 확장자면 자동 압축**)을 지정하고, 롤링 시점·방식은 §5의 Policy/Strategy로 제어한다.
 
 ```xml
 <!-- 파일 appender의 대표 구성: 일 단위 + 10MB 크기 롤링 -->

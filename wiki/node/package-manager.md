@@ -1,6 +1,6 @@
 ---
 title: Node 패키지 매니저
-updated: 2026-08-11 17:38:47
+updated: 2026-10-20 17:46:04
 tags:
   - nodejs
   - npm
@@ -186,7 +186,6 @@ phantom dependency 차단은 CI에서만 재현되는 의존성 누락 오류를
 - npm Docs — npm ci: https://docs.npmjs.com/cli/v11/commands/npm-ci
 - npm Docs — workspaces: https://docs.npmjs.com/cli/v11/using-npm/workspaces
 
-[^1]: 추론. pnpm·Yarn 공식 문서는 phantom/ghost dependency가 문제라는 점과 각자의 차단 메커니즘은 명시하지만, "팀 규모에 따른 이득"은 명시하지 않는다. 미선언 의존성이 hoisting 결과에 의존한다는 사실([§2.1](#21-flat--hoisting))과, 로컬·CI 환경의 의존성 트리가 달라질 수 있다는 점에서 도출한 판단이다.
 
 ---
 
@@ -195,3 +194,7 @@ phantom dependency 차단은 CI에서만 재현되는 의존성 누락 오류를
 - [[npx]] — 패키지 바이너리 실행
 - [[module-system]] — Node.js 모듈 해석
 - [[sbom]] — 의존성 목록과 공급망 보안
+
+---
+
+[^1]: 추론. pnpm·Yarn 공식 문서는 phantom/ghost dependency가 문제라는 점과 각자의 차단 메커니즘은 명시하지만, "팀 규모에 따른 이득"은 명시하지 않는다. 미선언 의존성이 hoisting 결과에 의존한다는 사실([§2.1](#21-flat--hoisting))과, 로컬·CI 환경의 의존성 트리가 달라질 수 있다는 점에서 도출한 판단이다.

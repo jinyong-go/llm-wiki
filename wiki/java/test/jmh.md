@@ -1,6 +1,6 @@
 ---
 title: JMH를 이용한 Java 마이크로벤치마크 (Java Microbenchmark Harness)
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - test
@@ -254,7 +254,6 @@ StringConcatBenchmark.plusConcat       10  avgt    5   152.398 ± 12.887  ns/op
 - **fork 생략 금지**: 같은 JVM에서 여러 벤치마크를 이어 돌리면 JIT 프로파일이 섞여 결과가 오염된다.
 - 마이크로벤치마크 결과가 실제 애플리케이션 성능을 보장하지 않는다 — 병목 검증은 실측 프로파일링과 병행한다.[^1]
 
-[^1]: 공식 README의 "결과를 신뢰하기 전 peer review 권장" 취지를 일반화한 서술임.
 
 ---
 
@@ -269,3 +268,7 @@ StringConcatBenchmark.plusConcat       10  avgt    5   152.398 ± 12.887  ns/op
 
 ## Related pages
 - [[java-testing-libraries]]
+
+---
+
+[^1]: 공식 README의 "결과를 신뢰하기 전 peer review 권장" 취지를 일반화한 서술임.

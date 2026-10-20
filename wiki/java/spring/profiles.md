@@ -1,6 +1,6 @@
 ---
 title: Profiles — Spring Boot 프로파일 활성화·그룹·Multi-Document 설정
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring-boot
@@ -132,7 +132,6 @@ server.port=8081
 - 프로파일 이름은 문자·숫자로 시작·종료해야 하며 `-`, `_`, `.`, `+`, `@` 허용 (`spring.profiles.validate=false`로 검증 비활성화 가능).
 - Spring Boot 2.4 이전의 `spring.profiles` 키는 deprecated — `spring.config.activate.on-profile`로 대체됨.[^1]
 
-[^1]: 출처의 공식 문서 페이지에는 legacy 키(spring.profiles) 언급이 없다. Boot 2.4의 config data 처리 개편 사실로부터 추론한 서술임.
 
 ---
 
@@ -148,3 +147,7 @@ server.port=8081
 - [[externalized-configuration]]
 - [[configuration-properties]]
 - [[bean-registration-control]]
+
+---
+
+[^1]: 출처의 공식 문서 페이지에는 legacy 키(spring.profiles) 언급이 없다. Boot 2.4의 config data 처리 개편 사실로부터 추론한 서술임.

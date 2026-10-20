@@ -1,6 +1,6 @@
 ---
 title: JPA 예외
-updated: 2026-10-01 16:45:35
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - jpa
@@ -172,7 +172,7 @@ DataAccessException
 
 ## 5. 처리 기준
 
-1. 재시도는 `TransientDataAccessException` 하위 예외에만 적용한다. 예외가 발생한 트랜잭션은 rollback-only로 마킹되므로([[jpa-transaction]] 8장) 재시도는 트랜잭션 경계 밖에서 새 트랜잭션으로 수행한다.
+1. 재시도는 `TransientDataAccessException` 하위 예외에만 적용한다. 예외가 발생한 트랜잭션은 rollback-only로 마킹되므로([[jpa-transaction]] §8) 재시도는 트랜잭션 경계 밖에서 새 트랜잭션으로 수행한다.
 2. Hibernate 예외가 발생한 뒤에는 Session 상태를 신뢰할 수 없다. 해당 트랜잭션은 롤백하고 영속성 컨텍스트는 폐기한다.
 3. `existsBy...()` 선조회로 중복을 검사해도 동시 요청 사이에 경합이 생기면 제약 위반이 발생한다. 최종 방어선은 DB 제약 조건과 `DataIntegrityViolationException` 처리다.
 
@@ -196,6 +196,8 @@ DataAccessException
 - [[jpa-entity-lifecycle]]
 - [[hikari-datasource]]
 - [[concurrency-control]]
+
+---
 
 [^1]: `HibernateExceptionTranslator`의 `jdbcExceptionTranslator`는 기본값이 `null`이고 `setJdbcExceptionTranslator()`로만 설정된다는 소스 코드에 근거한 판단이다. Spring Boot 자동 설정이 이 값을 지정하지 않는다는 점은 Boot 소스로 직접 확인하지 않았다.
 [^2]: 오류 코드를 분류하는 방식은 Hibernate Dialect마다 다르다. 이 오류 코드들은 일반적으로 알려진 매핑을 적은 것이며 Dialect 소스로 확인하지 않았다.

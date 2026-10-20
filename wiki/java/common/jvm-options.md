@@ -1,6 +1,6 @@
 ---
 title: JVM 실행 옵션 — java 명령어
-updated: 2026-10-15 22:34:58
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - jvm
@@ -276,3 +276,4 @@ java \
 - [[java-version]]
 - [[java-process-analysis-tools]]
 - [[externalized-configuration]]
+- [[jni]]

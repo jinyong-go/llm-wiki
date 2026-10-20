@@ -1,6 +1,6 @@
 ---
 title: systemd 유닛 파일 작성 및 서비스 등록
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:46:04
 tags:
   - linux
   - systemd
@@ -40,7 +40,7 @@ Requires=postgresql.service          # 강한 의존성 (실패 시 함께 실�
 
 ### 2.2. [Service] 섹션
 
-#### Type
+#### 2.2.1. Type
 
 | Type | 사용 시점 |
 |------|-----------|
@@ -50,7 +50,7 @@ Requires=postgresql.service          # 강한 의존성 (실패 시 함께 실�
 | `notify` | 서비스가 `sd_notify(READY=1)`을 직접 전송해 준비 완료 알림 |
 | `oneshot` | 한 번 실행 후 종료. 스크립트성 작업. `RemainAfterExit=yes`와 함께 사용 |
 
-#### 실행 설정
+#### 2.2.2. 실행 설정
 
 ```ini
 [Service]
@@ -63,7 +63,7 @@ ExecStop=/bin/kill -TERM $MAINPID        # 종료 명령 (기본: SIGTERM)
 ExecReload=/bin/kill -HUP $MAINPID      # reload 명령
 ```
 
-#### 환경 변수
+#### 2.2.3. 환경 변수
 
 ```ini
 Environment="SPRING_PROFILES_ACTIVE=prod"
@@ -73,7 +73,7 @@ EnvironmentFile=/etc/myapp/myapp.env    # 파일에서 읽기 (KEY=VALUE 형식)
 
 `EnvironmentFile`은 민감한 값(DB 비밀번호 등)을 유닛 파일 외부로 분리할 때 사용. 파일 권한은 `600`으로 설정한다.
 
-#### 재시작 정책
+#### 2.2.4. 재시작 정책
 
 ```ini
 Restart=on-failure      # 비정상 종료 시 자동 재시작 (권장)
@@ -90,14 +90,14 @@ RestartSec=5            # 재시작 전 대기 시간 (기본: 100ms)
 
 장기 실행 서비스에는 `on-failure`를 권장한다.
 
-#### 타임아웃
+#### 2.2.5. 타임아웃
 
 ```ini
 TimeoutStartSec=30      # 시작 타임아웃 (초)
 TimeoutStopSec=30       # 종료 타임아웃. 초과 시 SIGKILL
 ```
 
-#### 표준 출력·에러
+#### 2.2.6. 표준 출력·에러
 
 ```ini
 StandardOutput=journal   # stdout → journald (기본)

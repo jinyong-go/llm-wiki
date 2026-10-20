@@ -1,6 +1,6 @@
 ---
 title: GoF 행동 패턴
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - oop
@@ -12,10 +12,10 @@ tags:
 행동 패턴은 객체 간 상호작용과 책임 분배를 정의한다. 분류와 전체 목록은 [[design-patterns]] 참고.
 
 ## 1. Chain of Responsibility
-### 1.1 핵심 아이디어
+### 1.1. 핵심 아이디어
 요청을 처리할 수 있는 객체들을 체인으로 연결한다. 각 핸들러는 요청을 처리하거나 다음 핸들러로 전달한다. 송신자와 수신자를 분리한다.
 
-### 1.2 구현
+### 1.2. 구현
 ```java
 public abstract class RequestHandler {
     private RequestHandler next;
@@ -66,22 +66,22 @@ chain.setNext(new AuthHandler())
 chain.handle(request);
 ```
 
-### 1.3 장단점
+### 1.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 처리 순서·구성 런타임 변경 가능, 송신자·수신자 결합 제거, 단일 책임 분리 |
 | 단점 | 요청이 처리되지 않고 체인 끝까지 전달될 수 있음, 디버깅 시 흐름 추적 어려움 |
 
-### 1.4 실무
+### 1.4. 실무
 - Java Servlet Filter Chain: `FilterChain.doFilter()`
 - Spring Security: `SecurityFilterChain`
 - Spring MVC `HandlerInterceptor`
 
 ## 2. Command
-### 2.1 핵심 아이디어
+### 2.1. 핵심 아이디어
 요청을 객체로 캡슐화한다. 요청의 매개변수화, 큐잉, 로깅, 실행 취소(Undo)를 지원한다.
 
-### 2.2 구현
+### 2.2. 구현
 ```java
 public interface Command {
     void execute();
@@ -141,22 +141,22 @@ history.undo();
 System.out.println(editor.getText());   // "Hello"
 ```
 
-### 2.3 장단점
+### 2.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 실행 취소/재실행, 요청 큐잉 및 지연 실행, 요청 로깅, 트랜잭션 지원 |
 | 단점 | 커맨드 클래스 수 증가 |
 
-### 2.4 실무
+### 2.4. 실무
 - `java.lang.Runnable`: 실행을 캡슐화한 Command
 - Spring `@Async`의 작업 큐잉
 - 게임 입력 처리: 각 입력을 Command 객체로 저장해 리플레이 구현
 
 ## 3. Iterator
-### 3.1 핵심 아이디어
+### 3.1. 핵심 아이디어
 컬렉션의 내부 표현을 노출하지 않고 순차적으로 접근하는 방법을 제공한다. 컬렉션 구조와 순회 알고리즘을 분리한다.
 
-### 3.2 구현
+### 3.2. 구현
 ```java
 // Java의 Iterable + Iterator가 이 패턴의 표준 구현
 public class NumberRange implements Iterable<Integer> {
@@ -190,22 +190,22 @@ for (int n : new NumberRange(0, 10, 2)) {
 }
 ```
 
-### 3.3 장단점
+### 3.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 순회 로직과 컬렉션 구현 분리(SRP), 여러 순회 방식을 동시에 지원 |
 | 단점 | 단순 컬렉션에는 과도한 구조 |
 
-### 3.4 실무
+### 3.4. 실무
 - `java.util.Iterator`, `java.util.ListIterator`
 - enhanced for loop은 `Iterable`이 기반
 - Hibernate `ScrollableResults`: 대용량 쿼리 결과 커서 기반 순회
 
 ## 4. Mediator
-### 4.1 핵심 아이디어
+### 4.1. 핵심 아이디어
 객체들이 직접 참조하는 대신 중재자 객체를 통해 통신한다. 객체 간 의존성을 제거하고 통신을 중앙 집중화한다.
 
-### 4.2 구현
+### 4.2. 구현
 ```java
 public interface ChatMediator {
     void sendMessage(String message, User sender);
@@ -248,20 +248,20 @@ room.addUser(bob);
 alice.send("Hello!");   // Bob만 수신
 ```
 
-### 4.3 장단점
+### 4.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 컴포넌트 간 직접 결합 제거, 재사용성 향상, 통신 로직 중앙화 |
 | 단점 | 중재자가 God Object가 될 위험 |
 
-### 4.4 실무
+### 4.4. 실무
 - Spring `ApplicationEventPublisher`: 발행자와 리스너가 서로를 참조하지 않고 컨텍스트를 거쳐 통신[^1]
 
 ## 5. Memento
-### 5.1 핵심 아이디어
+### 5.1. 핵심 아이디어
 객체의 내부 상태를 캡슐화하여 외부에 저장하고, 이후 그 상태로 복원한다. 캡슐화를 위반하지 않으면서 상태를 스냅샷으로 관리한다.
 
-### 5.2 구현
+### 5.2. 구현
 ```java
 // Memento: 상태 스냅샷 (불변)
 public record EditorState(String content, int cursorPos) { }
@@ -307,22 +307,22 @@ editor.restore(history.pop());
 System.out.println(editor.getContent());    // "Hello World"
 ```
 
-### 5.3 장단점
+### 5.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 캡슐화 유지하며 상태 복원, 실행 취소 구현 용이 |
 | 단점 | 상태 스냅샷이 많으면 메모리 소비 큼, 깊은 복사 필요 시 복잡 |
 
-### 5.4 실무
+### 5.4. 실무
 - 텍스트 에디터 Undo/Redo
 - 게임 세이브/로드
 - 데이터베이스 트랜잭션의 롤백 포인트
 
 ## 6. Observer
-### 6.1 핵심 아이디어
+### 6.1. 핵심 아이디어
 객체(Subject)의 상태가 바뀌면 의존하는 모든 객체(Observer)에 자동으로 알린다. 1:N 의존관계를 느슨하게 정의한다.
 
-### 6.2 구현
+### 6.2. 구현
 ```java
 public interface EventListener<T> {
     void onEvent(T event);
@@ -347,22 +347,22 @@ bus.subscribe(event -> inventoryService.reserve(event.getOrder()));
 bus.publish(new OrderCreatedEvent(order));
 ```
 
-### 6.3 장단점
+### 6.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 느슨한 결합, 런타임 구독자 추가/제거, 이벤트 기반 아키텍처 |
 | 단점 | 구독자가 많으면 알림 순서 예측 어려움, 메모리 누수(구독 해제 누락), 순환 이벤트 위험 |
 
-### 6.4 실무
+### 6.4. 실무
 - Spring `@EventListener` / `ApplicationEventPublisher`
 - Java `java.util.Observer` (deprecated, Java 9+)
 - RxJava / Project Reactor: `Observable`, `Flux`의 기반 개념
 
 ## 7. State
-### 7.1 핵심 아이디어
+### 7.1. 핵심 아이디어
 객체의 내부 상태가 바뀌면 행동이 달라진다. 상태를 클래스로 분리해 상태별 행동을 캡슐화하고, `if`/`switch` 분기를 제거한다.
 
-### 7.2 구현
+### 7.2. 구현
 ```java
 public interface OrderState {
     void confirm(Order order);
@@ -397,22 +397,22 @@ public class Order {
 }
 ```
 
-### 7.3 장단점
+### 7.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 상태별 로직 분리(SRP), 새 상태 추가 시 기존 코드 수정 최소화(OCP), 조건 분기 제거 |
 | 단점 | 상태 클래스 수 증가, 간단한 상태 머신에는 과도한 구조 |
 
-### 7.4 실무
+### 7.4. 실무
 - 주문·결제·배송 상태 머신
 - TCP 연결 상태 (LISTEN → SYN_RCVD → ESTABLISHED → ...)
 - 자판기 구현
 
 ## 8. Strategy
-### 8.1 핵심 아이디어
+### 8.1. 핵심 아이디어
 알고리즘을 클래스로 캡슐화해 런타임에 교체 가능하게 한다. 알고리즘을 사용하는 코드와 구현을 분리한다.
 
-### 8.2 구현
+### 8.2. 구현
 ```java
 @FunctionalInterface
 public interface SortStrategy {
@@ -446,22 +446,22 @@ orders.sort(Comparator.comparing(Order::getAmount));
 orders.sort(Comparator.comparing(Order::getCreatedAt).reversed());
 ```
 
-### 8.3 장단점
+### 8.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 알고리즘 교체 용이, 조건 분기 제거, 각 전략 독립 테스트 가능 |
 | 단점 | 전략 클래스 수 증가 (Java 8+ 람다로 완화) |
 
-### 8.4 실무
+### 8.4. 실무
 - `java.util.Comparator`: 정렬 전략
 - Spring Security `SessionAuthenticationStrategy`: 인증 성공 시 세션 처리 전략(세션 ID 변경, CSRF 토큰 갱신 등)
 - [[solid]]의 OCP 예시 `DiscountPolicy`가 Strategy 패턴
 
 ## 9. Template Method
-### 9.1 핵심 아이디어
+### 9.1. 핵심 아이디어
 알고리즘의 골격을 상위 클래스에 정의하고, 세부 단계를 서브클래스에서 구현한다. 알고리즘 구조는 고정하되 특정 단계만 변경을 허용한다.
 
-### 9.2 구현
+### 9.2. 구현
 ```java
 public abstract class DataExporter {
     // Template Method: 알고리즘 골격 (final로 재정의 금지)
@@ -501,22 +501,22 @@ public class CsvExporter extends DataExporter {
 }
 ```
 
-### 9.3 장단점
+### 9.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 공통 알고리즘 중복 제거, 훅 메서드로 선택적 확장점 제공 |
 | 단점 | 상속 강제 → 유연성 제한, 서브클래스가 많아지면 계층 복잡, 리스코프 치환 원칙 위반 주의 |
 
-### 9.4 실무
+### 9.4. 실무
 - Spring `JdbcTemplate.query()`: SQL 실행 골격 + `RowMapper` 콜백[^2]
 - Spring `AbstractApplicationContext.refresh()`: 컨텍스트 초기화 골격
 - `java.util.AbstractList`: `get()`·`size()`만 구현하면 나머지 동작
 
 ## 10. Visitor
-### 10.1 핵심 아이디어
+### 10.1. 핵심 아이디어
 객체 구조를 변경하지 않고 새로운 연산을 추가한다. 연산을 별도의 Visitor 클래스로 분리해 OCP를 달성한다. Double Dispatch를 활용해 실제 타입에 맞는 메서드를 호출한다.
 
-### 10.2 구현
+### 10.2. 구현
 ```java
 // Element 인터페이스
 public interface Shape {
@@ -569,22 +569,22 @@ SvgExporter svg = new SvgExporter();
 shapes.forEach(s -> s.accept(svg));
 ```
 
-### 10.3 장단점
+### 10.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 새 연산 추가 시 Element 수정 불필요(OCP), 관련 연산 Visitor로 응집 |
 | 단점 | 새 Element 추가 시 모든 Visitor를 수정해야 함, 캡슐화 약화 (internal state 노출) |
 
-### 10.4 실무
+### 10.4. 실무
 - `javax.lang.model.element.ElementVisitor`: 어노테이션 프로세서의 AST 순회
 - ASM / Javassist 바이트코드 조작
 - 컴파일러 AST 방문 (코드 분석·변환)
 
 ## 11. Interpreter
-### 11.1 핵심 아이디어
+### 11.1. 핵심 아이디어
 주어진 언어에 대한 문법을 클래스 계층으로 표현하고, 그 언어로 작성된 문장을 해석한다. 각 문법 규칙이 하나의 클래스에 대응한다.
 
-### 11.2 구현
+### 11.2. 구현
 ```java
 public interface Expression {
     int interpret(Map<String, Integer> context);
@@ -633,13 +633,13 @@ Expression expr = new MultiplyExpression(
 System.out.println(expr.interpret(ctx));  // (5 + 3) * 4 = 32
 ```
 
-### 11.3 장단점
+### 11.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 문법 규칙을 클래스 단위로 추가·변경하기 쉬움 |
 | 단점 | 복잡한 문법에서 클래스 수 폭발, 성능 문제, 유지보수 어려움 → 복잡한 언어에는 ANTLR 같은 파서 제너레이터 사용 권장 |
 
-### 11.4 실무
+### 11.4. 실무
 - `java.util.regex.Pattern`: 정규표현식 해석기
 - Spring Expression Language (SpEL)
 - SQL 파서 (간단한 조건식 해석에 적용)
@@ -660,6 +660,8 @@ System.out.println(expr.interpret(ctx));  // (5 + 3) * 4 = 32
 - [[aop]]
 - [[spring-event]]
 - [[reactive-programming]]
+
+---
 
 [^1]: Spring 문서는 `ApplicationEvent`·`ApplicationListener` 기반 이벤트 처리를 Observer 패턴으로 설명한다(§6.4). 발행자와 리스너 사이의 직접 참조를 컨텍스트가 대신한다는 점에서 Mediator 성격도 있다.
 [^2]: `JdbcTemplate`은 상속 대신 `RowMapper` 같은 콜백 객체를 받는 template-callback 방식이다. 골격을 고정하고 가변 단계를 위임한다는 점에서 Template Method의 변형이다. JDBC 자원 관리를 단순한 API 뒤로 감춘다는 점에서 [[design-patterns-structural]]에서는 Facade로도 분류한다.

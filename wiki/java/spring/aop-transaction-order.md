@@ -1,6 +1,6 @@
 ---
 title: AOP Advice 순서와 트랜잭션 경계
-updated: 2026-07-23 16:29:03
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -57,6 +57,8 @@ protected boolean shouldSkip(Class<?> beanClass, String beanName) {
 ```
 
 따라서 Aspect 클래스나 그 메서드에 붙인 `@Transactional`은 **트랜잭션 프록시가 생성되지 않아 무효(inert)**다. Aspect 안에서 하는 DB 작업은 별도의 트랜잭션이 열리지 않고, 호출 시점에 이미 열려 있는(= advise 대상 서비스의) 트랜잭션에 그대로 참여한다.
+
+self-invocation 제약은 `@Transactional`과 커스텀 Aspect에 동일하게 적용된다([[aop]], [[jpa-transaction]]).
 
 ---
 
@@ -115,14 +117,7 @@ Tx 시작 → Around(전처리) → 대상 메서드 → Around(후처리) → T
 - **Aspect에서 `@Transactional`을 제거**하고, 예외를 **삼키지 않고 그대로 전파**하도록 수정 → `TransactionInterceptor`가 예외를 정상적으로 받아 서비스 롤백 수행
 - 서비스에서 예외 발생 시 롤백되는 것 확인
 
----
-
-## 6. 정리
-
-- 트랜잭션과 관계가 중요한 커스텀 Aspect에는 **반드시 `@Order`를 명시**한다 — 미지정 시 순서가 미정의라 재현 어려운 버그가 된다.
-- 예외를 삼키는(rethrow하지 않는) `@Around`는 트랜잭션 **안쪽**에 있을 때 롤백을 은폐한다. 삼켜야 할 이유가 없다면 그대로 전파하고, 의도적으로 삼켜야 한다면 `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`로 명시적으로 롤백을 표시한다.
-- `@Aspect` 빈 자신은 프록시되지 않으므로 Aspect에 붙인 `@Transactional`은 무효다. Aspect의 DB 작업을 트랜잭션 경계와 다르게 다루려면 **별도 빈으로 분리하고 `Propagation`을 명시**한다.
-- self-invocation 제약은 `@Transactional`과 커스텀 Aspect 모두에 동일하게 적용된다 — [[aop]], [[jpa-transaction]] 참고.
+예외를 의도적으로 삼켜야 한다면 `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`로 롤백을 명시적으로 표시한다.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: crontab — 리눅스 작업 스케줄러
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:46:04
 tags:
   - linux
   - cli
@@ -39,7 +39,7 @@ crontab -u www -e    # www 사용자 crontab 편집 (root 권한 필요)
 
 ## 3. crontab 파일 문법
 
-### 3.1 필드
+### 3.1. 필드
 
 ```
 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7, 0/7=일)  명령어
@@ -56,7 +56,7 @@ crontab -u www -e    # www 사용자 crontab 편집 (root 권한 필요)
 
 '일(day of month)'과 '요일(day of week)'이 모두 `*`가 아니면 OR 조건으로 매칭된다. 예: `30 4 1,15 * 5` → 매월 1일·15일 오전 4:30 및 매주 금요일.
 
-### 3.2 특수 닉네임
+### 3.2. 특수 닉네임
 
 | 닉네임 | 동일 표현 |
 |---------|----------|
@@ -67,7 +67,7 @@ crontab -u www -e    # www 사용자 crontab 편집 (root 권한 필요)
 | `@daily` | `0 0 * * *` |
 | `@hourly` | `0 * * * *` |
 
-### 3.3 환경변수 설정
+### 3.3. 환경변수 설정
 
 crontab 파일 상단에 `name = value` 형태로 설정 가능.
 
@@ -144,5 +144,7 @@ crontab 파일 상단에 `name = value` 형태로 설정 가능.
 - [[systemd-unit-file]]
 - [[nohup]]
 - [[time]]
+
+---
 
 [^1]: `XDG_CACHE_HOME`은 캐시 파일 저장 위치를 지정하는 XDG Base Directory 표준 환경변수이며, 미설정 시 `$HOME/.cache`가 사용된다.

@@ -1,6 +1,6 @@
 ---
 title: CQRS
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - architecture
@@ -18,7 +18,7 @@ tags:
 > "you can use a different model to update information than the model you use to read information." — Martin Fowler
 
 ## 2. 핵심 개념
-### 2.1 Command (쓰기 모델)
+### 2.1. Command (쓰기 모델)
 - 비즈니스 의도를 표현한다. `"SetReservationStatus = Reserved"` 대신 `"BookHotelRoom"`.
 - 도메인 유효성 검사와 비즈니스 규칙을 포함한다.
 - 트랜잭션 정합성을 보장한다.
@@ -47,7 +47,7 @@ public class BookHotelRoomHandler {
 }
 ```
 
-### 2.2 Query (읽기 모델)
+### 2.2. Query (읽기 모델)
 - 비즈니스 로직·유효성 검사를 포함하지 않는다.
 - 프레젠테이션에 최적화된 DTO/프로젝션을 반환한다.
 - 부작용(Side Effect)이 없다.
@@ -70,7 +70,7 @@ public class GetRoomAvailabilityHandler {
 ```
 
 ## 3. 구현 수준
-### 3.1 동일 저장소[^1]
+### 3.1. 동일 저장소[^1]
 단일 데이터 저장소를 사용하되 읽기/쓰기 로직만 분리한다. 가장 낮은 오버헤드이며, CQRS 도입의 첫 단계로 적합하다.
 
 ```
@@ -99,7 +99,7 @@ public interface OrderSummaryRepository extends JpaRepository<Order, Long> {
 
 프로젝션 방식은 [[repository-projection]] 참고.
 
-### 3.2 저장소 분리[^1]
+### 3.2. 저장소 분리[^1]
 쓰기 저장소(정규화된 RDBMS)와 읽기 저장소(역정규화된 문서 DB, Redis, Elasticsearch 등)를 분리한다. 쓰기 이벤트로 읽기 저장소를 동기화한다.
 
 ```
@@ -134,7 +134,7 @@ public void on(OrderPlacedEvent event) {
 
 AFTER_COMMIT 리스너는 커밋 후 실행되므로 롤백된 변경은 읽기 저장소에 반영되지 않는다. 리스너가 실패하면 읽기 저장소 갱신만 누락되므로 유실을 막으려면 이벤트를 같은 트랜잭션에서 outbox 테이블에 저장하고 별도 프로세스가 브로커로 발행하는 Transactional Outbox 패턴을 쓴다.
 
-### 3.3 Event Sourcing 결합[^1]
+### 3.3. Event Sourcing 결합[^1]
 이벤트 저장소가 쓰기 모델의 단일 진실 공급원이 된다. 읽기 모델은 이벤트를 재생(Replay)해 구축한 Materialized View다.
 
 ```
@@ -175,7 +175,7 @@ Command ──► Aggregate ──► Event Store (append-only)
 - **멱등성 소비자**: 메시지 중복 전달에 대비해 이벤트 핸들러를 멱등하게 구현
 
 ## 7. Java/Spring 구현
-### 7.1 수동 디스패치 패턴
+### 7.1. 수동 디스패치 패턴
 프레임워크 없이 직접 구현하는 방식이다.
 
 ```java
@@ -223,7 +223,7 @@ public class QueryBus {
 }
 ```
 
-### 7.2 Axon Framework
+### 7.2. Axon Framework
 Java 생태계에서 CQRS + Event Sourcing을 가장 완전하게 지원하는 프레임워크다.
 
 ```groovy
@@ -317,7 +317,7 @@ public class OrderController {
 }
 ```
 
-### 7.3 Spring만으로 최소 적용
+### 7.3. Spring만으로 최소 적용
 서비스 레이어를 Command/Query로 명시적 분리하는 것만으로도 CQRS의 이점을 얻을 수 있다.
 
 ```java
@@ -381,5 +381,7 @@ public class OrderQueryService {
 - [[aop]]
 - [[spring-event]]
 - [[repository-projection]]
+
+---
 
 [^1]: Level 1~3 구분은 Fowler·Microsoft 문서의 명시적 분류가 아니며 읽기·쓰기 저장소의 분리 정도와 Event Sourcing 결합 여부에 따라 정리한 것이다.

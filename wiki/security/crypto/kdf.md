@@ -1,6 +1,6 @@
 ---
-title: KDF (Key Derivation Function)
-updated: 2026-10-19 17:18:36
+title: KDF
+updated: 2026-10-20 17:46:04
 tags:
   - crypto
   - kdf
@@ -146,6 +146,9 @@ SecretKey aesKey = hkdf.deriveKey("AES", params);
 ---
 
 ## Sources
+
+- [Oracle JDK 25 JCA Reference: KDF](https://docs.oracle.com/en/java/javase/25/security/java-cryptography-architecture-jca-reference-guide.html)
+- [Spring Security Password Storage](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html)
 - [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 - [RFC 9106: Argon2](https://www.rfc-editor.org/rfc/rfc9106)
 - [RFC 5869: HKDF](https://www.rfc-editor.org/rfc/rfc5869)
@@ -156,11 +159,13 @@ SecretKey aesKey = hkdf.deriveKey("AES", params);
 ---
 
 ## Related pages
+
 - [[ml-kem]]
 - [[ml-dsa]]
 - [[cpu-usage-troubleshooting]]
 - [[openssl-keygen]]
 - [[jwt]]
 
+---
 
 [^1]: 운영 판단. 패스워드 검증의 비용·요청 제한은 OWASP 권고에 근거하며, 재유도 축소는 내부 KeyStore 반복 호출 사례에 적용 범위를 제한했다. 로그인 검증 결과를 캐시하는 설계는 별도 위협 모델과 만료·폐기 정책을 요구한다.

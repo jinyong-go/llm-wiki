@@ -1,6 +1,6 @@
 ---
 title: Java 17 주요 기능
-updated: 2026-07-08 10:50:28
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - java17
@@ -126,3 +126,4 @@ if (obj instanceof String s) {
 - [[java21-features]]
 - [[jvm-options]]
 - [[expression-vs-statement]]
+- [[thread-unsafe-utilities]]

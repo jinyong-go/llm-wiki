@@ -1,6 +1,6 @@
 ---
 title: XSS
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 17:54:47
 tags:
   - web
   - security
@@ -168,7 +168,7 @@ Trusted Types는 `innerHTML` 같은 DOM sink에 문자열 대신 정책을 거�
 Content-Security-Policy: require-trusted-types-for 'script'
 ```
 
-지원 브라우저 범위를 확인하고, 미지원 환경에서는 4장의 방어가 그대로 필요하다.
+지원 브라우저 범위를 확인하고, 미지원 환경에서는 §4의 방어가 그대로 필요하다.
 
 ---
 

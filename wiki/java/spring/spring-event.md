@@ -1,6 +1,6 @@
 ---
 title: Spring 이벤트
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -158,3 +158,4 @@ public void handle(OrderCreatedEvent event) { /* 별도 스레드 */ }
 - [[jpa-entity-lifecycle]]
 - [[jpa-transaction]]
 - [[enable-annotations]] — @EnableAsync
+- [[cqrs]]

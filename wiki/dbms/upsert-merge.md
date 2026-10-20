@@ -1,6 +1,6 @@
 ---
 title: DBMS별 Upsert / Merge
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - dbms
   - sql
@@ -32,7 +32,7 @@ Upsert는 키가 존재하면 UPDATE, 없으면 INSERT를 한 문장으로 수�
 - **AUTO_INCREMENT 소모(MySQL)** — `ON DUPLICATE KEY UPDATE`는 "mixed-mode insert"로 분류되어, 실제로는 UPDATE만 일어나도 InnoDB가 할당한 auto-increment 값이 갱신 단계에서 쓰이지 않고 버려질 수 있다. 결과적으로 PK 값에 구멍(gap)이 생긴다.
 - **행별 분기 판별이 번거로움** — INSERT됐는지 UPDATE됐는지 애플리케이션에서 구분하려면 별도 처리가 필요하다(MySQL의 affected-rows 1/2/0 구분, PostgreSQL의 `xmax` 확인 등 우회적 방법에 의존).
 - **트리거 동작 불명확** — INSERT/UPDATE 각각에 트리거가 걸려 있을 때 upsert 문장이 어느 쪽을 발동시키는지 DBMS·상황별로 다르므로, 트리거 기반 로직과 결합 시 예상과 다르게 동작할 수 있다.
-- **이식성 부족** — 세 DBMS의 문법이 서로 달라(아래 6장 비교), ORM·공용 SQL로 추상화하기 어렵고 DBMS 전환 시 재작성이 필요하다.
+- **이식성 부족** — 세 DBMS의 문법이 서로 달라(아래 §6 비교), ORM·공용 SQL로 추상화하기 어렵고 DBMS 전환 시 재작성이 필요하다.
 - **의도치 않은 덮어쓰기 위험** — `SET` 절에 명시하지 않은 컬럼은 기존 값이 유지되지만, 실수로 전체 컬럼을 갱신 대상에 포함하면 부분 갱신을 의도한 코드에서 다른 컬럼 값을 덮어쓸 수 있다.
 
 ## 3. Oracle — MERGE
@@ -48,7 +48,7 @@ WHEN NOT MATCHED THEN
   VALUES (s.id, s.name, SYSDATE);
 ```
 
-- `USING`에는 테이블·뷰·서브쿼리가 올 수 있다. `ON`은 매칭 조건이며, 반드시 유니크 컬럼일 필요는 없다(대신 결과가 결정적이지 않으면 런타임에 오류가 발생한다. 3.1절 참고).
+- `USING`에는 테이블·뷰·서브쿼리가 올 수 있다. `ON`은 매칭 조건이며, 반드시 유니크 컬럼일 필요는 없다(대신 결과가 결정적이지 않으면 런타임에 오류가 발생한다. §3.1 참고).
 - `WHEN MATCHED`/`WHEN NOT MATCHED` 중 최소 하나는 필수이며, 둘 다 명시 가능하다.
 - `WHEN MATCHED` 절에는 `DELETE WHERE`를 추가해 갱신 후 조건에 맞는 행을 삭제할 수 있다(원본이 아닌 갱신된 값 기준으로 평가됨).
 

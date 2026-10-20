@@ -1,6 +1,6 @@
 ---
 title: JUnit 테스트 스위트 — @Suite, @Tag, Gradle/Maven 디스커버리·태그 필터링
-updated: 2026-09-14 16:34:37
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - junit
@@ -312,3 +312,4 @@ Platform이 JUnit 4(Vintage) 테스트를 실행하려면 `junit-vintage-engine`
 ## Related pages
 - [[junit-parameterized-test]] — JUnit 5 매개변수화 테스트
 - [[java-testing-libraries]] — Java 테스트 라이브러리 전체 개요(목적별 분류)
+- [[junit-test-execution-order]]

@@ -1,6 +1,6 @@
 ---
 title: Externalized Configuration — Spring Boot 설정값 우선순위
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring-boot
@@ -37,7 +37,7 @@ Spring Boot는 동일 코드로 여러 환경을 지원하기 위해 설정을 �
 | 14 | `@TestPropertySource` | 테스트 전용 |
 | 15 | Devtools global settings (`$HOME/.config/spring-boot`) | devtools 활성 시만 적용 |
 
-### 2.1. 실무 요약
+### 2.1. 주요 순서
 
 테스트·JNDI 항목은 제외한 순서다.
 

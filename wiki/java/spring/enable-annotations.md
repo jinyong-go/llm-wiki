@@ -1,6 +1,6 @@
 ---
 title: @Enable 계열 어노테이션
-updated: 2026-07-14 11:26:44
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring-boot
@@ -13,7 +13,7 @@ tags:
 
 스프링의 인프라 기능은 기본적으로 꺼져 있다. `@Transactional`, `@Async`, `@Cacheable` 같은 어노테이션을 코드에 붙여도, 이를 감지·처리할 인프라 빈이 없으면 아무 동작도 하지 않는다. `@EnableXxx`는 이 인프라 빈을 등록하는 opt-in 스위치다.
 
-사용 시점은 다음과 같다. 부트 없이 스프링 프레임워크만 사용할 때는 필요한 기능마다 직접 선언한다. 스프링 부트에서는 자동 구성이 상당수 기능의 인프라를 조건부로 등록해 주므로 명시 선언이 필요 없는 경우가 많고, 자동 구성이 다루지 않는 기능(예: `@EnableScheduling`, `@EnableAsync`)이나 기본 구성에서 벗어나는 커스터마이징(예: `@EnableJpaRepositories`로 스캔 경로·복수 DataSource 지정, [[multi-datasource]])이 목적일 때 선언한다. 또한 자체 `@EnableMyModule`을 정의해 라이브러리 기능의 활성화 진입점으로 제공할 수도 있다(4장).
+사용 시점은 다음과 같다. 부트 없이 스프링 프레임워크만 사용할 때는 필요한 기능마다 직접 선언한다. 스프링 부트에서는 자동 구성이 상당수 기능의 인프라를 조건부로 등록해 주므로 명시 선언이 필요 없는 경우가 많고, 자동 구성이 다루지 않는 기능(예: `@EnableScheduling`, `@EnableAsync`)이나 기본 구성에서 벗어나는 커스터마이징(예: `@EnableJpaRepositories`로 스캔 경로·복수 DataSource 지정, [[multi-datasource]])이 목적일 때 선언한다. 또한 자체 `@EnableMyModule`을 정의해 라이브러리 기능의 활성화 진입점으로 제공할 수도 있다(§4).
 
 ## 2. 동작 원리: @Import 메타 어노테이션
 
@@ -60,7 +60,6 @@ tags:
 | `@EnableConfigurationProperties` | `EnableConfigurationPropertiesRegistrar` (Registrar[^1]) | `@ConfigurationProperties` 빈 등록 ([[configuration-properties]]) |
 | `@EnableJpaRepositories` | `JpaRepositoriesRegistrar` (Registrar) | 리포지토리 인터페이스 스캔·프록시 생성 ([[multi-datasource]]) |
 
-[^1]: 해당 클래스는 패키지 비공개로 공식 javadoc 페이지가 없다. Registrar 유형 표기는 어노테이션 javadoc의 역할 서술과 클래스 네이밍에 근거한 추론이다.
 
 ### 3.1. 주요 예시
 
@@ -171,7 +170,7 @@ public class JpaConfig { }
 
 ## 4. 커스텀 @EnableXxx 작성
 
-`@Import`를 메타 어노테이션으로 붙이면 동일한 패턴의 어노테이션을 만들 수 있다. import 대상에서 `AnnotationMetadata`로 어노테이션 속성을 읽는다. 구현 상세는 [[bean-registration-control]] 6장 참조.
+`@Import`를 메타 어노테이션으로 붙이면 동일한 패턴의 어노테이션을 만들 수 있다. import 대상에서 `AnnotationMetadata`로 어노테이션 속성을 읽는다. 구현 상세는 [[bean-registration-control]] §6 참조.
 
 ```java
 @Target(ElementType.TYPE)
@@ -222,3 +221,7 @@ public class MyModuleRegistrar implements ImportBeanDefinitionRegistrar {
 - [[aop]]
 - [[jpa-transaction]]
 - [[multi-datasource]]
+
+---
+
+[^1]: 해당 클래스는 패키지 비공개로 공식 javadoc 페이지가 없다. Registrar 유형 표기는 어노테이션 javadoc의 역할 서술과 클래스 네이밍에 근거한 추론이다.

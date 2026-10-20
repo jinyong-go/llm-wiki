@@ -1,6 +1,6 @@
 ---
 title: CommonJS
-updated: 2026-08-07 13:49:17
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - commonjs
@@ -21,7 +21,7 @@ CommonJS 모듈은 `require()`로 다른 모듈을 가져오고, `exports`/`modu
 const circle = require('./circle.js');
 console.log(circle.area(4));
 ```
-`require(id)`는 다른 모듈·JSON 파일·Node.js 코어 모듈을 가져오는 함수다. 인자로 받은 경로/이름(`id`)에 해당하는 모듈을 로드하고, 그 모듈의 `module.exports` 값을 반환한다. 해석·캐싱·순환 참조 규칙은 3.1절 참고.
+`require(id)`는 다른 모듈·JSON 파일·Node.js 코어 모듈을 가져오는 함수다. 인자로 받은 경로/이름(`id`)에 해당하는 모듈을 로드하고, 그 모듈의 `module.exports` 값을 반환한다. 해석·캐싱·순환 참조 규칙은 §3.1 참고.
 
 ### 2.2. exports
 ```js
@@ -29,10 +29,10 @@ console.log(circle.area(4));
 const { PI } = Math;
 exports.area = (r) => PI * r ** 2;
 ```
-`exports`는 `module.exports`를 가리키는 축약 참조 변수다. `exports.f = ...` 형태로 프로퍼티를 추가하는 용도로만 써야 하며, 새 객체를 통째로 재할당하면 `module.exports`와의 연결이 끊어져 내보내지지 않는다(3.2절 참고). 실제로 내보내는 값을 담는 객체는 `module.exports`이며, `require()`가 반환하는 값은 항상 이 객체다.
+`exports`는 `module.exports`를 가리키는 축약 참조 변수다. `exports.f = ...` 형태로 프로퍼티를 추가하는 용도로만 써야 하며, 새 객체를 통째로 재할당하면 `module.exports`와의 연결이 끊어져 내보내지지 않는다(§3.2 참고). 실제로 내보내는 값을 담는 객체는 `module.exports`이며, `require()`가 반환하는 값은 항상 이 객체다.
 
 ### 2.3. 기타
-모듈 래퍼(3장)가 주입하는 `__filename`, `__dirname`, `module` 외에도 다음이 제공된다.
+모듈 래퍼(§3)가 주입하는 `__filename`, `__dirname`, `module` 외에도 다음이 제공된다.
 
 - `module.id`, `module.filename`: 모듈 식별자(보통 파일 절대경로)와 파일명.
 - `module.loaded`: 로딩 완료 여부.
@@ -41,7 +41,7 @@ exports.area = (r) => PI * r ** 2;
 - `module.parent`: 이 모듈을 최초로 require한 모듈(deprecated — `require.main`, `module.children` 사용 권장).
 - `module.require(id)`: 해당 모듈에서 호출한 것처럼 동작하는 `require()`.
 - `require.resolve(request)`: 모듈을 로드하지 않고 해석된 파일 경로만 반환.
-- `require.cache`: require된 모듈이 캐시되는 객체(3.1절 참고). 키를 삭제하면 다음 require 시 재로드된다.
+- `require.cache`: require된 모듈이 캐시되는 객체(§3.1 참고). 키를 삭제하면 다음 require 시 재로드된다.
 - `require.main`: Node.js 프로세스 시작 시 로드된 엔트리 모듈을 가리키는 Module 객체.
 - `require.extensions`: 확장자별 로드 방식을 지정하던 API(deprecated).
 
@@ -55,7 +55,7 @@ exports.area = (r) => PI * r ** 2;
 ### 3.1. require 동작
 `require()` 호출 시점에 파일을 동기적으로 읽고 즉시 실행한다. 런타임에 평가되는 함수 호출이므로 조건문·반복문 안에서도 호출할 수 있다(동적 로딩).
 
-모듈 해석: `/`로 시작하면 절대 경로로 그대로 사용한다. `./`, `../`로 시작하면 require를 호출한 파일 기준 상대 경로로 해석한다. 그 외(접두사 없음)는 코어 모듈이거나 `node_modules`에서 탐색한다. 정확한 파일명이 없으면 `.js` → `.json` → `.node` 순으로 확장자를 붙여 재시도하며, `.cjs`처럼 다른 확장자는 전체 파일명을 명시해야 한다. 디렉토리를 지정하면 그 안의 `index.js`(또는 `package.json`의 `main`이 가리키는 파일)를 찾는 "folders as modules" 방식도 지원한다. 찾지 못하면 `MODULE_NOT_FOUND` 에러를 던진다. ESM의 `import`는 이런 확장자·디렉토리 자동 해석을 지원하지 않는다([[es-module]] 4장 참고).
+모듈 해석: `/`로 시작하면 절대 경로로 그대로 사용한다. `./`, `../`로 시작하면 require를 호출한 파일 기준 상대 경로로 해석한다. 그 외(접두사 없음)는 코어 모듈이거나 `node_modules`에서 탐색한다. 정확한 파일명이 없으면 `.js` → `.json` → `.node` 순으로 확장자를 붙여 재시도하며, `.cjs`처럼 다른 확장자는 전체 파일명을 명시해야 한다. 디렉토리를 지정하면 그 안의 `index.js`(또는 `package.json`의 `main`이 가리키는 파일)를 찾는 "folders as modules" 방식도 지원한다. 찾지 못하면 `MODULE_NOT_FOUND` 에러를 던진다. ESM의 `import`는 이런 확장자·디렉토리 자동 해석을 지원하지 않는다([[es-module]] §4 참고).
 
 캐싱: 모듈은 **resolve된 파일 경로** 기준으로 캐시된다. 같은 파일을 여러 번 require해도 코드는 최초 1회만 실행되고, 이후에는 캐시된 동일한 `module.exports` 객체가 반환된다. 코드를 매번 다시 실행하고 싶다면 함수를 export하고 호출부에서 그 함수를 호출해야 한다. 대소문자만 다른 경로(`require('./foo')`와 `require('./FOO')`)는 실제로 같은 파일이라도 별개 캐시 항목으로 취급되어 중복 로드된다.
 
@@ -119,7 +119,6 @@ module.exports = exports = function Constructor() { /* ... */ };
 
 ---
 
-[^1]: 추론. `require()`의 인자는 런타임에 평가되는 임의의 표현식일 수 있어(3.1절의 동적 로딩 특성) 번들러가 빌드 시점에 실제 사용 여부를 정적으로 판단하기 어렵다는 일반론이며, webpack 등 번들러 문서가 ESM의 정적 `import`/`export`를 트리쉐이킹의 전제 조건으로 명시하는 것에 근거한 유추.
 
 ## Sources
 - [Node.js — Modules: CommonJS modules](https://nodejs.org/api/modules.html)
@@ -129,3 +128,7 @@ module.exports = exports = function Constructor() { /* ... */ };
 ## Related pages
 - [[module-system]]
 - [[es-module]]
+
+---
+
+[^1]: 추론. `require()`의 인자는 런타임에 평가되는 임의의 표현식일 수 있어(§3.1의 동적 로딩 특성) 번들러가 빌드 시점에 실제 사용 여부를 정적으로 판단하기 어렵다는 일반론이며, webpack 등 번들러 문서가 ESM의 정적 `import`/`export`를 트리쉐이킹의 전제 조건으로 명시하는 것에 근거한 유추.

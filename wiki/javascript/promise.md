@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 Promise
-updated: 2026-08-27 17:05:57
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - async
@@ -208,3 +208,4 @@ await thenable; // 42 — await도 동일하게 동작
 - [[async-await]] — Promise 기반 동기적 문법
 - [[lexical-scope]] — 클로저와 콜백
 - [[first-class-citizen]] — 함수를 값으로 다루는 콜백/핸들러 전달
+- [[fetch-api]]

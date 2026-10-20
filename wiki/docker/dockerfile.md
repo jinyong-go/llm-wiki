@@ -1,6 +1,6 @@
 ---
 title: 도커파일(Dockerfile)
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - docker
   - container
@@ -41,7 +41,7 @@ tags:
 
 ---
 
-## 4. 주요 지시어 요약
+## 4. 주요 지시어
 각 지시어의 상세 활용법과 실행 형식(Exec vs Shell)은 **[[dockerfile-directives]]**에서 자세히 다룬다.
 
 | 지시어 | 핵심 용도 |

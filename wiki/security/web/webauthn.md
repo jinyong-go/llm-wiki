@@ -1,6 +1,6 @@
 ---
 title: WebAuthn
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 17:54:47
 tags:
   - web
   - authentication
@@ -249,7 +249,7 @@ if (supported) {
 ## 10. 보안
 
 - Origin 바인딩: 서명이 origin/RP ID에 종속되므로 도메인 유사 피싱에 강함
-- Signature Counter: 5장 참고. 자격 증명별 카운터가 권장되며, 전역 카운터는 RP 간 추적에 사용될 수 있다.
+- Signature Counter: §5 참고. 자격 증명별 카운터가 권장되며, 전역 카운터는 RP 간 추적에 사용될 수 있다.
 - 증명과 프라이버시: 증명 정보의 식별 가능성을 평가한다. RP가 Authenticator 신뢰 정책을 적용해야 하면 검증 결과와 신뢰 경로를 사용하고, 모델 정보만으로 사용자 신원을 판단하지 않는다.
 - RP ID: 기본 도메인 접미사 규칙과 Level 3의 related origins 검증을 구분한다. Related origins는 RP ID의 HTTPS `/.well-known/webauthn` 문서에 허용 origin 목록을 제공하며, RP 서버도 실제 origin을 허용 목록과 대조해야 한다. API는 secure context를 요구하며 localhost 같은 신뢰 가능한 개발 출처는 예외가 될 수 있다.
 - Challenge: 최소 16바이트의 암호학적 난수 필요. 재사용 시 재전송(replay) 공격에 노출

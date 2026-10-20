@@ -1,6 +1,6 @@
 ---
 title: NestJS Mongoose
-updated: 2026-08-26 17:57:26
+updated: 2026-10-20 17:46:04
 tags:
   - nodejs
   - nestjs
@@ -224,7 +224,6 @@ Exception Filter 작성법은 [[nestjs-request-pipeline]] §6 참고.
 
 **잘못된 ObjectId(CastError)**: 경로 파라미터가 24자리 hex 형식이 아니면 `CastError`가 던져진다. TypeORM의 `ParseUUIDPipe`([[nestjs-request-pipeline]] §4.1)에 대응하는 **`ParseObjectIdPipe`는 NestJS에 내장돼 있지 않다** — `mongoose.Types.ObjectId.isValid()`로 직접 검증하는 커스텀 Pipe를 만들어야 한다.
 
-[^1]: 하이드레이션(hydration)은 원시 데이터를 `save()`·가상 필드·getter/setter 같은 메서드를 가진 실제 Document 인스턴스로 변환하는 과정이다. `HydratedDocument<T>` 타입이 이렇게 하이드레이션된 문서의 타입을 나타낸다.
 
 ---
 
@@ -244,3 +243,7 @@ Exception Filter 작성법은 [[nestjs-request-pipeline]] §6 참고.
 - [[nestjs-testing]] — Mock Model 교체
 - [[nestjs-typeorm]] — 객체 매핑 제약 비교
 - [[nestjs-request-pipeline]] — Exception Filter, 내장 Pipe
+
+---
+
+[^1]: 하이드레이션(hydration)은 원시 데이터를 `save()`·가상 필드·getter/setter 같은 메서드를 가진 실제 Document 인스턴스로 변환하는 과정이다. `HydratedDocument<T>` 타입이 이렇게 하이드레이션된 문서의 타입을 나타낸다.

@@ -1,6 +1,6 @@
 ---
 title: RDBMS 실행 계획 (Execution Plan)
-updated: 2026-08-11 17:04:12
+updated: 2026-10-20 17:54:47
 tags:
   - dbms
   - sql
@@ -23,7 +23,7 @@ tags:
 
 ## 2. Oracle
 
-### 2.1 확인 방법
+### 2.1. 확인 방법
 
 ```sql
 -- 예상 실행 계획
@@ -39,7 +39,7 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<sql_id>', 0, 'ALLSTATS LAST'));
 - SQL*Plus `SET AUTOTRACE ON`으로 실행 직후 계획·통계를 볼 수 있다.
 - 장시간 쿼리는 Real-Time SQL Monitoring(`V$SQL_MONITOR`, Tuning Pack 필요)으로 실행 중 진행 상황을 단계별로 관찰할 수 있다.
 
-### 2.2 출력 항목
+### 2.2. 출력 항목
 
 기본 출력:
 
@@ -69,7 +69,7 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<sql_id>', 0, 'ALLSTATS LAST'));
 - **Note**: dynamic sampling 사용 여부 등
 - **Hint Report** (19c+): 힌트 적용·무시 내역 ([[oracle-hints]] 참고)
 
-### 2.3 성능 확인 포인트
+### 2.3. 성능 확인 포인트
 
 - **E-Rows vs A-Rows 괴리**: 실측이 예측의 수십 배 이상 차이 나는 단계가 잘못된 계획 선택의 원인. A-Rows는 `Starts × 단계당 행`의 누적이므로 Starts를 감안해 비교한다. 괴리가 크면 통계 재수집·히스토그램을 검토한다.
 - **Buffers·Reads**: 쿼리의 실제 부하 지표. Cost보다 논리 I/O(Buffers) 감소를 기준으로 튜닝 효과를 판단한다.
@@ -78,7 +78,7 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<sql_id>', 0, 'ALLSTATS LAST'));
 
 ## 3. PostgreSQL
 
-### 3.1 확인 방법
+### 3.1. 확인 방법
 
 ```sql
 EXPLAIN <SQL>;                              -- 예상 실행 계획
@@ -88,7 +88,7 @@ EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) <SQL>;  -- 구조화 출력
 
 `ANALYZE`는 쿼리를 **실제 실행**하므로 DML은 `BEGIN; ... ROLLBACK;`으로 감싼다.
 
-### 3.2 출력 항목
+### 3.2. 출력 항목
 
 ```
 Index Scan using idx_x on t  (cost=0.29..8.31 rows=1 width=44)
@@ -108,7 +108,7 @@ Index Scan using idx_x on t  (cost=0.29..8.31 rows=1 width=44)
 
 노드별 상세로 `Sort Method`(quicksort/external merge), `Hash Batches`, `Rows Removed by Filter` 등이 출력된다.
 
-### 3.3 성능 확인 포인트
+### 3.3. 성능 확인 포인트
 
 - **rows(예측) vs rows(실측)**: 실측은 loops당 평균이므로 **`actual rows × loops`로 환산해 비교**한다. 괴리가 크면 `ANALYZE` 재실행, `default_statistics_target` 상향, 확장 통계를 검토한다.
 - **loops가 큰 Nested Loop**: inner 노드가 수만 회 반복되면 총비용이 급증한다.
@@ -118,7 +118,7 @@ Index Scan using idx_x on t  (cost=0.29..8.31 rows=1 width=44)
 
 ## 4. MySQL
 
-### 4.1 확인 방법
+### 4.1. 확인 방법
 
 ```sql
 EXPLAIN <SQL>;                  -- 예상 (표 형식)
@@ -128,7 +128,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 
 `EXPLAIN ANALYZE`는 쿼리를 실제 실행한다 (SELECT 권장, 8.0.31+에서 DML도 지원되나 실제 변경 발생).
 
-### 4.2 출력 항목
+### 4.2. 출력 항목
 
 표 형식 주요 컬럼:
 
@@ -150,7 +150,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 
 `actual time=첫 행..마지막 행`(ms, loops당 평균), `rows`(loops당 평균), `loops`.
 
-### 4.3 성능 확인 포인트
+### 4.3. 성능 확인 포인트
 
 - **type 등급**: `ALL`(전체 테이블 스캔)과 `index`(인덱스 전체 스캔)가 반복 실행 위치에 있으면 최우선 개선 대상.
 - **rows × filtered vs 실측 rows**: 괴리가 크면 `ANALYZE TABLE`, 히스토그램을 검토한다.
@@ -171,3 +171,4 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 - [[optimizer-statistics]]
 - [[index-scan]]
 - [[oracle-hints]]
+- [[partitioning]]

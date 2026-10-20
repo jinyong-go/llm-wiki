@@ -1,6 +1,6 @@
 ---
 title: 세션 하이재킹
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 17:54:47
 tags:
   - web
   - http
@@ -24,7 +24,7 @@ tags:
 
 ### 2.2. 세션 스니핑 (Sidejacking)
 
-세션 ID가 암호화되지 않은 구간을 지날 때 네트워크 트래픽을 도청해 탈취하는 방식이다. 공개 Wi-Fi처럼 같은 네트워크를 공유하는 환경에서 특히 위험하다. Firesheep이 이 공격을 자동화한 대표 사례다(4장).
+세션 ID가 암호화되지 않은 구간을 지날 때 네트워크 트래픽을 도청해 탈취하는 방식이다. 공개 Wi-Fi처럼 같은 네트워크를 공유하는 환경에서 특히 위험하다. Firesheep이 이 공격을 자동화한 대표 사례다(§4).
 
 ### 2.3. 클라이언트 사이드 탈취
 
@@ -56,7 +56,7 @@ XSS(Cross-Site Scripting, 크로스사이트 스크립팅)로 주입된 스크�
 
 ### 3.3. HttpOnly·SameSite
 
-`HttpOnly`는 XSS를 통한 `document.cookie` 탈취를 차단하고, `SameSite=Strict` 또는 `Lax`는 크로스 사이트 경로로 세션 쿠키가 유출·오용되는 경로를 줄인다([[cookie]] 4장).
+`HttpOnly`는 XSS를 통한 `document.cookie` 탈취를 차단하고, `SameSite=Strict` 또는 `Lax`는 크로스 사이트 경로로 세션 쿠키가 유출·오용되는 경로를 줄인다([[cookie]] §4).
 
 ### 3.4. 세션 ID 재발급
 

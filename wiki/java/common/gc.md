@@ -1,6 +1,6 @@
 ---
 title: Garbage Collector (GC)
-updated: 2026-10-15 22:34:58
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - jvm
@@ -15,7 +15,7 @@ HotSpot JVM은 힙에서 더 이상 참조되지 않는 객체를 자동 회수�
 - **세대 가설(weak generational hypothesis)**: 대부분의 객체는 생성 직후 죽는다는 경험칙. Young/Old 영역을 분리해 Young을 자주, Old를 드물게 수집하는 방식의 근거다.
 - **동시(concurrent) GC**: 애플리케이션 스레드와 병행해 마킹·정리를 수행하여 STW를 줄이는 방식.
 
-GC 지정·튜닝 옵션의 전체 목록은 [[jvm-options]]의 "GC 선택" 절을 참고한다. 본 문서는 각 GC의 특성과 지원 이력을 다룬다. 본문에 나오는 세부 용어(concurrent marking, compaction, colored pointer, load barrier)는 4장에서 설명한다.
+GC 지정·튜닝 옵션의 전체 목록은 [[jvm-options]]의 "GC 선택" 절을 참고한다. 본 문서는 각 GC의 특성과 지원 이력을 다룬다. 본문에 나오는 세부 용어(concurrent marking, compaction, colored pointer, load barrier)는 §4에서 설명한다.
 
 ---
 

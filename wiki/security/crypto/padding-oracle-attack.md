@@ -1,6 +1,6 @@
 ---
 title: 패딩 오라클 공격
-updated: 2026-10-19 17:18:36
+updated: 2026-10-20 18:00:44
 tags:
   - crypto
   - cbc
@@ -29,7 +29,7 @@ tags:
 
 ### 3.1. PKCS#7 패딩
 
-CBC에서 입력을 블록 크기의 배수로 맞추기 위해 패딩을 채운다. 블록 암호를 사용하는 모든 모드가 패딩을 요구하는 것은 아니다. PKCS#7은 **부족한 바이트 수만큼, 그 값 자체를 반복해서 채운다.**
+CBC에서 입력을 블록 크기의 배수로 맞추기 위해 패딩을 채운다. 블록 암호를 사용하는 모든 모드가 패딩을 요구하는 것은 아니다. PKCS#7은 부족한 바이트 수만큼, 그 값 자체를 반복해서 채운다.
 
 ```
 평문 뒤에 5바이트가 부족 → 05 05 05 05 05 를 채움
@@ -44,17 +44,17 @@ $$P_i = D_k(C_i) \oplus C_{i-1}$$
 - $C_i$: $i$번째 암호문 블록, $C_0$은 IV
 - $D_k(C_i)$: 키 없이는 계산 불가능한 "중간값"(intermediate value) $I_i$
 
-공격자는 $C_{i-1}$(또는 IV)을 **자유롭게 조작**할 수 있고, $I_i = D_k(C_i)$ 자체는 알 수 없지만 **패딩 유효/무효 여부만으로 $I_i$를 1바이트씩 역산**할 수 있다.
+공격자는 $C_{i-1}$(또는 IV)을 자유롭게 조작할 수 있고, $I_i = D_k(C_i)$ 자체는 알 수 없지만 패딩 유효/무효 여부만으로 $I_i$를 1바이트씩 역산할 수 있다.
 
-### 3.3. 바이트 단위 복원 절차
+### 3.3. 바이트 복원
 
 목표 블록 $C_i$의 평문 마지막 바이트를 구한다고 하자.
 
 1. $C_{i-1}$의 마지막 바이트를 $g = 0..255$로 바꿔가며 $(C'_{i-1} \| C_i)$를 오라클에 전송
-2. 패딩이 **유효**해지는 $g$를 발견 (대부분 마지막 바이트가 `0x01`이 되는 경우)
+2. 패딩이 유효해지는 $g$를 발견 (대부분 마지막 바이트가 `0x01`이 되는 경우)
 3. 이때 $I_i[\text{last}] = g \oplus 0x01$ 이므로, 원래 평문 바이트는 $P_i[\text{last}] = I_i[\text{last}] \oplus C_{i-1}[\text{last}]$(원본 $C_{i-1}$)
 4. 뒤에서 두 번째 바이트를 구할 때는, 이미 알아낸 $I_i[\text{last}]$를 이용해 $C'_{i-1}$의 마지막 바이트를 고정(패딩 `0x02`가 되도록)한 뒤, 그 앞 바이트를 다시 0..255 브루트포스
-5. 이를 블록 크기만큼 반복하면 **블록 하나를 키 없이 완전히 복원**(블록당 최대 256×16회 정도의 요청, $2^{128}$ 전수조사 대비 압도적으로 적음)
+5. 이를 블록 크기만큼 반복하면 블록 하나를 키 없이 완전히 복원(블록당 최대 256×16회 정도의 요청, $2^{128}$ 전수조사 대비 압도적으로 적음)
 6. 전체 암호문은 블록마다 직전 블록을 "IV" 삼아 위 과정을 반복해 처음부터 끝까지 복원
 
 > 2번 단계에서 우연히 `0x01` 외의 값(예: 실제 평문이 `... 02 02`인 경우)으로도 패딩이 유효해 보일 수 있어(false positive), 실제 구현체는 직전 바이트를 한 번 더 변형해 재검증한다.
@@ -71,11 +71,11 @@ $$P_i = D_k(C_i) \oplus C_{i-1}$$
 
 ### 4.2. Encrypt-then-MAC
 
-**CBC를 유지해야 하는 경우**, Encrypt-then-MAC 구조로 패딩 오류가 외부에 노출되지 않도록 한다.
+CBC를 유지해야 하는 경우, Encrypt-then-MAC 구조로 패딩 오류가 외부에 노출되지 않도록 한다.
 
-- 암호화 후 **암호문(및 IV) 전체에 대해 MAC(HMAC-SHA256 등)을 계산**하고, **복호화(패딩 제거)보다 먼저 MAC을 검증**
-- MAC 검증에 실패하면 **패딩 제거 로직을 아예 실행하지 않고** 즉시 실패 처리 → 공격자에게 "패딩 오류"라는 상태 자체가 노출되지 않음
-- **IV도 MAC 검증 범위에 포함**시켜야 함(IV만 따로 조작하는 비트 플리핑 공격 방지)
+- 암호화 후 암호문(및 IV) 전체에 대해 MAC(HMAC-SHA256 등)을 계산하고, 복호화(패딩 제거)보다 먼저 MAC을 검증
+- MAC 검증에 실패하면 패딩 제거 로직을 아예 실행하지 않고 즉시 실패 처리해 공격자에게 "패딩 오류"라는 상태 자체가 노출되지 않음
+- IV도 MAC 검증 범위에 포함시켜야 함(IV만 따로 조작하는 비트 플리핑 공격 방지)
 - 암호화 키와 MAC 키를 분리(키 재사용 금지)
 - 반대로 MAC-then-Encrypt(암호화 전에 MAC을 계산해 함께 암호화)는 복호화 시 패딩을 먼저 벗겨야 MAC 검증이 가능한 구조라 패딩 오류가 먼저 발생할 수 있어 오라클이 성립할 수 있음(Lucky 13이 실제로 이 구조를 공격)
 
@@ -88,10 +88,9 @@ MAC 비교는 `MessageDigest.isEqual`이나 `hmac.compare_digest` 같은 상수 
 ### 4.4. 라이브러리
 
 - CBC+PKCS7+HMAC을 직접 조합하는 대신, 이미 Encrypt-then-MAC 또는 AEAD로 구현·검증된 상위 API를 사용(libsodium/NaCl `crypto_secretbox`, Google Tink, JOSE JWE의 AEAD 알고리즘(`A256GCM` 등))
-- 세션 토큰 등 굳이 암호화(기밀성)가 필요 없고 위·변조 방지만 필요하면, 애초에 암호화 대신 **서명(JWS 등)만 사용**해 복호화 오라클 자체를 없애는 것도 방법(→ [[jwt]])
+- 세션 토큰 등 굳이 암호화(기밀성)가 필요 없고 위·변조 방지만 필요하면, 애초에 암호화 대신 서명(JWS 등)만 사용해 복호화 오라클 자체를 없애는 것도 방법([[jwt]])
 
 JWE의 `A128CBC-HS256` 등은 CBC와 HMAC을 결합한 인증된 암호화 구성이다. RFC 7518은 HMAC 검증이 실패하면 중단하고, 성공한 뒤에만 복호화·패딩 검사를 수행하도록 정의한다. CBC를 사용한다는 이유만으로 인증 없는 CBC와 같은 패딩 오라클 위험을 가진다고 서술하지 않는다.
-
 
 ### 4.5. 레거시 프로토콜
 
@@ -111,26 +110,28 @@ OWASP WSTG의 블랙박스 점검은 조작한 암호문에 대한 응답 차이
 
 ## 6. 사례
 
-- **Vaudenay (2002)** — IPsec, SSL/TLS, WTLS의 CBC 패딩 검증 방식에서 최초로 공격 개념 제시
-- **ASP.NET Padding Oracle (2010, CVE-2010-3332, MS10-070)** — ViewState/폼 인증 티켓 등을 서버가 CBC로 암호화해 클라이언트에 보관했는데, 패딩 오류 시 별도 예외(`CryptographicException`)가 노출되어 오라클 성립. Rizzo·Duong이 "Practical Padding Oracle Attacks"(USENIX WOOT 2010)에서 도구화(POET, PadBuster)하여 ViewState 복호화는 물론 서버 내 임의 파일(`web.config` 등) 다운로드까지 시연. 같은 논문에서 JavaServerFaces, Ruby on Rails, OWASP ESAPI 등 여러 프레임워크의 유사 취약점도 함께 지적
-- **Lucky 13 (2013)** — MAC-then-Encrypt 구조의 TLS(≤1.2) CBC 스위트에서, 패딩 검증과 MAC 검증에 걸리는 시간 차이(타이밍 사이드채널)로 오라클을 구성
-- **POODLE (2014, CVE-2014-3566)** — SSLv3의 CBC 패딩 검증이 스펙상 패딩 바이트 내용을 실질적으로 검사하지 않는 허점을 이용, TLS→SSLv3 다운그레이드를 유도해 세션 쿠키 등을 탈취
+- Vaudenay (2002): IPsec, SSL/TLS, WTLS의 CBC 패딩 검증 방식에서 최초로 공격 개념 제시
+- ASP.NET Padding Oracle (2010, CVE-2010-3332, MS10-070): ViewState/폼 인증 티켓 등을 서버가 CBC로 암호화해 클라이언트에 보관했는데, 패딩 오류 시 별도 예외(`CryptographicException`)가 노출되어 오라클 성립. Rizzo·Duong이 "Practical Padding Oracle Attacks"(USENIX WOOT 2010)에서 도구화(POET, PadBuster)하여 ViewState 복호화는 물론 서버 내 임의 파일(`web.config` 등) 다운로드까지 시연. 같은 논문에서 JavaServerFaces, Ruby on Rails, OWASP ESAPI 등 여러 프레임워크의 유사 취약점도 함께 지적
+- Lucky 13 (2013): MAC-then-Encrypt 구조의 TLS(≤1.2) CBC 스위트에서, 패딩 검증과 MAC 검증에 걸리는 시간 차이(타이밍 사이드채널)로 오라클을 구성
+- POODLE (2014, CVE-2014-3566): SSLv3의 CBC 패딩 검증이 스펙상 패딩 바이트 내용을 실질적으로 검사하지 않는 허점을 이용, TLS에서 SSLv3로 다운그레이드를 유도해 세션 쿠키 등을 탈취
 
 ---
 
 ## Sources
+
 - [RFC 7518 §5.2.2.2: AES_CBC_HMAC_SHA2 Decryption](https://www.rfc-editor.org/rfc/rfc7518.html#section-5.2.2.2)
-- [OWASP WSTG — Testing for Padding Oracle](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/02-Testing_for_Padding_Oracle)
-- Juliano Rizzo, Thai Duong, "Practical Padding Oracle Attacks", USENIX WOOT 2010: https://www.usenix.org/event/woot10/tech/full_papers/Rizzo.pdf
-- [Wikipedia — Padding oracle attack](https://en.wikipedia.org/wiki/Padding_oracle_attack)
-- Microsoft Security Advisory 2416728 (MS10-070, CVE-2010-3332): https://learn.microsoft.com/en-us/security-updates/securityadvisories/2010/2416728
-- OpenSSL, "This POODLE Bites: Exploiting The SSL 3.0 Fallback" (CVE-2014-3566): https://www.openssl.org/~bodo/ssl-poodle.pdf
-- Lucky 13 and other padding oracle attacks on CBC ciphers: https://www.sjoerdlangkemper.nl/2022/03/20/padding-oracle-attacks-lucky13/
-- Serge Vaudenay, "Security Flaws Induced by CBC Padding", EUROCRYPT 2002: https://www.iacr.org/archive/eurocrypt2002/23320530/cbc02_e02d.pdf
+- [OWASP WSTG: Testing for Padding Oracle](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/02-Testing_for_Padding_Oracle)
+- [Juliano Rizzo, Thai Duong, "Practical Padding Oracle Attacks", USENIX WOOT 2010](https://www.usenix.org/event/woot10/tech/full_papers/Rizzo.pdf)
+- [Wikipedia: Padding oracle attack](https://en.wikipedia.org/wiki/Padding_oracle_attack)
+- [Microsoft Security Advisory 2416728 (MS10-070, CVE-2010-3332)](https://learn.microsoft.com/en-us/security-updates/securityadvisories/2010/2416728)
+- [OpenSSL, "This POODLE Bites: Exploiting The SSL 3.0 Fallback" (CVE-2014-3566)](https://www.openssl.org/~bodo/ssl-poodle.pdf)
+- [Lucky 13 and other padding oracle attacks on CBC ciphers](https://www.sjoerdlangkemper.nl/2022/03/20/padding-oracle-attacks-lucky13/)
+- [Serge Vaudenay, "Security Flaws Induced by CBC Padding", EUROCRYPT 2002](https://www.iacr.org/archive/eurocrypt2002/23320530/cbc02_e02d.pdf)
 - [RFC 7568: Deprecating SSL 3.0](https://www.rfc-editor.org/rfc/rfc7568)
 
 ---
 
 ## Related pages
-- [[openssl-dgst]] — HMAC/서명 원리 (Encrypt-then-MAC 방어에 사용)
-- [[jwt]]: JWE CBC-HMAC은 MAC을 먼저 검증하는 인증된 암호화 구성. 인증 없는 CBC와 구분
+
+- [[openssl-dgst]]
+- [[jwt]]

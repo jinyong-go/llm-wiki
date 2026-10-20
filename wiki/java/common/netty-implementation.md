@@ -1,6 +1,6 @@
 ---
 title: Netty 구현
-updated: 2026-09-02 13:02:54
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - network
@@ -16,11 +16,11 @@ tags:
 
 ## 2. 부트스트랩과 채널
 
-### 2.1 EventLoopGroup 구현체
+### 2.1. EventLoopGroup 구현체
 
 `EventLoopGroup`의 표준(NIO) 구현체는 `NioEventLoopGroup`이다. Native Transport를 쓰면 `EpollEventLoopGroup`(Linux)/`KQueueEventLoopGroup`(macOS)으로 대체한다([[netty]] 5.1 참고).
 
-### 2.2 ServerBootstrap과 ChannelOption
+### 2.2. ServerBootstrap과 ChannelOption
 
 `ServerBootstrap`은 boss/worker `EventLoopGroup`, 채널 구현체(`NioServerSocketChannel`), 파이프라인 초기화 로직, 소켓 옵션을 조립하는 헬퍼다.
 
@@ -45,7 +45,7 @@ try {
 
 **주의**: `option()`은 서버 소켓(부모, accept 담당) 옵션이고 `childOption()`은 accept된 커넥션(자식) 옵션이다 — `SO_BACKLOG`를 `childOption()`에 넣거나 `TCP_NODELAY`를 `option()`에 넣는 실수를 하면 옵션이 적용되지 않는다.
 
-### 2.3 종료: shutdownGracefully()
+### 2.3. 종료: shutdownGracefully()
 
 `shutdownGracefully()`는 종료 신호를 보낸 뒤 지정된 quiet period 동안 새 작업이 들어오지 않으면 종료하고, timeout을 넘기면 강제 종료한다.[^1] `finally` 블록에서 반드시 호출해 EventLoop 스레드를 정리해야 한다.
 
@@ -71,7 +71,7 @@ public class MyChannelInitializer extends ChannelInitializer<SocketChannel> {
 
 ## 4. 핸들러 작성
 
-### 4.1 ChannelInboundHandlerAdapter vs SimpleChannelInboundHandler
+### 4.1. ChannelInboundHandlerAdapter vs SimpleChannelInboundHandler
 
 `SimpleChannelInboundHandler<T>`는 `channelRead0()`가 반환되면 메시지를 자동으로 `release()`한다(생성자 `autoRelease` 기본값 `true`). `ChannelInboundHandlerAdapter`는 이런 자동 해제가 없다.[^3]
 
@@ -93,7 +93,7 @@ public class MyBusinessHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
 **주의**: `autoRelease=false`로 만들거나 메시지를 다음 핸들러로 넘길 때는 `ReferenceCountUtil.retain()`으로 참조 카운트를 직접 늘려야 한다.[^3]
 
-### 4.2 @Sharable
+### 4.2. @Sharable
 
 같은 핸들러 인스턴스를 여러 파이프라인에 재사용하려면 `@ChannelHandler.Sharable`을 붙여야 한다. 이 애너테이션은 "동일 인스턴스가 레이스 컨디션 없이 하나 이상의 파이프라인에 여러 번 추가될 수 있다"는 뜻이며, 핸들러가 멤버 변수 등 공유 가변 상태를 갖지 않는다는 것을 전제로 한다.[^4]
 
@@ -106,7 +106,7 @@ public class LoggingHandler extends ChannelInboundHandlerAdapter {
 
 **주의**: `@Sharable` 핸들러에 실수로 상태(예: 커넥션별 카운터)를 넣으면 서로 다른 커넥션의 EventLoop 스레드가 같은 필드를 동시에 수정해 동시성 버그가 생긴다.
 
-### 4.3 예외 처리
+### 4.3. 예외 처리
 
 각 핸들러(또는 파이프라인 마지막 핸들러)에서 `exceptionCaught()`를 구현해 처리하지 않은 예외를 반드시 로깅하고 `ctx.close()`해야 한다 — 구현하지 않으면 예외가 조용히 파이프라인 끝까지 전파되다 사라질 수 있다.
 
@@ -114,17 +114,17 @@ public class LoggingHandler extends ChannelInboundHandlerAdapter {
 
 ## 5. 코덱: 길이 기반 프레이밍
 
-수신 측은 `LengthFieldBasedFrameDecoder`, 송신 측은 `LengthFieldPrepender`를 짝으로 등록해 길이 필드 기반 프레이밍을 구현한다. `LengthFieldPrepender`는 "메시지 길이를 바이너리 형태로 앞에 붙이는 인코더"다.[^5] 3장 예시의 `(65536, 0, 4, 0, 4)`는 "앞 4바이트가 길이 필드, 최대 프레임 65536바이트"를 의미한다([[netty]] 2.2/4.2 참고).
+수신 측은 `LengthFieldBasedFrameDecoder`, 송신 측은 `LengthFieldPrepender`를 짝으로 등록해 길이 필드 기반 프레이밍을 구현한다. `LengthFieldPrepender`는 "메시지 길이를 바이너리 형태로 앞에 붙이는 인코더"다.[^5] §3 예시의 `(65536, 0, 4, 0, 4)`는 "앞 4바이트가 길이 필드, 최대 프레임 65536바이트"를 의미한다([[netty]] 2.2/4.2 참고).
 
 ---
 
 ## 6. ByteBuf 메모리 관리
 
-### 6.1 할당
+### 6.1. 할당
 
 핸들러 안에서 새 버퍼가 필요하면 `Unpooled.buffer()` 대신 `ctx.alloc().buffer()`를 쓴다. 파이프라인이 속한 Channel의 `ByteBufAllocator`(기본은 풀링되는 `PooledByteBufAllocator`)를 통해 할당되어 재사용 이득을 얻는다.
 
-### 6.2 참조 카운팅과 릴리스 규칙
+### 6.2. 참조 카운팅과 릴리스 규칙
 
 "참조 카운트 객체를 마지막으로 사용하는 쪽이 그 객체를 해제할 책임을 진다"가 원칙이다.[^6] 핸들러가 받은 메시지를 다음 핸들러로 넘기지 않고 직접 소비했다면 그 핸들러가 `release()`를 호출해야 한다.
 
@@ -144,7 +144,7 @@ public class RawHandler extends ChannelInboundHandlerAdapter {
 
 **주의**: JVM은 Netty의 참조 카운트를 알지 못하므로, `release()`를 호출하지 않은 채 버퍼가 도달 불가능해지면 참조 카운트가 0이 아니어도 그냥 GC된다 — 이 경우 버퍼가 풀로 반환되지 못해 누수로 이어진다.[^6]
 
-### 6.3 ResourceLeakDetector
+### 6.3. ResourceLeakDetector
 
 개발·테스트 단계에서는 `-Dio.netty.leakDetection.level=paranoid`로 실행해 릴리스 누락을 조기에 잡아야 한다. 공식 가이드는 "단위·통합 테스트는 PARANOID 레벨과 SIMPLE(기본) 레벨 모두에서 실행하라"고 권고한다.[^7] PARANOID는 오버헤드가 커서 테스트 전용이다.
 
@@ -191,7 +191,7 @@ p.addLast(new ChannelInboundHandlerAdapter() {
 
 ---
 
-## 9. 주의할 점 요약
+## 9. 주의사항
 
 | 항목 | 주의점 |
 |---|---|
@@ -222,6 +222,8 @@ p.addLast(new ChannelInboundHandlerAdapter() {
 
 ## Related pages
 - [[netty]]
+
+---
 
 [^1]: EventExecutorGroup#shutdownGracefully() 공식 API 문서 — quietPeriod/timeout 파라미터로 진행 중인 작업을 마친 뒤 종료.
 [^2]: ChannelInitializer (Netty 4.1 API) — "After the method returns this instance will be removed from the ChannelPipeline of the Channel."

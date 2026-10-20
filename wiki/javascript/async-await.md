@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 async/await
-updated: 2026-08-31 16:55:52
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - async
@@ -159,3 +159,4 @@ risky().catch((err) => console.error(err)); // 명시적으로 처리
 
 - [[promise]] — 상태·체이닝·동시성 메서드
 - [[lexical-scope]] — 클로저와 콜백
+- [[fetch-api]]

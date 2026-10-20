@@ -1,6 +1,6 @@
 ---
 title: Spring Boot Redis
-updated: 2026-08-11 17:04:12
+updated: 2026-10-20 17:54:47
 tags:
   - spring
   - spring-boot
@@ -518,7 +518,7 @@ if (Boolean.TRUE.equals(acquired)) {
 }
 ```
 
-## 11. 성능 및 장애대응 설정 요약
+## 11. 권장 설정
 
 | 항목 | 권장 설정 | 이유 |
 | :--- | :--- | :--- |

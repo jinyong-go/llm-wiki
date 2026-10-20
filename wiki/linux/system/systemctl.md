@@ -1,6 +1,6 @@
 ---
 title: systemctl — 서비스 제어 명령어
-updated: 2026-07-14 16:00:22
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - systemd
@@ -113,3 +113,4 @@ systemctl --failed             # 실패한 유닛 목록
 - [[journalctl]]
 - [[ps]]
 - [[nohup]]
+- [[crontab]]

@@ -1,6 +1,6 @@
 ---
 title: JAR 서명
-updated: 2026-08-06 13:22:59
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - crypto
@@ -121,10 +121,10 @@ JVM이 클래스 로드 시 수행하는 순서는 다음과 같다.
 ### 5.1. 무결성 검증 실패 (SecurityException)
 
 #### 5.1.1. 재패키징으로 인한 매니페스트 변경
-fat jar 등으로 서명된 JAR을 재패키징하면 MANIFEST.MF가 변경되어 4.2절 2단계에서 다이제스트 불일치가 발생하고, `Invalid signature file digest for Manifest main attributes` 오류로 이어진다. 사례와 해결책은 [[fat-jar-signature-error]] 참고.
+fat jar 등으로 서명된 JAR을 재패키징하면 MANIFEST.MF가 변경되어 §4.2 2단계에서 다이제스트 불일치가 발생하고, `Invalid signature file digest for Manifest main attributes` 오류로 이어진다. 사례와 해결책은 [[fat-jar-signature-error]] 참고.
 
 #### 5.1.2. 서명 후 파일 변조
-파일 내용이 서명 이후 변경되면 4.2절 3단계(엔트리별 다이제스트 비교)에서 불일치가 발생해 동일하게 `SecurityException`이 발생한다.
+파일 내용이 서명 이후 변경되면 §4.2 3단계(엔트리별 다이제스트 비교)에서 불일치가 발생해 동일하게 `SecurityException`이 발생한다.
 
 ### 5.2. jarsigner 검증 경고·오류 (Severe Warnings)
 `jarsigner -verify -strict` 시 심각한 경고는 오류로 처리되어 0이 아닌 종료 코드를 반환한다.

@@ -1,6 +1,6 @@
 ---
 title: Java 테스트 라이브러리 개요 — 목적별 분류
-updated: 2026-10-15 22:22:49
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - testing
@@ -56,7 +56,6 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 - **PowerMock** — static/final/생성자 등 Mockito가 과거에 못 하던 영역 모킹. 바이트코드 조작 기반이라 무겁고, 최신 Mockito가 상당 부분 대체해 **신규 사용은 비권장 추세**.[^1]
 - **Spring `@MockitoBean`/`@MockBean`** — Spring 컨텍스트의 빈을 모킹으로 교체(슬라이스/통합 테스트).
 
-[^1]: 출처의 직접 서술이 아니라 최신 Mockito의 static/final 모킹 지원(§4 Mockito 항목)과 PowerMock 유지보수 정체로부터 도출한 주장임.
 
 ---
 
@@ -71,7 +70,6 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 - **임베디드 DB** — **H2**(인메모리 RDB), Embedded PostgreSQL 등. 빠르지만 운영 DB와 방언 차이가 있어 정합성은 Testcontainers가 우위.[^2]
 - **Embedded Kafka / GreenMail** — 메시징·메일 등 특정 미들웨어의 임베디드 대체.
 
-[^2]: Testcontainers가 운영과 동일한 실제 DB를 사용한다는 사실(§5 Testcontainers 항목)과 임베디드 DB의 방언 차이로부터 추론.
 
 ---
 
@@ -138,3 +136,8 @@ Java 테스트는 보통 **하나의 라이브러리가 아니라 목적별 조�
 - [[mockito-doreturn-vs-when]] — Mockito when().thenXxx() vs doXxx().when() 스터빙 구문
 - [[jmh]] — JMH 마이크로벤치마크(설정·어노테이션·결과 해석)
 - [[mockserver]]
+
+---
+
+[^1]: 출처의 직접 서술이 아니라 최신 Mockito의 static/final 모킹 지원(§4 Mockito 항목)과 PowerMock 유지보수 정체로부터 도출한 주장임.
+[^2]: Testcontainers가 운영과 동일한 실제 DB를 사용한다는 사실(§5 Testcontainers 항목)과 임베디드 DB의 방언 차이로부터 추론.

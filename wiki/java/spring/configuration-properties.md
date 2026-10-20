@@ -1,6 +1,6 @@
 ---
 title: `@ConfigurationProperties` in Spring Boot
-updated: 2026-08-21 15:38:05
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring-boot
@@ -67,14 +67,14 @@ public class ThirdPartyConfiguration {
 }
 ```
 
-### 2.3. 관련 어노테이션 요약
+### 2.3. 관련 어노테이션
 
 | 어노테이션 | 역할 |
 |---|---|
 | `@ConfigurationProperties(prefix)` | prefix 하위 프로퍼티를 POJO에 바인딩 |
 | `@EnableConfigurationProperties` | CP 클래스를 명시적으로 빈 등록 |
 | `@ConfigurationPropertiesScan` | CP 클래스를 패키지 스캔으로 등록 (2.2+) |
-| `@ConstructorBinding` | 생성자 기반 불변 바인딩 지정 (버전별 의미 상이 → 7장) |
+| `@ConstructorBinding` | 생성자 기반 불변 바인딩 지정 (버전별 의미 상이 → §7) |
 | `@DefaultValue` | 생성자 파라미터 기본값 지정 |
 | `@Validated` | 시작 시점 JSR-303 검증 활성화 |
 | `@ConfigurationPropertiesBinding` | 커스텀 `Converter`를 바인딩에 등록 |

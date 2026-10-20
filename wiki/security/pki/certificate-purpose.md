@@ -1,6 +1,6 @@
 ---
 title: 인증서 용도
-updated: 2026-10-19 17:47:41
+updated: 2026-10-20 18:00:44
 tags:
   - crypto
   - pki
@@ -31,7 +31,7 @@ tags:
 
 ### 2.1. 설정
 
-- **Key Usage**: `digitalSignature`(ephemeral (EC)DHE 핸드셰이크 서명 — TLS 1.2의 (EC)DHE 사이퍼스위트와 TLS 1.3 전체에 필요, RSA-sign·ECDSA 공통) + `keyEncipherment`(RSA **정적** 키 교환 전용 — TLS 1.2 이하 구형 사이퍼스위트, TLS 1.3에서는 폐지됨). 정적 ECDH를 쓰는 드문 경우는 `keyAgreement`
+- **Key Usage**: `digitalSignature`(ephemeral (EC)DHE 핸드셰이크 서명. TLS 1.2의 (EC)DHE 사이퍼스위트와 TLS 1.3 전체에 필요, RSA-sign·ECDSA 공통) + `keyEncipherment`(RSA 정적 키 교환 전용. TLS 1.2 이하 구형 사이퍼스위트, TLS 1.3에서는 폐지됨). 정적 ECDH를 쓰는 드문 경우는 `keyAgreement`
 - **EKU**: `serverAuth`(1.3.6.1.5.5.7.3.1) 필수
 - **Basic Constraints**: `cA=false`
 
@@ -51,7 +51,7 @@ HTTPS 웹서버, 리버스 프록시·로드밸런서의 TLS 종단, API 게이�
 
 ### 3.2. 실사용
 
-mTLS(mutual TLS) 환경에서 클라이언트 신원을 증명한다 — 서비스 메시(Istio/Envoy) 내부 마이크로서비스 간 인증, API 게이트웨이의 클라이언트 인증, VPN(IPsec/IKEv2, OpenVPN) 사용자 인증, 스마트카드·HSM 기반 사용자 로그인 등에 쓰인다.
+mTLS(mutual TLS) 환경에서 클라이언트 신원을 증명한다. 서비스 메시(Istio/Envoy) 내부 마이크로서비스 간 인증, API 게이트웨이의 클라이언트 인증, VPN(IPsec/IKEv2, OpenVPN) 사용자 인증, 스마트카드·HSM 기반 사용자 로그인 등에 쓰인다.
 
 ---
 
@@ -59,12 +59,12 @@ mTLS(mutual TLS) 환경에서 클라이언트 신원을 증명한다 — 서비�
 
 ### 4.1. 설정
 
-- **Key Usage**: `digitalSignature` + `nonRepudiation`(contentCommitment). 부인방지가 핵심 요구사항이면 `nonRepudiation` 단독으로 제한 — ETSI EN 319 412-2 §4.3.2가 정의하는 Type A 키 사용 조합이며 eIDAS 적격인증서(자연인 대상)에 흔히 쓰임
+- **Key Usage**: `digitalSignature` + `nonRepudiation`(contentCommitment). 부인방지가 핵심 요구사항이면 `nonRepudiation` 단독으로 제한. ETSI EN 319 412-2 §4.3.2가 정의하는 Type A 키 사용 조합이며 eIDAS 적격인증서(자연인 대상)에 흔히 쓰임
 - **EKU**: 표준 EKU 없이 쓰이는 경우가 많음. 벤더별 문서서명 EKU(예: Microsoft Document Signing)도 사용됨
 
 ### 4.2. 실사용
 
-PDF/전자문서 서명, 전자계약, 전자결재, 세금계산서 등 공공·금융 전자문서 제출에 쓰인다. 부인방지가 법적 효력을 가지므로 서명 키는 소유자가 단독으로 통제해야 한다. HSM·스마트카드·USB 토큰 보관이 원칙이며, 소프트웨어 저장은 신뢰도가 낮게 취급된다. 서명 키는 CA/운영자가 백업(escrow)할 수 없어 분실 시 재발급만 가능하지만 암호화 키는 복구를 위해 위탁이 허용되므로, 이 차이 때문에 서명용 키와 암호화용 키를 별도 쌍으로 발급하는 **이중 키쌍(dual key pair) 모델**을 채택하는 PKI가 있다[^1].
+PDF/전자문서 서명, 전자계약, 전자결재, 세금계산서 등 공공·금융 전자문서 제출에 쓰인다. 부인방지가 법적 효력을 가지므로 서명 키는 소유자가 단독으로 통제해야 한다. HSM·스마트카드·USB 토큰 보관이 원칙이며, 소프트웨어 저장은 신뢰도가 낮게 취급된다. 서명 키는 CA/운영자가 백업(escrow)할 수 없어 분실 시 재발급만 가능하지만 암호화 키는 복구를 위해 위탁이 허용되므로, 이 차이 때문에 서명용 키와 암호화용 키를 별도 쌍으로 발급하는 이중 키쌍(dual key pair) 모델을 채택하는 PKI가 있다[^1].
 
 ---
 
@@ -84,7 +84,7 @@ PDF/전자문서 서명, 전자계약, 전자결재, 세금계산서 등 공공�
 
 ### 6.1. 설정
 
-- **Key Usage**: `digitalSignature`, **critical 필수**, `keyCertSign`/`cRLSign` 배제
+- **Key Usage**: `digitalSignature`, critical 필수, `keyCertSign`/`cRLSign` 배제
 - **EKU**: `codeSigning`(1.3.6.1.5.5.7.3.3) 필수, `anyExtendedKeyUsage`/`serverAuth` 배제
 
 ### 6.2. 실사용
@@ -97,7 +97,7 @@ Windows Authenticode(exe/msi/드라이버), macOS 코드 서명·공증, [[jar-s
 
 ### 7.1. 설정
 
-- **Key Usage**: 서명은 `digitalSignature`+`nonRepudiation`, 암호화는 `keyEncipherment` — 단일 인증서에 함께 넣거나 서명/암호화 인증서를 분리
+- **Key Usage**: 서명은 `digitalSignature`+`nonRepudiation`, 암호화는 `keyEncipherment`. 단일 인증서에 함께 넣거나 서명/암호화 인증서를 분리
 - **EKU**: `emailProtection`(1.3.6.1.5.5.7.3.4)
 
 ### 7.2. 실사용
@@ -111,7 +111,7 @@ Windows Authenticode(exe/msi/드라이버), macOS 코드 서명·공증, [[jar-s
 ### 8.1. 설정
 
 - **Key Usage**: `digitalSignature`/`nonRepudiation`만 허용, 다른 비트 배제[^3]
-- **EKU**: `timeStamping`(1.3.6.1.5.5.7.3.8) **단독**, **critical 필수**
+- **EKU**: `timeStamping`(1.3.6.1.5.5.7.3.8) 단독, critical 필수
 
 ### 8.2. 실사용
 
@@ -137,7 +137,7 @@ RFC 3161 TSA(Time-Stamping Authority)는 전자서명·코드서명의 서명 �
 ### 10.1. 설정
 
 - **Key Usage**: `keyCertSign`(+ CRL 발행 시 `cRLSign`)
-- **Basic Constraints**: `cA=true`, **critical 필수**
+- **Basic Constraints**: `cA=true`, critical 필수
 - **EKU**: 보통 없음(하위 인증서 EKU 제한 없음)
 
 ### 10.2. 실사용
@@ -152,14 +152,14 @@ RFC 3161 TSA(Time-Stamping Authority)는 전자서명·코드서명의 서명 �
 
 | `-purpose` 값 | 대응 프로파일 |
 |---|---|
-| `sslserver` | 2장 TLS 서버 |
-| `sslclient` | 3장 TLS 클라이언트 |
-| `smimesign` | 7장 S/MIME 서명 |
-| `smimeencrypt` | 7장 S/MIME 암호화 |
+| `sslserver` | §2 TLS 서버 |
+| `sslclient` | §3 TLS 클라이언트 |
+| `smimesign` | §7 S/MIME 서명 |
+| `smimeencrypt` | §7 S/MIME 암호화 |
 | `crlsign` | CA의 `cRLSign` 확인 |
-| `timestampsign` | 8장 타임스탬프 |
-| `codesign` | 6장 코드 서명 |
-| `ocsphelper` | 9장 (타깃 인증서 자체는 검사 안 함, OCSP 함수 내부에서 별도 검증) |
+| `timestampsign` | §8 타임스탬프 |
+| `codesign` | §6 코드 서명 |
+| `ocsphelper` | §9 (타깃 인증서 자체는 검사 안 함, OCSP 함수 내부에서 별도 검증) |
 | `any` | 확장 검사 생략 |
 
 CLI 예시는 [[openssl-x509]] §8 참고.

@@ -1,6 +1,6 @@
 ---
 title: BouncyCastle ML-KEM — 키 생성·캡슐화·복원
-updated: 2026-09-07 22:18:44
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - crypto
@@ -135,7 +135,7 @@ byte[] s2cKey = hkdf(sharedSecretSender, "s2c".getBytes(UTF_8), 32);
 
 ### 4.3. 복원 실패 검출
 
-ML-KEM Decaps는 암묵적 거부(implicit rejection) 때문에 **잘못된 암호문에도 오류 없이 32 byte를 반환**한다([[ml-kem]] §5.4). 따라서 `getEncoded()` 성공 여부로 무결성을 판단할 수 없고, **AEAD 태그 검증 실패**로 검출해야 한다.
+ML-KEM Decaps는 입력 검사를 통과한 암호문의 재암호화 결과가 일치하지 않으면 암묵적 거부(implicit rejection)로 대체 공유 비밀 32바이트를 반환한다. 입력 길이·키 검사 실패까지 성공 처리한다는 뜻은 아니다. [[ml-kem]]의 암묵적 거부 항목을 참고한다. 따라서 `getEncoded()` 성공 여부로 무결성을 판단할 수 없고, **AEAD 태그 검증 실패**로 검출해야 한다.
 
 ```java
 try {
@@ -175,15 +175,6 @@ BouncyCastle의 ML-KEM JCA 지원은 초기 릴리스(1.78~1.80)에서 변동이
 - **타 구현과의 상호운용**: libOQS·OpenSSL 등 다른 구현과 키/암호문을 교환할 때, 복호화 키를 seed(64 byte) 형태로 담는지 확장 형태(768k+96 byte)로 담는지 등 표현 차이로 복원이 실패할 수 있다(issue #2037). 공유 비밀이 양측에서 일치하는지 통합 테스트로 확인한다.
 
 > 동일 JVM·동일 BC 버전 내에서 캡슐화/복원만 하는 경우(§3)는 영향이 없다. 주의가 필요한 것은 **키를 직렬화해 외부와 교환**하거나 **버전·라이브러리를 혼용**하는 경우다.
-
----
-
-## 7. 요약
-
-- `KeyPairGenerator.getInstance("ML-KEM", "BC")` + `MLKEMParameterSpec.ml_kem_768`로 키쌍 생성.
-- 캡슐화는 `KeyGenerator` + `KEMGenerateSpec`, 복원은 `KEMExtractSpec`. 결과는 `SecretKeyWithEncapsulation`(비밀 + 암호문).
-- Decaps는 실패해도 오류를 내지 않으므로 AEAD 태그로 검출한다.
-- 외부와 키를 교환하면 인코딩 호환성을 통합 테스트로 확인. BC는 1.81 이상 권장.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Logback — Spring Boot 설정
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -134,7 +134,7 @@ Spring Boot가 제공하는 기본 콘솔/파일 appender 정의를 include하�
 | `ConsoleAppender` | 콘솔(System.out/err) 출력 |
 | `FileAppender` | 단일 파일 출력 (롤링 없음) |
 | `RollingFileAppender` | 파일 출력 + 롤링 (운영 표준) |
-| `AsyncAppender` | 다른 appender를 큐 기반 비동기로 래핑 (6장) |
+| `AsyncAppender` | 다른 appender를 큐 기반 비동기로 래핑 (§6) |
 | `SMTPAppender` | 이벤트 발생 시 이메일 발송 |
 | `DBAppender` | DB 테이블에 저장 |
 | `SocketAppender` / `SSLSocketAppender` | 원격 서버로 직렬화 이벤트 전송 |
@@ -170,10 +170,10 @@ Spring Boot가 제공하는 기본 콘솔/파일 appender 정의를 include하�
 ### 4.3. RollingFileAppender
 
 `FileAppender`를 상속하며 두 가지 협력자로 롤링을 수행한다.
-- **rollingPolicy** — *무엇을* 할지: 파일 이름 변경·압축 방식 (5장)
+- **rollingPolicy** — *무엇을* 할지: 파일 이름 변경·압축 방식 (§5)
 - **triggeringPolicy** — *언제* 할지: 롤링 시점 판단
 
-`TimeBasedRollingPolicy`·`SizeAndTimeBasedRollingPolicy`는 두 역할을 겸하므로 rollingPolicy만 지정하면 된다. `FixedWindowRollingPolicy`만 별도 `SizeBasedTriggeringPolicy`가 필요하다. 프로퍼티는 `FileAppender`와 동일하며(`file`은 생략 가능 — 생략 시 `fileNamePattern`으로만 운용), 정책별 상세는 5장.
+`TimeBasedRollingPolicy`·`SizeAndTimeBasedRollingPolicy`는 두 역할을 겸하므로 rollingPolicy만 지정하면 된다. `FixedWindowRollingPolicy`만 별도 `SizeBasedTriggeringPolicy`가 필요하다. 프로퍼티는 `FileAppender`와 동일하며(`file`은 생략 가능 — 생략 시 `fileNamePattern`으로만 운용), 정책별 상세는 §5.
 
 ```xml
 <!-- 파일 appender의 대표 구성: 일 단위 + 10MB 크기 롤링 -->
@@ -268,13 +268,13 @@ discriminator(기본 `MDCBasedDiscriminator`)가 돌려주는 **키 값별로 �
 | `totalSizeCap` | 전체 아카이브 총량 상한. 초과 시 오래된 것부터 삭제 (`maxHistory`와 병용) | 0 (무제한) |
 | `cleanHistoryOnStart` | 기동 시 보관 기한 지난 아카이브 삭제 | `false` |
 
-> Boot 프로퍼티 `logging.logback.rollingpolicy.*`(2장)는 기본 파일 appender의 `SizeAndTimeBasedRollingPolicy`를 제어하는 축약이다.
+> Boot 프로퍼티 `logging.logback.rollingpolicy.*`(§2)는 기본 파일 appender의 `SizeAndTimeBasedRollingPolicy`를 제어하는 축약이다.
 
 ---
 
 ## 6. 비동기
 
-Logback의 비동기 수단은 `AsyncAppender` 하나다 — 다른 appender를 `BlockingQueue` 기반으로 래핑한다(3장 예시의 `ASYNC_FILE`). Disruptor 기반인 Log4j2 Async Logger와의 처리량 차이는 [[logging-frameworks]] 참고.
+Logback의 비동기 수단은 `AsyncAppender` 하나다 — 다른 appender를 `BlockingQueue` 기반으로 래핑한다(§3 예시의 `ASYNC_FILE`). Disruptor 기반인 Log4j2 Async Logger와의 처리량 차이는 [[logging-frameworks]] 참고.
 
 | 프로퍼티 | 설명 | 기본값 |
 |---|---|---|

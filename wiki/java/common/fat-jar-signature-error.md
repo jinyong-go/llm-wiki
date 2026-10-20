@@ -1,6 +1,6 @@
 ---
 title: Fat Jar 서명 파일 충돌 오류
-updated: 2026-08-06 11:08:31
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - gradle
@@ -102,7 +102,7 @@ plugins {
 ```
 
 ### 4.2. 수동 제외
-Shadow/Shade 플러그인 없이 Gradle 내장 `jar` task를 직접 커스터마이징하는 경우(위 2절 사례), 자동 제외 로직이 없으므로 exclude를 직접 추가해야 한다.
+Shadow/Shade 플러그인 없이 Gradle 내장 `jar` task를 직접 커스터마이징하는 경우(위 §2 사례), 자동 제외 로직이 없으므로 exclude를 직접 추가해야 한다.
 
 ```groovy
 jar {
@@ -141,3 +141,4 @@ jar {
 - [[maven]]
 - [[cmp-bouncycastle]]
 - [[jar-signing]]
+- [[gradle-shadow]]

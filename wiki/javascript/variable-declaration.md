@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 변수 선언
-updated: 2026-08-11 17:56:14
+updated: 2026-10-20 17:54:47
 tags:
   - javascript
   - variable
@@ -126,3 +126,4 @@ MDN을 포함한 다수 스타일 가이드는 재할당이 없는 변수에는 
 
 ## Related pages
 - [[lexical-scope]] — 스코프 체인, 환경 레코드, 클로저
+- [[function-declaration]]

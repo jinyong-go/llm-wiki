@@ -1,6 +1,6 @@
 ---
 title: Project Reactor
-updated: 2026-09-18 13:25:21
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - reactive
@@ -57,7 +57,7 @@ Spring Boot 프로젝트에서 `spring-boot-starter-webflux`를 추가하면 `re
 
 ## 3. 주요 구성 요소
 
-### 3.1 Flux와 Mono
+### 3.1. Flux와 Mono
 
 `Flux<T>`는 0개에서 N개까지의 항목을 비동기로 방출하고, `onComplete` 또는 `onError`로 종료되는 `Publisher<T>` 구현체다.
 
@@ -66,7 +66,7 @@ Flux<Integer> flux = Flux.just(1, 2, 3);
 flux.subscribe(System.out::println);
 ```
 
-이 예시의 `Flux.just`가 실제로 어떻게 동작하는지(값을 언제 캡처하는지)는 4장의 Hot/Cold 구분에서 다시 다룬다.
+이 예시의 `Flux.just`가 실제로 어떻게 동작하는지(값을 언제 캡처하는지)는 §4의 Hot/Cold 구분에서 다시 다룬다.
 
 `Mono<T>`는 최대 1개의 항목만 방출하는 특화된 `Publisher<T>`다. `Flux`보다 적은 연산자만 제공하며, 다른 `Publisher`와 결합하는 연산자(`concatWith` 등)는 결과 타입이 `Flux`로 전환된다.
 
@@ -92,7 +92,7 @@ mono.subscribe(System.out::println);
 
 `defer`는 4.2에서 다루는 hot→cold 전환과 직접 연결된다.
 
-### 3.2 Schedulers
+### 3.2. Schedulers
 
 `Scheduler`는 `ExecutorService`와 유사한 스케줄링 책임을 갖는 실행 컨텍스트 추상화다. 대표적인 기본 구현은 다음과 같다.
 
@@ -118,7 +118,7 @@ Flux.range(1, 3)
     .subscribe(System.out::println);
 ```
 
-### 3.3 Sinks
+### 3.3. Sinks
 
 `Sinks`는 여러 `Subscriber`를 다루는 `Publisher`와 유사한 구조를 만들면서, 신호를 수동으로 안전하게 트리거할 수 있게 하는 클래스다. 과거 `Processor`가 필요했던 상황에서 대신 사용이 권장된다.
 
@@ -129,7 +129,7 @@ Flux.range(1, 3)
 | `Sinks.Many` - replay | 방출된 요소를 캐시해 늦게 온 구독자에게 재생 |
 | `Sinks.One` / `Sinks.Empty` | `Mono`처럼 동작, 단일 요소 또는 완료·에러 신호만 발생(`Empty`는 값 발출 불가) |
 
-### 3.4 Context
+### 3.4. Context
 
 `Context`는 Map과 유사한 키-값 저장 인터페이스로, `Flux`/`Mono` 시퀀스 자체에 결속된다. `ThreadLocal`은 하나의 스레드가 동시에 여러 비동기 시퀀스를 처리할 수 있는 리액티브 환경에서 스레드에 값을 묶는 방식이 성립하지 않기 때문에, Reactor는 스레드 대신 시퀀스에 결속되는 `Context`를 대안으로 제공한다.
 
@@ -146,7 +146,7 @@ Mono.deferContextual(ctx ->
 
 ## 4. Publisher 구분: Cold vs Hot
 
-### 4.1 Cold Publisher
+### 4.1. Cold Publisher
 
 구독이 생길 때마다 데이터를 새로 생성한다. 구독이 없으면 데이터도 생성되지 않으며, 구독자마다 독립적으로 전체 시퀀스를 처음부터 받는다.
 
@@ -165,7 +165,7 @@ source.subscribe(d -> System.out.println("Subscriber 2: " + d));
 - `share()`는 내부적으로 `publish().refCount(1)`과 동일하게 동작한다. 첫 구독자가 나타나면 그때 업스트림 소스에 한 번만 연결(connect)하고, 이후 구독자들은 그 하나의 실행 결과를 공유해서 받는다. 구독자 수가 0명으로 떨어지면 연결이 끊기고, 다음 구독자가 나타날 때 다시 새로 연결(재시작)한다.
 - `replay(...)`는 share()와 비슷하게 하나의 업스트림 실행을 공유하되, 방출된 값을 버퍼에 캐시해뒀다가 늦게 들어온 구독자에게도 과거 값을 재생해준다는 점이 다르다.
 
-### 4.2 Hot Publisher
+### 4.2. Hot Publisher
 
 구독자 수와 무관하게 데이터를 방출한다. 이미 구독 중이던 대상에게는 신호를 바로 전파하고, 늦게 구독한 대상은 구독 이후에 발생한 신호만 받는다. `Sinks`가 대표적이다.
 

@@ -1,6 +1,6 @@
 ---
 title: 리눅스 파일 권한 관리
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - filesystem
@@ -263,3 +263,4 @@ chgrp -hR staff /u
 
 ## Related pages
 - [[inode]]
+- [[user-group-management]]

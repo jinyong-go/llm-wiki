@@ -1,6 +1,6 @@
 ---
 title: Java 로깅 프레임워크 비교 — Logback vs Log4j2
-updated: 2026-07-14 11:26:44
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - logging
@@ -73,7 +73,7 @@ Log4Shell(CVE-2021-44228, log4j-core 2.x RCE) 같은 대형 사고 이력이 없
 
 ---
 
-## 4. 성능 요약
+## 4. 성능 비교
 
 | 시나리오               | 우위         | 비고                                                       |
 | ------------------ | ---------- | -------------------------------------------------------- |
@@ -91,7 +91,6 @@ Log4Shell(CVE-2021-44228, log4j-core 2.x RCE) 같은 대형 사고 이력이 없
 - **멀티 JVM이 한 파일에 기록** → Logback prudent mode.
 - 어느 쪽이든 애플리케이션 코드는 SLF4J API로 작성해 구현체 교체 여지를 남긴다.
 
-[^1]: 이 기준은 출처의 직접 권고가 아니라 2·3·4장의 사실(비동기 성능, garbage-free, prudent mode)로부터 도출한 일반적 권고임.
 
 ---
 
@@ -110,3 +109,7 @@ Log4Shell(CVE-2021-44228, log4j-core 2.x RCE) 같은 대형 사고 이력이 없
 - [[design-patterns-structural]]
 - [[gc]]
 - [[externalized-configuration]]
+
+---
+
+[^1]: 이 기준은 출처의 직접 권고가 아니라 §2·§3·§4의 사실(비동기 성능, garbage-free, prudent mode)로부터 도출한 일반적 권고임.

@@ -1,6 +1,6 @@
 ---
 title: CORS
-updated: 2026-10-19 18:01:14
+updated: 2026-10-20 17:54:47
 tags:
   - web
   - http
@@ -77,7 +77,7 @@ sequenceDiagram
     S-->>JS: 200 OK (Access-Control-Allow-Origin, 응답 본문)
 ```
 
-`Access-Control-Max-Age`로 프리플라이트 결과를 캐시하면 반복 OPTIONS를 줄인다.
+`Access-Control-Max-Age`로 프리플라이트 결과를 캐시하면 반복 OPTIONS를 줄인다. 세부 조건·캐시·실패 사례는 [[cors-preflight]] 참조.
 
 ---
 
@@ -273,6 +273,7 @@ if (origin != null && ALLOWED.contains(origin)) {
 ---
 
 ## Related pages
+- [[cors-preflight]]
 - [[cookie]]
 - [[reverse-proxy]]
 - [[restful-api-design]]
@@ -280,3 +281,4 @@ if (origin != null && ALLOWED.contains(origin)) {
 - [[curl]]
 - [[csrf]]
 - [[xss]]
+- [[fetch-api]]

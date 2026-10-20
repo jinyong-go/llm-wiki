@@ -16,5 +16,5 @@ version: 1.0.0
 ## Output
 
 - 점검 결과를 출력한다.
-- 사용자가 원하면 `log/lint/report-{date:yyyyMMdd}.md` 파일로 저장한다.
+- 사용자가 원하면 `logs/lint/report-{date:yyyyMMdd}-{범위}.md` 파일로 저장한다.
   - 날짜는 `bash`의 `date`로 가져온다.

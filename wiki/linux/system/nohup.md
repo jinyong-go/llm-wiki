@@ -1,6 +1,6 @@
 ---
 title: nohup — 세션 종료 후 프로세스 유지
-updated: 2026-07-14 17:27:27
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - cli
@@ -109,3 +109,4 @@ ps -p $APP_PID -o pid,ppid,stat,%cpu,%mem,vsz,rss,etime,cmd
 - [[shell-special-parameters]]
 - [[standard-streams]]
 - [[systemd-unit-file]]
+- [[crontab]]

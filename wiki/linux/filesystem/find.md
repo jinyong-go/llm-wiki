@@ -1,6 +1,6 @@
 ---
 title: find — 파일 탐색
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - cli
@@ -165,3 +165,4 @@ find . -name "*.class" -exec rm {} +
 - [[linux-file-permissions]]
 - [[df]]
 - [[du]]
+- [[file-encoding]]

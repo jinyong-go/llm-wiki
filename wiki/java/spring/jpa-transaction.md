@@ -1,6 +1,6 @@
 ---
 title: JPA 트랜잭션 — @Transactional
-updated: 2026-07-10 14:07:27
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - jpa
@@ -267,7 +267,7 @@ spring.jpa.properties.hibernate.connection.provider_disables_autocommit=true
 
 ---
 
-## 11. 주요 안티패턴 요약
+## 11. 안티패턴
 
 | 안티패턴 | 결과 | 해결책 |
 |---|---|---|
@@ -300,3 +300,4 @@ spring.jpa.properties.hibernate.connection.provider_disables_autocommit=true
 - [[enable-annotations]]
 - [[spring-event]] — 트랜잭션 단계 바인딩 이벤트 리스너(@TransactionalEventListener)
 - [[aop-transaction-order]] — 커스텀 @Around Aspect와 트랜잭션 경계·롤백의 상호작용
+- [[jpa-exceptions]]

@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 14:14:04
 tags:
   - meta
 ---
@@ -204,7 +204,6 @@ tags:
 
 ### Web
 
-- [[cors]] — CORS와 교차 출처 요청
 - [[csrf]] — CSRF와 요청 위조 방어
 - [[xss]] — XSS 유형과 방어
 - [[jwt]] — JWT 구조와 검증
@@ -275,12 +274,14 @@ tags:
 
 ## Web
 
-- [[load-balancer]] — 로드 밸런서: 동작, L4 vs L7, 분산 알고리즘
-- [[reverse-proxy]] — 리버스 프록시: 용도, 전달 헤더, nginx 설정
-- [[cookie]] — Cookie: 동작, 보안 속성, 취약점
-- [[web-storage]] — Web Storage: localStorage/sessionStorage/IndexedDB 비교
-- [[session-vs-cookie]] — Session vs Cookie: HTTP 상태 유지 수단 비교
-- [[restful-api-design]] — RESTful API 설계: REST 제약, HTTP 메서드, URI 규칙
+- [[load-balancer]] — 로드 밸런서와 분산 알고리즘
+- [[reverse-proxy]] — 리버스 프록시와 전달 헤더
+- [[cookie]] — HTTP 쿠키와 보안 속성
+- [[web-storage]] — 브라우저 저장소
+- [[session-vs-cookie]] — 서버 측 세션과 클라이언트 측 상태
+- [[restful-api-design]] — RESTful API 설계
+- [[cors]] — CORS와 교차 출처 요청
+- [[cors-preflight]] — CORS 프리플라이트 요청
 
 ## JavaScript
 

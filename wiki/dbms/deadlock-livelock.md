@@ -1,6 +1,6 @@
 ---
 title: DBMS 데드락과 라이브락 (Deadlock, Livelock)
-updated: 2026-07-20 10:51:56
+updated: 2026-10-20 17:46:04
 tags:
   - dbms
   - concurrency
@@ -75,7 +75,6 @@ DBMS는 대기 그래프(wait-for graph)의 순환을 검사해 자동으로 감
 - **재시도 상한** — 무한 재시도를 차단하고 초과 시 실패 처리
 - **대기 큐 공정성** — DBMS 락 매니저는 락 요청을 대기 큐로 관리해 선행 배타 락 대기자가 후행 공유 락에 무한히 밀리지 않도록 한다[^1]
 
-[^1]: 추론. PostgreSQL은 락 대기자를 큐로 관리하며 후행 요청이 선행 대기자와 충돌하면 함께 대기시키는 동작이 문서화되어 있으나([Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)), 모든 DBMS의 락 매니저가 동일한 공정성을 보장하는지는 개별 확인하지 않았음.
 
 ---
 
@@ -94,3 +93,7 @@ DBMS는 대기 그래프(wait-for graph)의 순환을 검사해 자동으로 감
 - [[concurrency-control]]
 - [[jpa-transaction]]
 - [[hikari-deadlock]]
+
+---
+
+[^1]: 추론. PostgreSQL은 락 대기자를 큐로 관리하며 후행 요청이 선행 대기자와 충돌하면 함께 대기시키는 동작이 문서화되어 있으나([Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)), 모든 DBMS의 락 매니저가 동일한 공정성을 보장하는지는 개별 확인하지 않았음.

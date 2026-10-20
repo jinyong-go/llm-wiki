@@ -1,6 +1,6 @@
 ---
 title: Spring AOP
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - spring
@@ -48,7 +48,7 @@ Spring AOP는 **런타임 프록시** 방식으로 동작한다.
 
 Spring AOP는 Spring 컨테이너가 관리하는 Bean에만 적용된다.
 
-> **Spring Boot 주의**: Spring Boot 2.1+는 `proxy-target-class=true`가 기본이라 인터페이스 구현 여부와 무관하게 **항상 CGLIB**로 프록시한다 (6장 참조).
+> **Spring Boot 주의**: Spring Boot 2.1+는 `proxy-target-class=true`가 기본이라 인터페이스 구현 여부와 무관하게 **항상 CGLIB**로 프록시한다 (§6 참조).
 
 ---
 

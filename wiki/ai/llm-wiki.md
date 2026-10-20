@@ -1,6 +1,6 @@
 ---
 title: LLM Wiki 패턴
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - ai
   - knowledge-management
@@ -83,3 +83,4 @@ schema      -- 위키 형식, 워크플로우, 규칙 정의 (CLAUDE.md, AGENTS.
 ## Related pages
 - [[ai-agent-schema]]
 - [[okf]]
+- [[ai-agent-skill]]

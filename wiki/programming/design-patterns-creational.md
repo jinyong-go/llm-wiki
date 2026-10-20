@@ -1,6 +1,6 @@
 ---
 title: GoF 생성 패턴
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - oop
@@ -12,10 +12,10 @@ tags:
 생성 패턴은 객체 생성 로직을 캡슐화해 클라이언트가 구체 클래스에 의존하지 않도록 한다. 분류와 전체 목록은 [[design-patterns]] 참고.
 
 ## 1. Singleton
-### 1.1 핵심 아이디어
+### 1.1. 핵심 아이디어
 클래스의 인스턴스를 정확히 하나만 생성하고, 어디서나 동일한 인스턴스에 접근할 수 있는 전역 진입점을 제공한다.
 
-### 1.2 구현
+### 1.2. 구현
 **Enum Singleton (권장)**: JVM이 직렬화·리플렉션 공격을 자동으로 차단한다.
 
 ```java
@@ -66,22 +66,22 @@ public class Registry {
 }
 ```
 
-### 1.3 장단점
+### 1.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 인스턴스 중복 생성 방지, 전역 상태 일관성, 리소스 절감 |
 | 단점 | 전역 상태 → 테스트 격리 어려움, [[solid]]의 SRP·OCP 위반 가능성, 멀티스레드 구현 주의 필요 |
 
-### 1.4 실무
+### 1.4. 실무
 - Spring `@Component`, `@Service` 등은 기본적으로 싱글턴 스코프
 - 직접 Singleton을 구현하기보다 Spring IoC 컨테이너에 위임하는 것이 권장된다
 - `static` 필드 기반 싱글턴은 단위 테스트에서 상태가 테스트 간에 누수될 수 있어 주의
 
 ## 2. Factory Method
-### 2.1 핵심 아이디어
+### 2.1. 핵심 아이디어
 객체 생성 인터페이스를 정의하되, 어떤 클래스를 인스턴스화할지 결정은 서브클래스에 위임한다. `new`를 직접 호출하는 대신 팩토리 메서드를 호출한다.
 
-### 2.2 구조
+### 2.2. 구조
 ```
 Creator (abstract)
   └── createProduct(): Product  ← 팩토리 메서드 (서브클래스가 오버라이드)
@@ -91,7 +91,7 @@ ConcreteCreator extends Creator
   └── createProduct(): ConcreteProduct
 ```
 
-### 2.3 구현
+### 2.3. 구현
 ```java
 // Product
 public interface Notification {
@@ -131,22 +131,22 @@ public class SmsNotificationService extends NotificationService {
 }
 ```
 
-### 2.4 장단점
+### 2.4. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 생성 로직과 비즈니스 로직 분리(SRP), 새 타입 추가 시 기존 코드 수정 불필요(OCP) |
 | 단점 | 제품 유형마다 Creator 서브클래스가 필요 → 클래스 수 증가 |
 
-### 2.5 실무
+### 2.5. 실무
 - `Calendar.getInstance()`, `NumberFormat.getInstance()`[^1]
 - Spring `FactoryBean<T>`: `getObject()`가 팩토리 메서드
 - `LoggerFactory.getLogger()` (SLF4J)[^1]
 
 ## 3. Abstract Factory
-### 3.1 핵심 아이디어
+### 3.1. 핵심 아이디어
 연관된 객체들의 패밀리를 일관되게 생성하는 인터페이스를 제공한다. 구체 팩토리를 교체하면 전체 제품군이 교체된다.
 
-### 3.2 구조
+### 3.2. 구조
 ```
 UIFactory
   ├── createButton(): Button
@@ -156,7 +156,7 @@ WebUIFactory     implements UIFactory   → HtmlButton,  HtmlDialog
 DesktopUIFactory implements UIFactory   → SwingButton, SwingDialog
 ```
 
-### 3.3 구현
+### 3.3. 구현
 ```java
 public interface UIFactory {
     Button createButton();
@@ -188,20 +188,20 @@ public class Application {
 }
 ```
 
-### 3.4 장단점
+### 3.4. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 제품 패밀리 간 일관성 보장, 구체 클래스와 클라이언트 분리 |
 | 단점 | 새 제품 종류 추가 시 모든 팩토리 클래스를 수정해야 함 |
 
-### 3.5 실무
+### 3.5. 실무
 - JDBC `Connection`: DB 벤더별 `Statement`, `PreparedStatement`, `CallableStatement`를 일관되게 생성
 
 ## 4. Builder
-### 4.1 핵심 아이디어
+### 4.1. 핵심 아이디어
 복잡한 객체를 단계적으로 조립한다. 동일한 조립 과정으로 다양한 표현의 객체를 생성할 수 있다. 생성자 인자가 많을 때 가독성과 불변성을 모두 확보한다.
 
-### 4.2 구현
+### 4.2. 구현
 ```java
 public class HttpRequest {
     private final String method;
@@ -247,22 +247,22 @@ HttpRequest req = new HttpRequest.Builder("POST", "https://api.example.com/order
     .build();
 ```
 
-### 4.3 장단점
+### 4.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 선택적 매개변수 처리, 불변 객체 생성, 단계별 검증 가능, 가독성 |
 | 단점 | 클래스마다 Builder 내부 클래스가 추가됨, 단순 객체에는 과도한 구조 |
 
-### 4.4 실무
+### 4.4. 실무
 - Lombok `@Builder`: 어노테이션으로 Builder 자동 생성
 - `StringBuilder`, `java.net.http.HttpClient.newBuilder()`[^2]
 - Spring `MockMvcRequestBuilders`, `UriComponentsBuilder`
 
 ## 5. Prototype
-### 5.1 핵심 아이디어
+### 5.1. 핵심 아이디어
 기존 객체(프로토타입)를 복사해 새 객체를 생성한다. 초기화 비용이 크거나 초기 상태가 복잡한 객체를 반복 생성할 때 유용하다.
 
-### 5.2 구현
+### 5.2. 구현
 ```java
 public abstract class Shape implements Cloneable {
     protected String color;
@@ -332,13 +332,13 @@ static <T extends Serializable> T deepCopy(T obj) {
 }
 ```
 
-### 5.3 장단점
+### 5.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 비싼 초기화 비용 회피, 복잡한 상태의 객체를 간단히 복제 |
 | 단점 | 깊은/얕은 복사 구분이 까다로움, 순환 참조 처리 복잡 |
 
-### 5.4 실무
+### 5.4. 실무
 - Spring `@Scope("prototype")`: 요청마다 새 인스턴스 생성
 - `ArrayList`, `HashMap`의 복사 생성자: `new ArrayList<>(original)`
 - 게임 개발에서 유닛·적 캐릭터 초기 상태 복제
@@ -355,6 +355,8 @@ static <T extends Serializable> T deepCopy(T obj) {
 - [[design-patterns-structural]]
 - [[design-patterns-behavioral]]
 - [[solid]]
+
+---
 
 [^1]: `Calendar.getInstance()`, `NumberFormat.getInstance()`, `LoggerFactory.getLogger()`는 서브클래스가 오버라이드하는 메서드가 아닌 정적 팩토리 메서드로 GoF Factory Method의 구조와 다르다. Refactoring.Guru는 이를 Java의 Factory Method 사용 예로 든다.
 [^2]: `StringBuilder`, `HttpClient.newBuilder()`는 Director 없이 메서드 체이닝으로 단계적으로 생성하는 방식으로, GoF Builder보다 Effective Java의 빌더에 가깝다. Refactoring.Guru는 `StringBuilder#append()`를 Builder 사용 예로 든다.

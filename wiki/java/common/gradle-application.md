@@ -1,6 +1,6 @@
 ---
 title: Gradle 애플리케이션 실행 구성
-updated: 2026-08-11 17:04:12
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - gradle
@@ -285,7 +285,6 @@ java -cp "app.jar:lib/*" com.example.Main
 - Java SE 21 Tool Reference — java: https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html
 - `raw/troubleshoot/fat jar and sign error.md`
 
-[^1]: 시작 스크립트가 `-jar` 대신 `-classpath`를 쓰는 이유는 문서에 명시되어 있지 않다. §5.1의 제약상 `-jar`를 쓰면 `lib/`의 의존성을 로드할 수 없으므로, 외부 `lib/` 디렉터리 구조와 `-jar`가 양립할 수 없다는 점에서 도출한 추론이다.
 
 ---
 
@@ -296,3 +295,8 @@ java -cp "app.jar:lib/*" com.example.Main
 - [[fat-jar-signature-error]] — Fat Jar 서명 파일 충돌
 - [[jar-signing]] — JAR 서명
 - [[maven]] — Maven 빌드 방식
+- [[gradle-shadow]]
+
+---
+
+[^1]: 시작 스크립트가 `-jar` 대신 `-classpath`를 쓰는 이유는 문서에 명시되어 있지 않다. §5.1의 제약상 `-jar`를 쓰면 `lib/`의 의존성을 로드할 수 없으므로, 외부 `lib/` 디렉터리 구조와 `-jar`가 양립할 수 없다는 점에서 도출한 추론이다.

@@ -1,6 +1,6 @@
 ---
 title: RDBMS 공통 SQL 함수
-updated: 2026-07-16 11:16:05
+updated: 2026-10-20 17:54:47
 tags:
   - dbms
   - sql
@@ -43,7 +43,7 @@ SELECT STR_TO_DATE('2026-07-16', '%Y-%m-%d');
 - 문자열 → 날짜/숫자의 암시적 변환은 세션 설정(Oracle `NLS_DATE_FORMAT` 등)에 의존하므로 명시적 변환이 권장된다.
 - 조건절 컬럼에 변환 함수를 적용하면 인덱스를 못 타는 문제는 [[index-scan]] 참고.
 
-### 2.1 대상 타입
+### 2.1. 대상 타입
 
 `CAST(v AS type)`의 `type`에는 각 DBMS의 데이터 타입명을 사용한다.
 
@@ -204,3 +204,5 @@ WHERE  rn <= 3;
 ## Related pages
 - [[index-scan]]
 - [[execution-plan]]
+- [[clob-in-oracle]]
+- [[upsert-merge]]

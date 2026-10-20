@@ -1,6 +1,6 @@
 ---
 title: Mockito when().thenXxx() vs doXxx().when() — 동작·차이·좋은 패턴
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - testing
@@ -125,15 +125,6 @@ willThrow(new IAmOnHolidayException()).given(employee).work(SUNDAY); // void
 
 ---
 
-## 7. 요약
-
-- 두 구문은 대체로 동치지만 **void·spy·타입안전·체이닝**에서 갈린다.
-- 기본은 **`when().thenXxx()`**(타입 안전·가독성·체이닝). **void와 spy**는 **`doXxx().when()`**.
-- 체이닝 차이는 반환 타입(`OngoingStubbing<T>` vs `Stubber`) 때문.
-- BDD 팀은 `given/will`로 통일.
-
----
-
 ## Sources
 - raw/java/test/Difference Between when() and doXxx() Methods in Mockito.md (Baeldung, Attila Fejér): https://www.baeldung.com/java-mockito-when-vs-do
 - Mockito javadoc — Spying on real objects / doReturn: https://site.mockito.org/javadoc/current/org/mockito/Mockito.html
@@ -146,3 +137,4 @@ willThrow(new IAmOnHolidayException()).given(employee).work(SUNDAY); // void
 - [[good-test-practices]] — Given-When-Then, Mock 남용 주의
 - [[java-testing-libraries]] — Mockito의 위치(모킹 라이브러리)
 - [[inverse-operation-testing]] — 부수효과/미러 회피 관점
+- [[mockito-void-methods]]

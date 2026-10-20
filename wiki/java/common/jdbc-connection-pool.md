@@ -1,6 +1,6 @@
 ---
 title: JDBC Connection Pool
-updated: 2026-09-12 00:39:39
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - jdbc
@@ -87,7 +87,7 @@ JDBC 스펙은 SPI만 정의하며 실제 풀 구현은 라이브러리가 담�
 - Apache Commons DBCP2 — Commons Pool2 `GenericObjectPool` 기반
 - C3P0, Tomcat JDBC Pool, Oracle UCP — 레거시·특정 벤더 환경에서 사용
 
-구현체 비교와 선택 기준은 [[hikari-datasource]] 5절 참고.
+구현체 비교와 선택 기준은 [[hikari-datasource]] §5 참고.
 
 ## 4. 기타
 

@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 테스트
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -213,7 +213,6 @@ void testAfterStep() {
 - **자동 실행 비활성화**: 테스트에서 잡이 부팅 시 자동 실행되지 않도록 `spring.batch.job.enabled=false`(Boot 3.x는 `spring.batch.job.name`을 비워 두는 방식 등 버전별 차이 있음[^1]) 설정.
 - 테스트 입력 파일은 `@StepScope` reader에 `@Value("#{jobParameters['file.input']}")`로 주입하므로, 테스트는 `JobParameters`만 바꿔 다른 입력으로 재사용할 수 있다.
 
-[^1]: 버전별 차이는 Boot 3.x에서 실행 잡 지정이 spring.batch.job.name 프로퍼티로 바뀐 사실로부터 추론.
 
 ---
 
@@ -232,3 +231,7 @@ void testAfterStep() {
 - [[batch-fault-tolerance]] — skip/retry 결과를 StepExecution 통계로 검증
 - [[batch-chunk]] — reader/writer 구현체(테스트 대상)
 - [[junit-parameterized-test]] — JUnit 매개변수화 테스트(여러 입력 반복 검증)
+
+---
+
+[^1]: 버전별 차이는 Boot 3.x에서 실행 잡 지정이 spring.batch.job.name 프로퍼티로 바뀐 사실로부터 추론.

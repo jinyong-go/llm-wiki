@@ -1,6 +1,6 @@
 ---
 title: git rebase — 커밋 재배치
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - git
   - vcs
@@ -178,3 +178,4 @@ git config sequence.editor "code --wait"  # interactive rebase 에디터 지정
 - [[git-commit]]
 - [[git-reset-revert]]
 - [[git-internals]]
+- [[git-fetch-pull-push]]

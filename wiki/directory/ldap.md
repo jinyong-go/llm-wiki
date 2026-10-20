@@ -1,6 +1,6 @@
 ---
 title: LDAP
-updated: 2026-07-22 14:38:24
+updated: 2026-10-20 17:54:47
 tags:
   - ldap
   - directory
@@ -138,13 +138,6 @@ ldapsearch -x -H ldap://dir.example.com:389 \
   -D "uid=admin,dc=example,dc=com" -w secret \
   -b "dc=example,dc=com" -s sub "(uid=john.doe)" cn mail
 ```
-
-## 9. 요약
-
-- LDAP은 X.500 DAP의 경량 버전으로, 엔트리를 트리(DIT)로 저장하는 디렉터리 접근 프로토콜(RFC 4511)이다.
-- 엔트리 = DN + 속성 + objectClass. DN은 RDN을 쉼표로 연결하며 왼쪽일수록 하위 노드다.
-- 오퍼레이션은 Bind/Unbind/Abandon, Search/Compare, Add/Delete/Modify/ModifyDN, Extended로 구성된다.
-- 인증은 Simple bind(평문, TLS 필수)와 SASL(확장 프레임워크)로 나뉘며, 전송 보안은 LDAPS(636) 또는 StartTLS(389)로 확보한다.
 
 ---
 ## Sources

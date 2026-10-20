@@ -1,6 +1,6 @@
 ---
 title: SOLID 원칙
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - oop
@@ -27,7 +27,7 @@ SOLID는 Robert C. Martin(Uncle Bob)이 2000년 논문에서 정리한 객체지
 
 Martin은 Clean Architecture(2017)에서 SRP를 "모듈은 하나의, 오직 하나의 액터에 대해서만 책임져야 한다(A module should be responsible to one, and only one, actor)"로 재정의했다. 액터는 같은 변경을 요구하는 사용자·이해관계자 집단이다.
 
-### 2.1 위반 예시
+### 2.1. 위반 예시
 ```java
 class UserService {
     public User findById(Long id) { ... }      // 비즈니스 로직
@@ -38,7 +38,7 @@ class UserService {
 
 `UserService`는 사용자 조회, 이메일 발송, 직렬화라는 세 가지 변경 이유를 가진다. 이메일 템플릿이 바뀌거나 JSON 라이브러리가 교체될 때마다 `UserService`를 수정해야 한다.
 
-### 2.2 적용 후
+### 2.2. 적용 후
 ```java
 class UserService {
     public User findById(Long id) { ... }
@@ -55,7 +55,7 @@ class UserSerializer {
 
 각 클래스는 하나의 변경 이유만 갖는다.
 
-### 2.3 주의
+### 2.3. 주의
 SRP를 과도하게 적용하면 클래스가 지나치게 잘게 쪼개져 오히려 이해하기 어려워진다. "책임"의 경계는 도메인 컨텍스트에 따라 달라지므로, 같은 맥락에서 함께 변하는 것들은 하나의 클래스에 둔다.
 
 ## 3. 개방-폐쇄 원칙 (OCP)
@@ -63,7 +63,7 @@ SRP를 과도하게 적용하면 클래스가 지나치게 잘게 쪼개져 오�
 
 새로운 기능을 추가할 때 기존 코드를 수정하지 않고 확장(상속, 구성, 전략 패턴 등)을 통해 구현해야 한다.
 
-### 3.1 위반 예시
+### 3.1. 위반 예시
 ```java
 class DiscountCalculator {
     public double calculate(Order order, String discountType) {
@@ -79,7 +79,7 @@ class DiscountCalculator {
 
 할인 유형이 추가될 때마다 `if` 분기가 늘어나며 기존 코드를 수정해야 한다.
 
-### 3.2 적용 후
+### 3.2. 적용 후
 ```java
 interface DiscountPolicy {
     double apply(double total);
@@ -107,7 +107,7 @@ class DiscountCalculator {
 
 Barbara Liskov가 제안한 원칙. 상위 타입 객체를 하위 타입으로 교체해도 프로그램의 동작이 바뀌어서는 안 된다.
 
-### 4.1 위반 예시
+### 4.1. 위반 예시
 ```java
 class Rectangle {
     protected int width, height;
@@ -133,7 +133,7 @@ System.out.println(r.area()); // 9 (기대: 15) — LSP 위반
 
 `Square`는 `Rectangle`의 계약(width와 height를 독립적으로 설정 가능)을 깨뜨린다.
 
-### 4.2 해결 방법
+### 4.2. 해결 방법
 상속 대신 공통 인터페이스로 분리한다:
 
 ```java
@@ -145,7 +145,7 @@ class Rectangle implements Shape { ... }
 class Square implements Shape { ... }
 ```
 
-### 4.3 LSP 위반 징후
+### 4.3. LSP 위반 징후
 - 하위 클래스에서 상위 클래스의 메서드를 `throw UnsupportedOperationException`으로 재정의
 - 하위 클래스의 사전조건이 상위 클래스보다 강하거나 사후조건이 더 약한 경우
 - 사용 측 코드에 `instanceof` 분기가 등장
@@ -155,7 +155,7 @@ class Square implements Shape { ... }
 
 하나의 범용 인터페이스보다 여러 개의 구체적인 인터페이스가 낫다.
 
-### 5.1 위반 예시
+### 5.1. 위반 예시
 ```java
 interface Animal {
     void eat();
@@ -172,7 +172,7 @@ class Dog implements Animal {
 
 `Dog`는 `fly()`가 필요 없지만 구현을 강제당한다. `fly()` 시그니처가 바뀌면 `Dog`도 영향을 받는다.
 
-### 5.2 적용 후
+### 5.2. 적용 후
 ```java
 interface Eatable { void eat(); }
 interface Flyable  { void fly(); }
@@ -188,7 +188,7 @@ class Duck implements Eatable, Flyable, Swimmable { ... }
 
 각 클라이언트(Dog, Duck)는 필요한 인터페이스에만 의존한다.
 
-### 5.3 실무 적용
+### 5.3. 실무 적용
 `JpaRepository`는 CRUD·페이징·배치 메서드를 모두 노출한다. 조회만 하는 클라이언트에는 `Repository`를 상속하고 필요한 메서드만 선언한 인터페이스를 제공한다.
 
 ```java
@@ -201,7 +201,7 @@ interface OrderReader extends Repository<Order, Long> {
 > "High-level modules should not depend on low-level modules. Both should depend on abstractions."
 > "Abstractions should not depend on details. Details should depend on abstractions."
 
-### 6.1 위반 예시
+### 6.1. 위반 예시
 ```java
 class OrderService {          // 고수준
     private MySQLOrderRepository repo = new MySQLOrderRepository();  // 저수준에 직접 의존
@@ -214,7 +214,7 @@ class OrderService {          // 고수준
 
 `OrderService`가 `MySQLOrderRepository`라는 구체 클래스에 직접 의존한다. DB를 바꾸면 `OrderService`도 수정해야 한다.
 
-### 6.2 적용 후
+### 6.2. 적용 후
 ```java
 interface OrderRepository {          // 추상화
     void save(Order order);
@@ -238,7 +238,7 @@ class OrderService {
 
 `OrderService`와 `MySQLOrderRepository` 모두 `OrderRepository` 추상화에 의존한다. 의존 방향이 역전된다.
 
-### 6.3 DIP와 DI(의존성 주입)의 관계
+### 6.3. DIP와 DI(의존성 주입)의 관계
 DIP는 **원칙**이고, Dependency Injection은 DIP를 달성하는 **기법** 중 하나다. Spring IoC 컨테이너는 DI를 수행할 뿐이며 의존 대상을 추상화로 선언해야 DIP가 성립한다. 구체 클래스를 주입받으면 DI를 써도 DIP는 지켜지지 않는다.
 
 ## 7. 원칙 간 관계

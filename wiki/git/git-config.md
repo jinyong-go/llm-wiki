@@ -1,6 +1,6 @@
 ---
 title: git config — 설정 관리
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - git
   - vcs
@@ -303,7 +303,7 @@ GIT_CONFIG_NOSYSTEM=1 git config --list
 
 ---
 
-## 6. 설정 우선순위 요약
+## 6. 설정 우선순위
 
 ```
 GIT_CONFIG_* 환경변수 / git -c

@@ -1,6 +1,6 @@
 ---
 title: GoF 구조 패턴
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - oop
@@ -12,10 +12,10 @@ tags:
 구조 패턴은 클래스·객체를 조합해 더 큰 구조를 형성한다. 분류와 전체 목록은 [[design-patterns]] 참고.
 
 ## 1. Adapter
-### 1.1 핵심 아이디어
+### 1.1. 핵심 아이디어
 호환되지 않는 인터페이스를 가진 클래스들이 함께 동작하도록 변환 레이어를 제공한다. 기존 코드를 수정하지 않고 연결한다.
 
-### 1.2 구현 (Object Adapter)
+### 1.2. 구현 (Object Adapter)
 ```java
 // 클라이언트가 기대하는 인터페이스
 public interface PaymentGateway {
@@ -42,29 +42,29 @@ public class LegacyPgAdapter implements PaymentGateway {
 }
 ```
 
-### 1.3 장단점
+### 1.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 기존 코드 수정 없이 인터페이스 불일치 해결(OCP), 단일 책임 분리 |
 | 단점 | 어댑터 클래스 추가로 복잡성 증가, 모든 요청이 위임을 거침 |
 
-### 1.4 실무
+### 1.4. 실무
 - `Arrays.asList()`: 배열 → `List` 인터페이스 어댑터
 - `InputStreamReader(InputStream)`: 바이트 스트림 → 문자 스트림 어댑터
 - Spring `HandlerAdapter`: 다양한 핸들러 타입을 `DispatcherServlet`이 일관되게 호출하도록 적응
 
 ## 2. Bridge
-### 2.1 핵심 아이디어
+### 2.1. 핵심 아이디어
 추상화(Abstraction)와 구현(Implementation)을 독립적인 계층으로 분리한다. 두 계층이 각각 독립적으로 확장 가능하다. 상속 대신 구성을 사용한다.
 
-### 2.2 구조
+### 2.2. 구조
 ```
 Abstraction ──────────► Implementor (인터페이스)
   └── RefinedAbstraction    ├── ConcreteImplementorA
                             └── ConcreteImplementorB
 ```
 
-### 2.3 구현
+### 2.3. 구현
 ```java
 // Implementor: 플랫폼별 렌더링
 public interface Renderer {
@@ -112,20 +112,20 @@ c.draw();   // 픽셀로 렌더링
 
 도형 × 렌더러 조합이 N×M개라도 클래스는 N+M개면 충분하다. 상속으로 구현하면 N×M개가 필요하다.
 
-### 2.4 장단점
+### 2.4. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 추상화·구현 독립 확장, 클래스 폭발 방지, 런타임 구현 교체 가능 |
 | 단점 | 추상화 레이어가 늘어나 코드 추적이 어려워질 수 있음 |
 
-### 2.5 실무
+### 2.5. 실무
 - JDBC: `java.sql.Driver`(구현)와 `Connection`/`Statement`(추상화) 분리
 
 ## 3. Composite
-### 3.1 핵심 아이디어
+### 3.1. 핵심 아이디어
 개별 객체(Leaf)와 복합 객체(Composite)를 동일한 인터페이스(Component)로 다룬다. 트리 구조로 구성되며, 클라이언트는 단일 객체와 복합 객체를 구분하지 않는다.
 
-### 3.2 구현
+### 3.2. 구현
 ```java
 // Component
 public interface FileSystemItem {
@@ -176,22 +176,22 @@ root.print("");
 System.out.println("Total: " + root.getSize());
 ```
 
-### 3.3 장단점
+### 3.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 트리 구조를 균일하게 처리, 클라이언트 코드 단순화, 새 컴포넌트 추가 용이 |
 | 단점 | 공통 인터페이스 설계가 어려울 수 있음, Leaf에 불필요한 Composite 메서드 노출 가능 |
 
-### 3.4 실무
+### 3.4. 실무
 - Java Swing: `JComponent` 계층
 - HTML DOM: `Element` (Composite) + `TextNode` (Leaf)
 - Spring `CompositeFilter`: 여러 `Filter`를 하나의 `Filter`로 묶어 처리
 
 ## 4. Decorator
-### 4.1 핵심 아이디어
+### 4.1. 핵심 아이디어
 객체를 래퍼로 감싸 기능을 동적으로 추가한다. 상속보다 유연하며, 런타임에 여러 데코레이터를 중첩할 수 있다.
 
-### 4.2 구조
+### 4.2. 구조
 ```
 Component (인터페이스)
   ├── ConcreteComponent        ← 실제 구현
@@ -199,7 +199,7 @@ Component (인터페이스)
         └── ConcreteDecorator  ← 기능 추가
 ```
 
-### 4.3 구현
+### 4.3. 구현
 ```java
 public interface DataSource {
     void writeData(String data);
@@ -252,21 +252,21 @@ DataSource source = new CompressionDecorator(
 source.writeData("Hello World");   // 압축 → 암호화 → 파일 쓰기
 ```
 
-### 4.4 장단점
+### 4.4. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 런타임 기능 조합, 상속 없이 확장(OCP), 단일 기능 데코레이터를 자유롭게 조합 |
 | 단점 | 데코레이터가 많으면 디버깅 어려움, 특정 데코레이터 제거 복잡 |
 
-### 4.5 실무
+### 4.5. 실무
 - Java I/O: `new BufferedReader(new InputStreamReader(new FileInputStream(...)))`
 - Servlet API: `HttpServletRequestWrapper`, `HttpServletResponseWrapper`
 
 ## 5. Facade
-### 5.1 핵심 아이디어
+### 5.1. 핵심 아이디어
 복잡한 서브시스템에 대한 단순화된 인터페이스를 제공한다. 서브시스템 내부 구조를 숨기고, 클라이언트가 알아야 할 것을 줄인다.
 
-### 5.2 구현
+### 5.2. 구현
 ```java
 // 복잡한 서브시스템 클래스들
 class VideoDecoder     { VideoFile decode(VideoFile file) { ... } }
@@ -295,25 +295,25 @@ public class VideoConverter {
 File mp4 = new VideoConverter().convert("movie.ogg", "mp4");
 ```
 
-### 5.3 장단점
+### 5.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 클라이언트 코드 단순화, 서브시스템과 클라이언트 결합도 감소, 계층화된 아키텍처 지원 |
 | 단점 | God Object가 될 위험, 내부 서브시스템 직접 접근이 필요한 경우 제약 |
 
-### 5.4 실무
+### 5.4. 실무
 - `JdbcTemplate`: JDBC의 Connection·PreparedStatement·ResultSet 관리를 단일 인터페이스로 추상화
 - SLF4J: 다양한 로깅 구현체에 대한 Facade
 - Spring `MailSender`: JavaMail 복잡성을 숨김
 
 ## 6. Flyweight
-### 6.1 핵심 아이디어
+### 6.1. 핵심 아이디어
 대량의 유사 객체가 존재할 때, 공유 가능한 상태(Intrinsic State)를 공유해 메모리를 절감한다. 객체별로 다른 상태(Extrinsic State)는 외부에서 주입한다.
 
 - **Intrinsic State**: 객체 내부에 저장, 공유 가능 (변경 불가)
 - **Extrinsic State**: 컨텍스트에 따라 달라짐, 외부에서 전달
 
-### 6.2 구현
+### 6.2. 구현
 ```java
 // Flyweight: Intrinsic State만 보유
 public final class CharStyle {
@@ -349,22 +349,22 @@ for (int i = 0; i < 1_000_000; i++) {
 }
 ```
 
-### 6.3 장단점
+### 6.3. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 대량 유사 객체 생성 시 메모리 절감 |
 | 단점 | Intrinsic/Extrinsic 상태 분리 복잡, 캐시 관리 오버헤드, 멀티스레드 캐시 접근 주의 |
 
-### 6.4 실무
+### 6.4. 실무
 - `Integer.valueOf(-128 ~ 127)`: JVM 캐시
 - `String` intern pool
 - Java 게임 엔진에서 Sprite·Tile 공유
 
 ## 7. Proxy
-### 7.1 핵심 아이디어
+### 7.1. 핵심 아이디어
 원본 객체에 대한 대리(Surrogate) 객체를 제공한다. 클라이언트는 프록시를 원본과 동일하게 사용하며, 프록시는 원본 접근 전후에 추가 작업을 수행한다.
 
-### 7.2 프록시 종류
+### 7.2. 프록시 종류
 | 종류 | 목적 |
 | :--- | :--- |
 | Virtual Proxy | 무거운 객체의 지연 초기화 |
@@ -373,7 +373,7 @@ for (int i = 0; i < 1_000_000; i++) {
 | Caching Proxy | 결과 캐싱 |
 | Logging Proxy | 호출 기록 |
 
-### 7.3 구현 (JDK Dynamic Proxy)
+### 7.3. 구현 (JDK Dynamic Proxy)
 ```java
 public interface OrderService {
     Order createOrder(OrderRequest request);
@@ -407,13 +407,13 @@ OrderService service = (OrderService) Proxy.newProxyInstance(
 service.createOrder(request);   // 로그 자동 출력
 ```
 
-### 7.4 장단점
+### 7.4. 장단점
 | 구분 | 내용 |
 | :--- | :--- |
 | 장점 | 원본 코드 수정 없이 횡단 관심사 처리(로깅·보안·캐시), 지연 초기화, 원격 투명성 |
 | 단점 | 응답 지연 증가, 클래스 수 증가, JDK Dynamic Proxy는 인터페이스 기반만 가능 |
 
-### 7.5 실무
+### 7.5. 실무
 - Spring AOP: CGLIB(클래스 기반) 또는 JDK Dynamic Proxy(인터페이스 기반)로 `@Transactional`, `@Cacheable` 등을 구현 (→ [[aop]])
 - JPA `LazyLoading`: `@ManyToOne(fetch = LAZY)` 연관 엔티티가 Proxy로 반환됨
 

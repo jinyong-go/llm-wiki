@@ -1,6 +1,6 @@
 ---
 title: AI 에이전트 스키마 파일
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - ai
   - agent
@@ -201,3 +201,4 @@ OpenAI Codex(`AGENTS.md`), Gemini CLI(`GEMINI.md`), GitHub Copilot(`.github/copi
 
 ## Related pages
 - [[llm-wiki]]
+- [[ai-agent-skill]]

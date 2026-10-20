@@ -1,6 +1,6 @@
 ---
 title: expression vs statement
-updated: 2026-08-31 14:25:48
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - language
@@ -71,7 +71,7 @@ Java 코드는 **식(expression)** 과 **문(statement)** 으로 구성된다. �
   var name = "kim";
   ```
 
-- expression statement — 3장
+- expression statement — §3
 
 - 제어 흐름 — `if`, `switch`, `while`, `do-while`, `for`(기본·향상)
 
@@ -186,3 +186,4 @@ Runnable r = () -> System.out.println("hi");  // void 호환 lambda body
 - [[java17-features]]
 - [[java21-features]]
 - [[first-class-citizen]]
+- [[bitwise-operators]]

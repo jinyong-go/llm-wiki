@@ -1,6 +1,6 @@
 ---
 title: JMeter 구성 요소
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:46:04
 tags:
   - performance
   - testing
@@ -18,13 +18,13 @@ tags:
 ## 3. Controller
 Sampler와 Logic Controller 두 종류로 나뉜다.
 
-### 3.1 Sampler
+### 3.1. Sampler
 서버에 요청을 보내고 응답을 기다리는 요소로, 트리에 나타난 순서대로 처리된다. HTTP, FTP, JDBC, Java Object, JMS, JUnit, LDAP, Mail, OS Process, TCP Request 등이 있다. Configuration Element로 세부 설정을 추가하거나 Assertion으로 응답을 검증할 수 있다.
 
-### 3.2 Logic Controller
+### 3.2. Logic Controller
 요청을 보내는 순서와 로직을 제어한다. 예: Once Only Controller(최초 1회만 실행), Interleave Controller(자식 요소를 순서를 기억하며 번갈아 실행). 여러 Logic Controller를 조합해 복잡한 시나리오를 구성할 수 있다.
 
-### 3.3 Test Fragment
+### 3.3. Test Fragment
 Thread Group과 같은 레벨의 특수 Controller로, Module Controller나 Include Controller가 참조할 때만 실행된다. 테스트 계획 내 재사용을 위한 요소다.
 
 ## 4. Listener

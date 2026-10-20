@@ -1,6 +1,6 @@
 ---
 title: GoF 디자인 패턴
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:54:47
 tags:
   - programming
   - oop
@@ -16,7 +16,7 @@ GoF(Gang of Four) 디자인 패턴은 Erich Gamma, Richard Helm, Ralph Johnson, 
 - **행동(Behavioral)**: 객체 간 상호작용과 책임 분배를 정의한다.
 
 ## 2. 패턴 목록
-### 2.1 생성 패턴
+### 2.1. 생성 패턴
 상세는 [[design-patterns-creational]] 참고.
 
 | 패턴 | 핵심 아이디어 | 대표 사용처 |
@@ -27,7 +27,7 @@ GoF(Gang of Four) 디자인 패턴은 Erich Gamma, Richard Helm, Ralph Johnson, 
 | **Builder** | 복잡한 객체를 단계적으로 조립 | `StringBuilder`, Lombok `@Builder`, `HttpClient.newBuilder()` |
 | **Prototype** | 기존 객체를 복사해 새 객체 생성 | `Object.clone()`, Spring `@Scope("prototype")` |
 
-### 2.2 구조 패턴
+### 2.2. 구조 패턴
 상세는 [[design-patterns-structural]] 참고.
 
 | 패턴 | 핵심 아이디어 | 대표 사용처 |
@@ -40,7 +40,7 @@ GoF(Gang of Four) 디자인 패턴은 Erich Gamma, Richard Helm, Ralph Johnson, 
 | **Flyweight** | 공유로 대량의 세밀한 객체 메모리 절감 | `Integer.valueOf()` 캐시, String Pool |
 | **Proxy** | 원본 객체 접근을 제어하는 대리 객체 | Spring AOP, JDK Dynamic Proxy |
 
-### 2.3 행동 패턴
+### 2.3. 행동 패턴
 상세는 [[design-patterns-behavioral]] 참고.
 
 | 패턴 | 핵심 아이디어 | 대표 사용처 |
@@ -69,3 +69,4 @@ GoF(Gang of Four) 디자인 패턴은 Erich Gamma, Richard Helm, Ralph Johnson, 
 - [[design-patterns-structural]]
 - [[design-patterns-behavioral]]
 - [[solid]]
+- [[cqrs]]

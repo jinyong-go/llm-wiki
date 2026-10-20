@@ -1,6 +1,6 @@
 ---
 title: BouncyCastle ML-DSA — 서명·검증·인증서 발급
-updated: 2026-09-07 22:27:37
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - crypto
@@ -149,15 +149,6 @@ System.out.println(cert.getSigAlgName());   // ML-DSA 계열
 
 - **버전**: ML-DSA JCA 지원이 초기 릴리스에서 변동이 있었으므로 **1.81 이상**을 권장한다. `JcaContentSignerBuilder`의 알고리즘 이름은 `"Dilithium3"`·BCPQC 조합이 아니라 **`"ML-DSA"`/`"ML-DSA-65"` + `"BC"`** 를 사용한다(issue #1991).
 - **타 구현 상호운용**: OpenSSL 등으로 만든 ML-DSA 개인키를 BC로 읽어 검증할 때 인코딩 차이로 실패한 사례가 있다(issue #2060). 키를 외부와 교환하면 **인코딩 포맷·서명 검증을 통합 테스트로 확인**한다.
-
----
-
-## 6. 요약
-
-- `KeyPairGenerator.getInstance("ML-DSA", "BC")` + `MLDSAParameterSpec.ml_dsa_65`로 키쌍 생성.
-- 서명/검증은 표준 `Signature.getInstance("ML-DSA", "BC")` — `initSign`/`initVerify` + `update`/`sign`·`verify`.
-- 키 직렬화는 `getEncoded()`(X.509/PKCS#8), 복원은 `KeyFactory` + `X509EncodedKeySpec`/`PKCS8EncodedKeySpec`.
-- `JcaContentSignerBuilder("ML-DSA").setProvider("BC")` + `JcaX509v3CertificateBuilder`로 인증서 발급. provider는 항상 `"BC"`. BC는 1.81 이상 권장.
 
 ---
 

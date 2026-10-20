@@ -1,6 +1,6 @@
 ---
 title: cp / mv — 파일 복사 및 이동
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - cli
@@ -128,3 +128,4 @@ mv -u *.class build/
 ## Related pages
 - [[linux-file-permissions]]
 - [[find]]
+- [[compression-archiving]]

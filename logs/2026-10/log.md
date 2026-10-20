@@ -2,6 +2,60 @@
 
 ---
 
+## 2026-10-20 18:00:44
+
+- **수정**: security 문서 12개 문체 정리. 항목명·문장·제목의 대시 연결, 본문 화살표, 강조용 볼드 제거(`x509-certificate`, `cmp`, `timestamp-token`, `certificate-revocation`, `certificate-purpose`, crypto 5개, `jwt`, `oauth2`)
+
+## 2026-10-20 17:54:47
+
+- **수정**: 위키 전체 lint 2단계 반영. 문장형 요약 절 12개 삭제(`aop-transaction-order` 고유 내용은 본문으로 이동), 요약 표 절 16개 제목 변경, 45개 문서의 "n장·n절" 참조를 `§n`으로 통일, 인바운드 링크가 없던 23개 문서에 대한 Related pages 역링크 추가, git 문서 3개의 실용 패턴 절을 최상위로 이동
+
+## 2026-10-20 17:29:19
+
+- **수정**: `sso.md` 구성 정리. IdP-initiated의 unsolicited response 설명을 각주로 이동, SLO 약어 보완, OIDC·Kerberos 절을 SAML과 같은 구성 요소·흐름·로그아웃 구조로 재구성, Kerberos SSO 흐름도·SPNEGO·로그아웃 추가, 보안 절 문장 정리
+
+## 2026-10-20 14:14:04
+
+- **수정**: web 문서 문체·양식 정리. `cookie`, `session-vs-cookie`, `web-storage`, `load-balancer`, `reverse-proxy`, `restful-api-design`의 대시 연결 문장·기호·과도한 볼드 정리, 제목 축약, 요약 절 삭제, Sources·Related pages 형식 통일. `wiki/index.md` Web 항목 서술 정리
+
+## 2026-10-20 13:53:38
+
+- **수정**: web 문서 구성 개선. `cookie.md` 특징 절 분리·CHIPS 추가, `session-vs-cookie.md`를 서버 측 세션과 클라이언트 측 상태 비교로 재구성, `web-storage.md` 제목 변경·sessionStorage 범위·용량 초과 처리 보강, `load-balancer.md` 목적·장점 통합·세션 고정 절 정리, `reverse-proxy.md`에 Forwarded·XFF 신뢰 범위 추가, `restful-api-design.md` 결론 출처 보강·URI 규칙 관례 표시
+
+## 2026-10-20 13:28:01
+
+- **수정**: web 문서 lint 결과 반영. `cookie.md`의 SameSite 기본값·제3자 쿠키 현황, `session-vs-cookie.md`의 쿠키 삭제 제어, `web-storage.md`의 용량·IndexedDB API, `load-balancer.md`의 L4 동작·리버스 프록시 관계, `restful-api-design.md`의 422 명칭·문서 내 링크·MDN 경로 정정
+
+## 2026-10-20 13:15:26
+
+- **수정**: `wiki/web/cors-preflight.md`에 POST가 CORS-safelisted 메서드인 이유를 각주로 추가
+
+## 2026-10-20 13:00:15
+
+- **생성**: `wiki/web/cors-preflight.md`에 프리플라이트 발생 조건, 요청 형식, 응답 검사, 캐시, 서버 처리 정리
+- **이동**: `wiki/security/web/cors.md`를 `wiki/web/cors.md`로 이동하고 프리플라이트 문서 링크 추가
+
+## 2026-10-20 11:29:32
+
+- **수정**: `wiki/security/web/csrf.md`에 상수 시간 비교의 의미와 타이밍 공격 완화 목적을 각주로 추가
+
+## 2026-10-20 11:26:02
+
+- **수정**: `wiki/security/web/oauth2.md`의 토큰·파라미터를 분리하고 scope·state·PKCE 파라미터를 개별 항목으로 정리. PKCE 정의를 보강하고 리소스 서버 구현 및 전용 출처 삭제
+
+## 2026-10-20 11:13:22
+
+- **수정**: `wiki/security/web/csrf.md`의 이중 제출 쿠키 동작·방어 원리를 보강. 단순 비교형의 쿠키 주입 취약점, 서명형의 세션 결합·HMAC 검증, CSRF 쿠키의 HttpOnly 설정을 명시
+
+## 2026-10-20 11:00:44
+
+- **수정**: `wiki/security/web/jwt.md`의 base64url 설명과 Header 제목을 정리하고 비공개 클레임 설명·예시를 보강. JWE 구조를 코드 블록으로 분리하고 장점·단점을 하위 항목으로 구분
+
+## 2026-10-20 08:26:50
+
+- **수정**: `wiki/security/crypto/` 7개 문서의 제목·항목 순서·문장을 정리. CMS 보호 범위·수신 처리, 해시 커밋먼트의 은닉 조건, HSM 운영, KDF 용도별 비용·salt 설명을 보완하고 ML-KEM·ML-DSA의 파라미터·사용 흐름을 앞쪽으로 이동. 암묵적 거부·t₀ 취급·JWE CBC-HMAC 설명 정정
+- **수정**: `wiki/java/crypto/ml-kem-bouncycastle.md`의 암묵적 거부 설명과 변경된 절 참조를 갱신
+
 ## 2026-10-19 22:50:33
 
 - **수정**: `wiki/programming/` 14개 문서의 구성·양식 정리. 7월 작성 문서(SOLID·GoF 패턴·CQRS)의 번호·구분선·표 형식을 통일하고 제목·목록의 대시 연결을 제거. 각주를 문서 최하단으로 옮기고 Related pages 보강. Adapter 예제 교체, Goetz 공식 LaTeX 전환, 리액티브 문서의 Virtual Threads 장 분리, JMeter 중복 서술·관련 문서 절 삭제, DFS 비교 절 삭제, 백트래킹 복잡도 각주 추가

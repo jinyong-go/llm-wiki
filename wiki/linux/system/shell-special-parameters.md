@@ -1,6 +1,6 @@
 ---
 title: 셸 특수 매개변수 (Special Parameters)
-updated: 2026-07-14 17:27:27
+updated: 2026-10-20 17:46:04
 tags:
   - linux
   - cli
@@ -28,7 +28,6 @@ tags:
 | `$-` | 현재 설정된 셸 옵션 플래그 (예: `himBHs`)                         |
 | `$_` | 직전 명령의 마지막 인자 (셸 시작 시에는 셸/스크립트 경로)[^1]                |
 
-[^1]: `$_`는 Bash Reference Manual의 Special Parameters 절과 bash(1)에 정의되어 있으나, 확장 시점·용도가 다른 매개변수보다 유동적이다(직전 simple command 기준).
 
 ---
 
@@ -126,3 +125,7 @@ cd $_
 - [[environment-variables]] — 사용자 정의 변수·변수 확장
 - [[standard-streams]] — 파이프라인·PIPESTATUS
 - [[nohup]] — `$!`로 백그라운드 PID 추적
+
+---
+
+[^1]: `$_`는 Bash Reference Manual의 Special Parameters 절과 bash(1)에 정의되어 있으나, 확장 시점·용도가 다른 매개변수보다 유동적이다(직전 simple command 기준).

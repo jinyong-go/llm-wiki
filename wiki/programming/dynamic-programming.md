@@ -1,6 +1,6 @@
 ---
 title: 동적 계획법 (Dynamic Programming)
-updated: 2026-10-04 23:11:01
+updated: 2026-10-20 17:46:04
 tags:
   - programming
   - algorithm
@@ -11,13 +11,13 @@ tags:
 
 ## 2. 적용 조건
 
-### 2.1 최적 부분 구조
+### 2.1. 최적 부분 구조
 **최적 부분 구조(optimal substructure)** 는 문제의 최적해를 부분 문제의 최적해를 조합해 구할 수 있는 성질이다. 최단 경로에서 $s \to t$ 최단 경로 위의 정점 $v$에 대해 $s \to v$ 구간도 최단 경로인 것이 예이다.
 
-### 2.2 중복 부분 문제
+### 2.2. 중복 부분 문제
 **중복 부분 문제(overlapping sub-problems)** 는 같은 부분 문제가 재귀 과정에서 반복해 등장하는 성질이다. 피보나치 수 $F(n) = F(n-1) + F(n-2)$를 단순 재귀로 계산하면 $F(n-2)$가 여러 번 계산된다.
 
-### 2.3 다른 기법과 비교
+### 2.3. 다른 기법과 비교
 | 구분 | 분할 정복 | DP | 그리디 |
 |---|---|---|---|
 | 부분 문제 중복 | 없음 | 있음 | 해당 없음 |
@@ -29,7 +29,7 @@ tags:
 
 ## 3. 구현 방식
 
-### 3.1 탑다운
+### 3.1. 탑다운
 **탑다운(top-down)** 은 목표 값에서 출발해 재귀로 부분 문제를 호출하고 결과를 표에 저장하는 방식이며, 이 저장 기법을 **메모이제이션(memoization)** 이라 한다. 단순 재귀로 $F(29)$를 계산하면 호출이 100만 회를 넘지만 메모이제이션을 적용하면 57회로 줄고 시간 복잡도는 $O(2^n)$에서 $O(n)$이 된다.
 
 ```java
@@ -42,7 +42,7 @@ long fib(int n) {
 }
 ```
 
-### 3.2 바텀업
+### 3.2. 바텀업
 **바텀업(bottom-up)** 은 기저 조건부터 반복문으로 작은 부분 문제를 먼저 채우는 방식이며 표를 채운다는 의미로 **타뷸레이션(tabulation)** 이라고도 한다.
 
 ```java
@@ -55,7 +55,7 @@ long fib(int n) {
 }
 ```
 
-### 3.3 비교
+### 3.3. 비교
 | 구분 | 탑다운 | 바텀업 |
 |---|---|---|
 | 계산 범위 | 필요한 상태만 | 모든 상태 |
@@ -83,17 +83,17 @@ $$T = (\text{상태 수}) \times (\text{상태당 전이 비용})$$
 
 ## 6. 대표 유형
 
-### 6.1 1차원 선형
+### 6.1. 1차원 선형
 `dp[i]`를 앞쪽 $i$개 원소로 만든 결과로 정의한다. 계단 오르기 $dp[i] = dp[i-1] + dp[i-2]$, 인접 원소를 고를 수 없는 최대 합 $dp[i] = \max(dp[i-1], dp[i-2] + a_i)$ 등이 있다.
 
-### 6.2 격자 경로
+### 6.2. 격자 경로
 오른쪽·아래로만 이동하는 격자에서 $(i, j)$까지의 경로 수는 다음과 같다.
 
 $$dp[i][j] = dp[i-1][j] + dp[i][j-1]$$
 
 최소 비용 경로는 합 대신 $\min$과 칸 비용을 쓴다.
 
-### 6.3 배낭
+### 6.3. 배낭
 **0-1 배낭(0-1 knapsack)** 은 무게 $w_i$, 가치 $v_i$인 물건 $n$개를 각각 최대 한 번씩 골라 용량 $W$ 안에서 가치 합을 최대화하는 문제이다. 1차원 배열 점화식은 다음과 같고 시간 $O(nW)$, 공간 $O(W)$이다.
 
 $$f[j] = \max(f[j],\ f[j - w_i] + v_i)$$
@@ -106,24 +106,24 @@ $$f[j] = \max(f[j],\ f[j - w_i] + v_i)$$
 
 역순으로 순회하면 $f[j - w_i]$가 아직 갱신되지 않은 이전 물건까지의 값이라 같은 물건이 중복 선택되지 않고, 정순으로 순회하면 이미 현재 물건을 반영한 값을 참조해 재선택이 가능하다. 개수 제한 배낭은 $k_i$개를 $1, 2, 4, \dots$ 묶음으로 나눠 0-1 배낭으로 풀며 $O(nW \log k)$이다. 복잡도가 입력 길이가 아닌 값 $W$에 비례하므로 $W$가 크면 적용할 수 없다.[^3]
 
-### 6.4 LIS
+### 6.4. LIS
 **최장 증가 부분 수열(LIS, Longest Increasing Subsequence)** 은 $a_i$로 끝나는 LIS 길이를 `dp[i]`로 두면 $O(n^2)$이다.
 
 $$dp[i] = 1 + \max_{j < i,\ a_j < a_i} dp[j]$$
 
 $O(n \log n)$ 해법은 $d[l]$을 길이 $l$인 증가 부분 수열의 마지막 원소 중 최솟값으로 정의한다. $d$는 항상 증가 상태이므로 각 $a_i$마다 이분 탐색으로 $a_i$ 이상인 첫 위치를 찾아 교체하고, 없으면 끝에 추가한다. 최종 길이가 LIS 길이이다. 엄격하지 않은 증가(비감소) 수열은 $a_i$ 초과인 첫 위치를 찾는다.
 
-### 6.5 두 문자열
+### 6.5. 두 문자열
 두 문자열의 접두사 쌍 $(i, j)$를 상태로 두며 상태 수 $O(nm)$, 시간 $O(nm)$이다. **최장 공통 부분 수열(LCS, Longest Common Subsequence)** 과 **편집 거리(edit distance)** 가 대표적이다.
 
 $$\text{LCS}[i][j] = \begin{cases} \text{LCS}[i-1][j-1] + 1 & s_i = t_j \\ \max(\text{LCS}[i-1][j],\ \text{LCS}[i][j-1]) & \text{otherwise} \end{cases}$$
 
-### 6.6 기타
+### 6.6. 기타
 부분집합을 비트로 표현해 상태로 쓰는 비트마스크 DP, 트리의 서브트리를 상태로 쓰는 트리 DP, 구간 $[l, r]$을 상태로 쓰는 구간 DP 등이 있으며 이 문서에서 다루지 않는다.
 
 ## 7. 문제 예시
 
-### 7.1 LeetCode 70 Climbing Stairs
+### 7.1. LeetCode 70 Climbing Stairs
 계단을 1칸 또는 2칸씩 올라 $n$칸($1 \le n \le 45$)에 도달하는 방법의 수를 구한다. $dp[i] = dp[i-1] + dp[i-2]$이며 직전 두 값만 유지한다.
 
 ```java
@@ -138,7 +138,7 @@ int climbStairs(int n) {
 }
 ```
 
-### 7.2 LeetCode 198 House Robber
+### 7.2. LeetCode 198 House Robber
 인접한 두 집을 함께 털 수 없을 때 털 수 있는 최대 금액을 구한다. $i$번째 집을 털지 않으면 $dp[i-1]$, 털면 $dp[i-2] + a_i$이다.[^4]
 
 ```java
@@ -153,7 +153,7 @@ int rob(int[] nums) {
 }
 ```
 
-### 7.3 LeetCode 322 Coin Change
+### 7.3. LeetCode 322 Coin Change
 무제한 사용 가능한 동전으로 `amount`($\le 10^4$)를 만드는 최소 동전 수를 구하고 불가능하면 -1을 반환한다. 완전 배낭이므로 금액을 정순으로 순회한다. $dp[j] = \min(dp[j],\ dp[j - c] + 1)$이며 $O(|coins| \cdot amount)$이다.
 
 ```java
@@ -168,7 +168,7 @@ int coinChange(int[] coins, int amount) {
 }
 ```
 
-### 7.4 LeetCode 416 Partition Equal Subset Sum
+### 7.4. LeetCode 416 Partition Equal Subset Sum
 배열을 합이 같은 두 부분집합으로 나눌 수 있는지 판단한다. 전체 합이 홀수이면 불가능하고, 짝수이면 합이 절반인 부분집합 존재 여부를 0-1 배낭으로 판단하므로 역순으로 순회한다.
 
 ```java
@@ -185,7 +185,7 @@ boolean canPartition(int[] nums) {
 }
 ```
 
-### 7.5 LeetCode 300 Longest Increasing Subsequence
+### 7.5. LeetCode 300 Longest Increasing Subsequence
 엄격히 증가하는 최장 부분 수열의 길이를 구하며 후속 질문으로 $O(n \log n)$을 요구한다. 6.4의 $d$ 배열과 이분 탐색을 쓴다.
 
 ```java
@@ -205,7 +205,7 @@ int lengthOfLIS(int[] nums) {
 }
 ```
 
-### 7.6 LeetCode 1143 Longest Common Subsequence
+### 7.6. LeetCode 1143 Longest Common Subsequence
 두 문자열(각 길이 $\le 1000$)의 LCS 길이를 구한다. 6.5의 점화식을 쓰며 인덱스 0을 빈 접두사로 두어 기저 조건을 0으로 채운다.
 
 ```java
@@ -221,7 +221,7 @@ int longestCommonSubsequence(String s, String t) {
 }
 ```
 
-### 7.7 LeetCode 72 Edit Distance
+### 7.7. LeetCode 72 Edit Distance
 삽입·삭제·교체 연산으로 `word1`을 `word2`로 바꾸는 최소 연산 수를 구한다. 마지막 문자가 같으면 $dp[i-1][j-1]$, 다르면 교체 $dp[i-1][j-1]$, 삭제 $dp[i-1][j]$, 삽입 $dp[i][j-1]$ 중 최솟값에 1을 더한다. 기저 조건은 빈 문자열과의 거리 $dp[i][0] = i$, $dp[0][j] = j$이다.[^4]
 
 ```java
@@ -257,6 +257,8 @@ int minDistance(String a, String b) {
 ## Related pages
 - [[backtracking]]
 - [[dfs]]
+
+---
 
 [^1]: Wikipedia는 DP와 분할 정복의 차이(부분 문제 중복 여부)만 명시한다. 그리디와의 비교 및 활동 선택 예시는 조사한 출처에 없으며 각 기법의 일반적 정의에서 정리한 내용이다.
 [^2]: CP-Algorithms의 "부분 문제당 작업량 × 부분 문제 수" 추정법을 따른다. 1~5단계 설계 절차는 출처에 단계로 제시되어 있지 않으며 출처의 상태·점화식·기저 조건·계산 순서 서술을 일반화한 것이다.

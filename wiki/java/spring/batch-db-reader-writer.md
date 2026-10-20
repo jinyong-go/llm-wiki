@@ -1,6 +1,6 @@
 ---
 title: Spring Batch DB ItemReader·ItemWriter
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -32,7 +32,6 @@ Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기�
 
 > 멀티스레드 스텝·파티셔닝에서는 페이징 reader가 적합하다. 커서 reader는 `ResultSet`을 공유할 수 없어 단일 스레드에 쓴다.[^1]
 
-[^1]: 커서 reader가 스텝 내내 하나의 ResultSet을 유지한다는 동작(§2 표)으로부터 추론.
 
 정렬 키 주의: 페이징 reader는 페이지 간 누락/중복을 막기 위해 **유니크한 정렬 키**(`sortKey`)가 필요하다.
 
@@ -141,7 +140,6 @@ public JpaPagingItemReader<Customer> jpaPagingReader(EntityManagerFactory emf) {
 
 > JPA는 커서 reader를 기본 제공하지 않는다. 대용량을 단일 커넥션 스트리밍하려면 Hibernate 커서 reader를 쓴다.[^2]
 
-[^2]: Spring Batch 제공 reader 목록에 JPA 커서 reader가 없다는 사실로부터 추론.
 
 ### 4.2. JpaItemWriter
 
@@ -285,3 +283,8 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 - [[jpa-n-plus-one]] — reader 연관 조회 N+1
 - [[mybatis]] — MyBatis 기반 reader/writer(`MyBatisCursorItemReader` 등) 대안
 - [[querydsl]] — QueryDSL 기본·설정(커스텀 리더의 쿼리 작성)
+
+---
+
+[^1]: 커서 reader가 스텝 내내 하나의 ResultSet을 유지한다는 동작(§2 표)으로부터 추론.
+[^2]: Spring Batch 제공 reader 목록에 JPA 커서 reader가 없다는 사실로부터 추론.

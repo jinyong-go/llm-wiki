@@ -1,6 +1,6 @@
 ---
 title: Java CRL 생성 — BouncyCastle
-updated: 2026-07-14 14:28:58
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - crypto
@@ -18,7 +18,6 @@ CA가 폐기한 인증서 목록인 **CRL**(Certificate Revocation List, RFC 528
 - **생성** — JDK 표준 공개 API에는 CRL 생성 기능이 없어[^1] **BouncyCastle `X509v2CRLBuilder`** 를 사용한다.
 - **파싱·검증** — `java.security.cert`의 `CertificateFactory`/`X509CRL` 표준 API로 가능하다.
 
-[^1]: JCA/PKI 프로그래머 가이드의 엔진 클래스 목록에 CRL 생성용 클래스가 없고, `X509CRL`·`CertificateFactory`는 인코딩된 CRL의 파싱·검증용이라는 점에 근거한 서술. 생성은 내부 API(`sun.security.x509`)나 서드파티가 필요하다.
 
 ---
 
@@ -175,3 +174,7 @@ if (entry != null) {
 - [[cert-path-validation]] — 경로 검증에 CRL 공급 (같은 카테고리)
 - [[cmp-bouncycastle]] — BouncyCastle CA 작업 (같은 카테고리)
 - [[openssl-crl]] — CLI로 CRL 조회·검증
+
+---
+
+[^1]: JCA/PKI 프로그래머 가이드의 엔진 클래스 목록에 CRL 생성용 클래스가 없고, `X509CRL`·`CertificateFactory`는 인코딩된 CRL의 파싱·검증용이라는 점에 근거한 서술. 생성은 내부 API(`sun.security.x509`)나 서드파티가 필요하다.

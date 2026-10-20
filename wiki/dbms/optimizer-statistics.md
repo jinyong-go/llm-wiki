@@ -1,6 +1,6 @@
 ---
 title: RDBMS 옵티마이저 통계 (Optimizer Statistics)
-updated: 2026-07-16 10:50:35
+updated: 2026-10-20 17:46:04
 tags:
   - dbms
   - sql
@@ -25,7 +25,7 @@ tags:
 
 ## 2. Oracle
 
-### 2.1 수집
+### 2.1. 수집
 
 ```sql
 EXEC DBMS_STATS.GATHER_TABLE_STATS('<schema>', '<table>');
@@ -36,7 +36,7 @@ EXEC DBMS_STATS.GATHER_SCHEMA_STATS('<schema>');
 - `ESTIMATE_PERCENT`는 기본값 `AUTO_SAMPLE_SIZE` 사용이 권장된다 (전수에 가까운 정확도를 해시 기반으로 빠르게 산출).
 - `METHOD_OPT` 기본값 `FOR ALL COLUMNS SIZE AUTO`는 컬럼 사용 이력을 근거로 히스토그램 생성 여부를 자동 결정한다.
 
-### 2.2 히스토그램
+### 2.2. 히스토그램
 
 데이터 편중(skew)이 있는 컬럼의 카디널리티 예측을 위해 생성한다. `SIZE AUTO`는 쿼리에서 사용된 조건 컬럼 이력(`SYS.COL_USAGE$`)을 참고하므로, **테이블이 쿼리된 적이 있어야 생성**된다. 기본 최대 버킷 수는 254.
 
@@ -47,7 +47,7 @@ EXEC DBMS_STATS.GATHER_SCHEMA_STATS('<schema>');
 | Hybrid | NDV > 버킷 수, Top Frequency 미충족 (12c+, 기본) |
 | Height-Balanced | 레거시. `AUTO_SAMPLE_SIZE`가 아닌 수동 샘플링 시에만 생성 |
 
-### 2.3 조회·관리
+### 2.3. 조회·관리
 
 ```sql
 SELECT table_name, num_rows, last_analyzed, stale_stats
@@ -59,7 +59,7 @@ FROM   user_tab_statistics;
 
 ## 3. PostgreSQL
 
-### 3.1 수집
+### 3.1. 수집
 
 ```sql
 ANALYZE <table>;   -- 테이블명 생략 시 전체 DB
@@ -68,7 +68,7 @@ ANALYZE <table>;   -- 테이블명 생략 시 전체 DB
 - 일부 행을 랜덤 샘플링해 수집한다. 평소에는 autovacuum[^1]이 변경 누적치가 임계(`autovacuum_analyze_threshold` + 행 수 × `autovacuum_analyze_scale_factor`, 기본 10%)를 넘으면 자동 실행한다.
 - **파티션 상위 테이블은 autovacuum이 ANALYZE하지 않으므로** 대량 변경 후 수동 실행이 권장된다.
 
-### 3.2 저장·조회
+### 3.2. 저장·조회
 
 - 테이블 수준(`reltuples`, `relpages`)은 `pg_class`, 컬럼 수준은 `pg_statistic`(뷰 `pg_stats`)에 저장된다.
 - 컬럼당 most common values·histogram 항목 수는 `default_statistics_target`(기본 100)이 결정한다. 분포가 불규칙한 컬럼은 개별 상향:
@@ -77,7 +77,7 @@ ANALYZE <table>;   -- 테이블명 생략 시 전체 DB
 ALTER TABLE t ALTER COLUMN c SET STATISTICS 500;
 ```
 
-### 3.3 확장 통계
+### 3.3. 확장 통계
 
 기본 통계는 컬럼 간 독립을 가정하므로, 상관관계가 있는 컬럼 조합은 `CREATE STATISTICS`로 보완한다.
 
@@ -93,7 +93,7 @@ CREATE STATISTICS s (dependencies) ON city, zip FROM addr;
 
 ## 4. MySQL (InnoDB)
 
-### 4.1 수집
+### 4.1. 수집
 
 ```sql
 ANALYZE TABLE <table>;   -- 동기(포그라운드) 재계산
@@ -107,14 +107,14 @@ ANALYZE TABLE <table>;   -- 동기(포그라운드) 재계산
 ALTER TABLE t STATS_SAMPLE_PAGES=100;
 ```
 
-### 4.2 저장·조회
+### 4.2. 저장·조회
 
 ```sql
 SELECT * FROM mysql.innodb_table_stats WHERE table_name='t';
 SELECT * FROM mysql.innodb_index_stats WHERE table_name='t';
 ```
 
-### 4.3 히스토그램
+### 4.3. 히스토그램
 
 인덱스 없는 컬럼의 편중 데이터 예측용 (8.0+):
 
@@ -127,7 +127,7 @@ ANALYZE TABLE t UPDATE HISTOGRAM ON c WITH 32 BUCKETS;
 
 ## 5. 트러블슈팅
 
-### 5.1 테스트 데이터 추가 후 코스트 이상 현상
+### 5.1. 테스트 데이터 추가 후 코스트 이상 현상
 
 대량의 테스트 데이터를 추가한 뒤에도 이전 소량 데이터 기준의 실행 계획·비용이 그대로 출력되는 경우가 있다.
 
@@ -135,21 +135,20 @@ ANALYZE TABLE t UPDATE HISTOGRAM ON c WITH 32 BUCKETS;
 - **해결**: 데이터 이행·대규모 DML 후 즉시 해당 테이블 통계를 재수집(`DBMS_STATS`/`ANALYZE`)한다. 갱신 후 최신 데이터 크기를 반영한 경로로 전환된다.
 	- 예: Nested Loops → Hash Join
 
-### 5.2 바인드 변수와 히스토그램에 의한 계획 급변
+### 5.2. 바인드 변수와 히스토그램에 의한 계획 급변
 
 같은 쿼리가 어느 시점부터 갑자기 느려지는 경우.
 
 - **원인**: 히스토그램이 있는 편중 컬럼에 바인드 변수를 쓰면 최초 하드 파싱 시 피킹(peek)된 값 기준으로 계획이 수립·공유된다. 저빈도 값 기준 계획이 고빈도 값 실행에 재사용되면 성능이 급락한다.
 - **해결**: Oracle 11g+는 Adaptive Cursor Sharing이 값별로 계획을 분화해 완화한다. 편중이 심한 조건은 리터럴 분리, SQL Plan Baseline에 의한 계획 고정을 검토한다.
 
-### 5.3 자동 수집에서 제외되는 테이블
+### 5.3. 자동 수집에서 제외되는 테이블
 
 자동 수집이 켜져 있어도 통계가 갱신되지 않는 대상이 있다.
 
 - **PostgreSQL 임시 테이블**: autovacuum이 접근할 수 없어 세션에서 수동 `ANALYZE`가 필요하다. 파티션 상위 테이블도 동일 (3.1 참고).
 - **Oracle 휘발성 중간 테이블**: 잡 실행 중 행 수가 급변해 어느 시점 통계도 대표성이 없다. 대표 상태에서 수집 후 통계를 고정(2.3 참고)하거나 동적 샘플링에 맡긴다.
 
-[^1]: autovacuum은 PostgreSQL의 백그라운드 프로세스로, 죽은 튜플(dead tuple) 공간 회수(VACUUM)와 옵티마이저 통계 수집(ANALYZE)을 테이블별 변경 누적치 기반으로 자동 수행한다.
 
 ---
 ## Sources
@@ -167,3 +166,7 @@ ANALYZE TABLE t UPDATE HISTOGRAM ON c WITH 32 BUCKETS;
 - [[execution-plan]]
 - [[index-scan]]
 - [[oracle-hints]]
+
+---
+
+[^1]: autovacuum은 PostgreSQL의 백그라운드 프로세스로, 죽은 튜플(dead tuple) 공간 회수(VACUUM)와 옵티마이저 통계 수집(ANALYZE)을 테이블별 변경 누적치 기반으로 자동 수행한다.

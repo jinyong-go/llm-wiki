@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 조건별 플로우
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -159,7 +159,6 @@ public interface StepExecutionListener extends StepListener {
 - 어노테이션: `@BeforeStep` / `@AfterStep`.
 - Spring Batch 5.x부터 인터페이스 메서드가 default(no-op)라 **필요한 메서드만** 구현하면 된다.[^1]
 
-[^1]: StepExecutionListener 인터페이스의 메서드가 default(no-op)로 선언된 API 시그니처로부터 추론.
 
 **ItemListenerSupport** — chunk 처리의 단계별 리스너 3종을 한꺼번에 no-op으로 구현해 둔 보조 추상 클래스. 필요한 콜백만 골라 오버라이드한다. §5.2의 `NumberInfoClassifier`가 이를 상속해 `afterProcess`만 재정의했다.
 
@@ -264,3 +263,7 @@ new JobBuilder("number-generator", jobRepository)
 - [[batch-testing]] — StepExecutionListener·ExitStatus 분기 단위 테스트
 - [[batch-chunk]] — ItemProcessor에서 ExitStatus 설정
 - [[batch-tasklet]] — 단일 작업 스텝의 흐름 연결
+
+---
+
+[^1]: StepExecutionListener 인터페이스의 메서드가 default(no-op)로 선언된 API 시그니처로부터 추론.

@@ -1,6 +1,6 @@
 ---
 title: 일급 객체 (First-class Citizen)
-updated: 2026-10-19 22:50:33
+updated: 2026-10-20 17:54:47
 tags:
   - programming
   - language
@@ -42,7 +42,7 @@ const make = () => () => "hi";      // 함수를 반환
 | --- | --- |
 | Python, JavaScript, Smalltalk, Scala, Haskell | 완전 지원 |
 | C | 함수 포인터로 제한적 지원[^1] |
-| Java | 메서드 자체는 일급이 아니며 함수형 인터페이스로 우회(5장) |
+| Java | 메서드 자체는 일급이 아니며 함수형 인터페이스로 우회(§5) |
 
 Smalltalk·Ruby·Python·Common Lisp에서는 클래스도 일급이다(메타클래스의 인스턴스).
 
@@ -78,5 +78,8 @@ lambda 식 자체의 문법적 지위는 [[expression-vs-statement]](JLS 15.27) 
 
 ## Related pages
 - [[expression-vs-statement]]
+- [[function-declaration]]
+
+---
 
 [^1]: Wikipedia는 C의 함수를 "second-class citizen"으로 부르기도 한다고 기술한다.

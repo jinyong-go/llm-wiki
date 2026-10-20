@@ -1,6 +1,6 @@
 ---
 title: Java JNI (Java Native Interface)
-updated: 2026-08-11 17:04:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - jni
@@ -16,7 +16,7 @@ JNI(Java Native Interface)는 JVM에서 실행되는 Java 코드가 C/C++로 작
 
 ## 2. Native 메서드
 
-### 2.1 Java 선언
+### 2.1. Java 선언
 
 `native` 키워드를 붙이고 본문 없이 세미콜론으로 끝내면 구현이 네이티브 라이브러리에 있음을 나타낸다. 클래스 초기화 시 `System.loadLibrary()`로 라이브러리를 로드해야 링크된다.
 
@@ -37,7 +37,7 @@ class A {
 javac -h . p/q/r/A.java
 ```
 
-### 2.2 C 구현
+### 2.2. C 구현
 
 JNI는 `native` 메서드 선언과 네이티브 라이브러리의 C 함수를 1:1로 매핑하는 이름 규칙을 정의한다: `Java_` + 이스케이프된 클래스 바이너리 이름(`/`→`_`) + `_` + 이스케이프된 메서드 이름 (오버로드 시 `__`+파라미터 시그니처 추가).
 
@@ -61,7 +61,7 @@ JNIEXPORT jdouble JNICALL Java_p_q_r_A_f
 
 ## 3. 라이브러리 빌드와 로드
 
-### 3.1 빌드
+### 3.1. 빌드
 
 플랫폼별 컴파일러로 공유 라이브러리를 빌드한다. macOS는 `.dylib`, Linux는 `.so`, Windows는 `.dll`.
 
@@ -75,7 +75,7 @@ gcc -shared -fPIC -I"$JAVA_HOME/include" -I"$JAVA_HOME/include/linux" \
   -o libp_q_r_A.so p_q_r_A.c
 ```
 
-### 3.2 로드
+### 3.2. 로드
 
 - `System.loadLibrary(String libname)`: 라이브러리 이름만 전달(접두사·확장자·경로 제외). `java.library.path`에서 탐색해 플랫폼별 이름(`libX.so`, `libX.dylib`, `X.dll`)으로 매핑한다.
 - `System.load(String filename)`: 절대 경로를 직접 전달. 경로 탐색 없이 해당 파일을 즉시 로드한다.
@@ -93,11 +93,11 @@ System.load("/abs/path/libp_q_r_A.dylib"); // 절대 경로 직접 로드
 
 ## 4. 주의사항
 
-### 4.1 라이브러리 이름
+### 4.1. 라이브러리 이름
 
 `System.loadLibrary()`에 플랫폼 접두사(`lib`)나 확장자(`.so`/`.dylib`)를 포함하면 `UnsatisfiedLinkError`가 발생한다. 순수 라이브러리 이름만 전달해야 한다.
 
-### 4.2 macOS Quarantine 속성으로 인한 로드 실패
+### 4.2. macOS Quarantine 속성으로 인한 로드 실패
 
 macOS는 인터넷이나 외부 출처에서 받은 파일에 Gatekeeper가 `com.apple.quarantine` 확장 속성(extended attribute)을 부여한다. 다운로드하거나 외부에서 복사해온 `.dylib`을 이 속성이 남은 채로 JNI를 통해 로드하면 오류가 발생할 수 있다[^1].
 
@@ -122,6 +122,9 @@ xattr -d com.apple.quarantine /path/to/libp_q_r_A.dylib
 
 ---
 ## Related pages
+- [[jvm-options]]
+- [[environment-variables]]
 
 ---
+
 [^1]: quarantine 속성과 JNI 라이브러리 로드 실패의 정확한 인과 관계(서명·공증 여부에 따른 Gatekeeper 차단 조건)는 Apple 공식 문서에서 별도로 확인하지 못함. 사용자가 실제로 겪은 사례를 근거로 기술.

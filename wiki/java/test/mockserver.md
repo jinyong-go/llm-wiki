@@ -1,6 +1,6 @@
 ---
 title: MockServer
-updated: 2026-10-15 22:42:31
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - testing
@@ -226,12 +226,6 @@ Netty, Jackson 버전이 충돌하면 `-no-dependencies` artifact를 사용한�
 
 ---
 
-[^1]: `resetBeforeEach`는 5.x API 문서에 없고 7.5.0 문서부터 확인된다. 구버전에서는 `reset()`을 직접 호출한다.
-[^2]: 공식 문서에 명시되지 않았다. `perTestSuite = false`이면 테스트 클래스마다 서버를 기동하는 `MockServerExtension` 소스 동작에서 추론했다.
-[^3]: Getting Started의 매칭 순서 규칙을 적용한 예시다. 우선순위가 같으면 등록 순서대로 매칭되고 소진된 Expectation은 제외된다.
-
----
-
 ## Sources
 - [MockServer — Running MockServer](https://www.mock-server.com/mock_server/running_mock_server.html)
 - [MockServer — Creating Expectations](https://www.mock-server.com/mock_server/creating_expectations.html)
@@ -253,3 +247,9 @@ Netty, Jackson 버전이 충돌하면 `-no-dependencies` artifact를 사용한�
 - [[java-testing-libraries]]
 - [[test-double]]
 - [[good-test-practices]]
+
+---
+
+[^1]: `resetBeforeEach`는 5.x API 문서에 없고 7.5.0 문서부터 확인된다. 구버전에서는 `reset()`을 직접 호출한다.
+[^2]: 공식 문서에 명시되지 않았다. `perTestSuite = false`이면 테스트 클래스마다 서버를 기동하는 `MockServerExtension` 소스 동작에서 추론했다.
+[^3]: Getting Started의 매칭 순서 규칙을 적용한 예시다. 우선순위가 같으면 등록 순서대로 매칭되고 소진된 Expectation은 제외된다.

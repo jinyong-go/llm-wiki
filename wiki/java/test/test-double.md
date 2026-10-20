@@ -1,6 +1,6 @@
 ---
 title: 테스트 더블 — Mock·Stub·Spy 차이
-updated: 2026-07-08 10:32:15
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - testing
@@ -108,15 +108,6 @@ doReturn("x").when(spy).get(0);         // 부분 스터빙(spy는 doReturn 권�
 
 ---
 
-## 6. 요약
-
-- 테스트 더블 5종: Dummy(미사용)·Fake(경량 실구현)·Stub(고정 응답)·Spy(Stub+호출 기록)·Mock(호출 기대 명세).
-- 본질 축은 **상태 검증(Stub) vs 행위 검증(Mock)**. Mock만 행위 검증을 강제한다.
-- Spock은 `Stub`/`Mock`/`Spy`를 명시 구분. Mockito는 `mock()`/`spy()`뿐이며 stub은 `when().thenReturn()` 행위로 표현.
-- 기본은 Stub(상태 검증) 우선, 부수효과 위임 검증에만 Mock 사용.
-
----
-
 ## Sources
 - Martin Fowler, "Mocks Aren't Stubs" (Meszaros 분류·상태 vs 행위 검증): https://martinfowler.com/articles/mocksArentStubs.html
 - Spock Framework Reference — Interaction Based Testing: https://spockframework.org/spock/docs/2.3/all_in_one.html
@@ -130,3 +121,4 @@ doReturn("x").when(spy).get(0);         // 부분 스터빙(spy는 doReturn 권�
 - [[spock]] — Spock의 Mock/Stub/Spy 구현(§7 상호작용 기반 테스트)
 - [[java-testing-libraries]] — 모킹 라이브러리 분류(Mockito/EasyMock/JMockit/PowerMock)
 - [[mockito-doreturn-vs-when]] — Mockito 스터빙 구문(spy에서 doReturn을 쓰는 이유)
+- [[mockito-void-methods]]

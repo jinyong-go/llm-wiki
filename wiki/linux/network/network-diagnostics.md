@@ -1,6 +1,6 @@
 ---
 title: 네트워크 진단 — ss / ping / nc
-updated: 2026-07-14 16:45:56
+updated: 2026-10-20 17:46:04
 tags:
   - linux
   - cli
@@ -42,7 +42,6 @@ ss [options] [FILTER]
 
 > `-p`로 **자신이 소유하지 않은 소켓**의 프로세스(PID/이름)를 표시하려면 **root 권한이 필요**하다 — 권한이 없으면 소켓 목록은 보이되 프로세스 칸이 비어 있다(netstat은 `-` 표시). 소켓-PID 매핑이 각 프로세스의 `/proc/PID/fd/`를 대조하는 방식인데 이 디렉터리가 소유자·root 전용이기 때문이다. 프로세스 가시성 상세는 [[ps]] §5 참고.[^1]
 
-[^1]: root 요구는 netstat(8)의 명시("You will also need superuser privileges to see this information on sockets you don't own")이며, ss에 대한 적용은 동일한 /proc/PID/fd 대조 방식에 근거한 추론.
 
 ### 2.2. 자주 쓰는 패턴
 
@@ -240,3 +239,7 @@ ss -tnp dst 10.0.0.5
 - [[ssh]]
 - [[system-monitoring]]
 - [[linux-system-info]]
+
+---
+
+[^1]: root 요구는 netstat(8)의 명시("You will also need superuser privileges to see this information on sockets you don't own")이며, ss에 대한 적용은 동일한 /proc/PID/fd 대조 방식에 근거한 추론.

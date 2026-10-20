@@ -1,6 +1,6 @@
 ---
 title: GC 모니터링
-updated: 2026-10-15 22:47:28
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - jvm
@@ -264,14 +264,6 @@ max(jvm_gc_pause_seconds_max) by (instance, action)
 
 ---
 
-[^1]: 공식 문서에 정의된 공식이 아니다. 로그의 GC 전후 힙 사용량으로 계산하는 일반적인 방법이며 Humongous 할당 등은 반영하지 못한다.
-[^2]: 공식 문서 근거가 아니다. GC 스레드의 CPU 시간과 경과 시간을 비교한 추론이다.
-[^3]: Oracle jstat 문서(JDK 21)의 열 정의에는 `CGC`, `CGCT`가 없다. JDK 17.0.5 실제 출력에서 확인했으며, G1 Remark·Cleanup 같은 동시 사이클 정지가 여기에 집계되는 것으로 보인다.
-[^4]: JDK 17.0.5에서 `jcmd GC.run` 후 `sun.gc.collector.1`(G1 full collection pauses) 횟수가 1 증가한 것을 확인했다. `-XX:+ExplicitGCInvokesConcurrent`와 `-XX:+DisableExplicitGC`의 동작은 [Oracle java 명령 문서](https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html)에 근거한다.
-[^5]: [Oracle jcmd 문서](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html)는 대상 JVM과 같은 머신에서 같은 유효 UID와 GID를 사용해야 한다고 명시한다.
-
----
-
 ## Sources
 - [The java Command (JDK 21), Unified Logging](https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html)
 - [The jcmd Command (JDK 21)](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html)
@@ -294,3 +286,11 @@ max(jvm_gc_pause_seconds_max) by (instance, action)
 - [[jvm-options]]
 - [[java-process-analysis-tools]]
 - [[cpu-usage-troubleshooting]]
+
+---
+
+[^1]: 공식 문서에 정의된 공식이 아니다. 로그의 GC 전후 힙 사용량으로 계산하는 일반적인 방법이며 Humongous 할당 등은 반영하지 못한다.
+[^2]: 공식 문서 근거가 아니다. GC 스레드의 CPU 시간과 경과 시간을 비교한 추론이다.
+[^3]: Oracle jstat 문서(JDK 21)의 열 정의에는 `CGC`, `CGCT`가 없다. JDK 17.0.5 실제 출력에서 확인했으며, G1 Remark·Cleanup 같은 동시 사이클 정지가 여기에 집계되는 것으로 보인다.
+[^4]: JDK 17.0.5에서 `jcmd GC.run` 후 `sun.gc.collector.1`(G1 full collection pauses) 횟수가 1 증가한 것을 확인했다. `-XX:+ExplicitGCInvokesConcurrent`와 `-XX:+DisableExplicitGC`의 동작은 [Oracle java 명령 문서](https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html)에 근거한다.
+[^5]: [Oracle jcmd 문서](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html)는 대상 JVM과 같은 머신에서 같은 유효 UID와 GID를 사용해야 한다고 명시한다.

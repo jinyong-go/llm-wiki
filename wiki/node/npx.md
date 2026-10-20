@@ -1,6 +1,6 @@
 ---
 title: npx
-updated: 2026-08-11 17:38:47
+updated: 2026-10-20 17:46:04
 tags:
   - nodejs
   - npm
@@ -156,10 +156,13 @@ pnpm의 대응 명령은 `pnpm dlx`다([[package-manager]] §4.2).
 - `raw/node/Introducing npx an npm package runner.md` (Kat Marchán, 2017): https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b
 - `raw/node/serve.md` (npx 실행 예): https://www.npmjs.com/package/serve
 
-[^1]: 두 출처가 불일치한다. 2017년 소개 글은 셸 auto-fallback(`.zshrc`에 등록해 `npx` 없이 `mocha` 호출)과 `-p` 옵션을 주요 기능으로 설명하지만, npm v11 공식 문서는 auto-fallback이 "advisable하지 않아 제거됐다"고 명시한다. 현행 동작은 공식 문서를 기준으로 기술하고, 소개 글은 도입 배경·설계 의도 서술에만 사용했다.
 
 ---
 
 ## Related pages
 - [[npm]] — package.json, scripts, 명령어
 - [[package-manager]] — npm·yarn·pnpm 비교
+
+---
+
+[^1]: 두 출처가 불일치한다. 2017년 소개 글은 셸 auto-fallback(`.zshrc`에 등록해 `npx` 없이 `mocha` 호출)과 `-p` 옵션을 주요 기능으로 설명하지만, npm v11 공식 문서는 auto-fallback이 "advisable하지 않아 제거됐다"고 명시한다. 현행 동작은 공식 문서를 기준으로 기술하고, 소개 글은 도입 배경·설계 의도 서술에만 사용했다.

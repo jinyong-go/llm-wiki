@@ -1,6 +1,6 @@
 ---
 title: 좋은 테스트 코드 작성법
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:54:47
 tags:
   - java
   - testing
@@ -171,15 +171,6 @@ assertThat(orderService.calculateTotal(order)).isEqualTo(9_900);
 - [ ] 다른 테스트·실행 순서·환경에 **독립적**인가
 - [ ] 실패 시 **원인이 즉시 드러나는가**(Specific)
 - [ ] 조건문·반복문 등 **테스트 내 로직을 배제**했는가(로직은 그 자체가 버그 소지)
-
----
-
-## 6. 요약
-
-- 내부 구현이 아니라 **비즈니스 결과/상태**를 검증하라 → 리팩터링 내성 확보(jojoldu, Beck의 Behavioral+Structure-insensitive).
-- **Given-When-Then/AAA**로 구조화해 의도를 드러내라.
-- **FIRST**와 **Test Desiderata**를 속성 기준으로, 상황에 맞게 트레이드오프하라.
-- 테스트는 **자주 돌릴 만큼 빠르고 독립적**이어야 하며, 실패 시 원인이 명확해야 한다.
 
 ---
 

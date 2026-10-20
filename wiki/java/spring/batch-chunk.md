@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Chunk 지향 처리
-updated: 2026-09-01 11:43:12
+updated: 2026-10-20 17:46:04
 tags:
   - java
   - spring
@@ -92,7 +92,6 @@ public interface ItemReader<T> {
 
 > 커서 방식은 단일 커넥션으로 스트리밍해 메모리에 유리하나 커넥션을 길게 점유한다. 페이징 방식은 페이지마다 쿼리를 재실행하며 멀티스레드·재시작에 유리하다.[^1]
 
-[^1]: 출처의 직접 서술이 아니라 두 방식의 동작(단일 ResultSet 스트리밍 vs 페이지 쿼리 반복)으로부터 추론.
 
 ---
 
@@ -183,7 +182,6 @@ public interface ItemWriter<T> {
 - **chunk size 튜닝 필요** — 너무 크면 메모리·롤백 비용·락 점유 증가, 너무 작으면 커밋 오버헤드 증가.
 - **구성 복잡도** — reader/processor/writer 분리로 단순 로직 대비 보일러플레이트가 늘 수 있다.[^2]
 
-[^2]: reader/processor/writer 3요소 분리 구조로부터 도출한 일반적 평가임.
 
 ---
 
@@ -205,3 +203,8 @@ public interface ItemWriter<T> {
 - [[batch-job-parameters]] — 실행 파라미터 전달·사용
 - [[jpa-transaction]] — chunk 트랜잭션 경계, readOnly
 - [[jpa-n-plus-one]] — reader 단계 연관 조회 N+1 주의
+
+---
+
+[^1]: 출처의 직접 서술이 아니라 두 방식의 동작(단일 ResultSet 스트리밍 vs 페이지 쿼리 반복)으로부터 추론.
+[^2]: reader/processor/writer 3요소 분리 구조로부터 도출한 일반적 평가임.

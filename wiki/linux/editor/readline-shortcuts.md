@@ -1,6 +1,6 @@
 ---
 title: 셸 커서 이동 및 편집 단축키 — Readline Emacs / Vi 모드
-updated: 2026-07-14 14:35:36
+updated: 2026-10-20 17:54:47
 tags:
   - linux
   - bash
@@ -257,7 +257,7 @@ Command 모드 → i / a / I / A → Insert 모드
 
 ---
 
-## 5. 모드 비교 요약
+## 5. 모드 비교
 
 | 기능 | Emacs 모드 | Vi 모드 (Command) |
 |------|-----------|------------------|
