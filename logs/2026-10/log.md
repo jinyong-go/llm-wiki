@@ -2,6 +2,24 @@
 
 ---
 
+## 2026-10-21 16:40:24
+
+- **수정**: `kdf.md`의 비교표를 알고리즘별 설명으로 통합하고 비용 파라미터·salt·HKDF·PBKDF2 설명과 용도 구분 보완
+
+## 2026-10-21 16:21:56
+
+- **수정**: `kdf.md` 개요에 입력별 목적을 보완하고 선택 절을 용도 절로 변경해 알고리즘 설명 뒤로 이동
+- **생성**: `kdf-java.md`로 Java 예제·구현 출처를 분리하고 두 문서의 관련 링크와 `wiki/index.md` 항목 갱신
+
+## 2026-10-21 16:13:46
+
+- **수정**: `timestamp-token.md`의 CMS 서명 검증 절 참조를 §5.2로 갱신
+
+## 2026-10-21 15:59:31
+
+- **수정**: `cms.md`의 주요 기능·활용 절 분리, 콘텐츠 구조·MAC 키 관리·검증 조건·호환성 설명 보강
+- **이동**: `wiki/security/crypto/cms.md`를 `wiki/security/pki/cms.md`로 이동하고 `wiki/index.md`의 PKI 분류와 항목 설명 갱신
+
 ## 2026-10-20 18:00:44
 
 - **수정**: security 문서 12개 문체 정리. 항목명·문장·제목의 대시 연결, 본문 화살표, 강조용 볼드 제거(`x509-certificate`, `cmp`, `timestamp-token`, `certificate-revocation`, `certificate-purpose`, crypto 5개, `jwt`, `oauth2`)

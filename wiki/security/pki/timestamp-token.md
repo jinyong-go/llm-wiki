@@ -1,6 +1,6 @@
 ---
 title: 타임스탬프 토큰 (Time-Stamp Token)
-updated: 2026-10-20 18:00:44
+updated: 2026-10-21 16:13:46
 tags:
   - crypto
   - pki
@@ -135,7 +135,7 @@ TSA의 `SignerInfo`에는 서명자 인증서를 식별하는 SigningCertificate
 1. 응답 `status` 확인
 2. 토큰의 `messageImprint`가 요청(또는 원본 재계산 해시)과 일치하는지 확인
 3. 요청에 nonce를 넣었으면 토큰의 nonce와 일치 확인
-4. CMS SignedData 서명 검증 ([[cms]] §3.2와 동일) + ESSCertID(v2)로 TSA 인증서 일치 확인
+4. CMS SignedData 서명 검증 ([[cms]] §5.2와 동일) + ESSCertID(v2)로 TSA 인증서 일치 확인
 5. TSA 인증서 검증: 경로 검증([[x509-certificate]]), 폐기 확인([[certificate-revocation]])
 6. `policy`가 응용에서 수용 가능한지 확인
 

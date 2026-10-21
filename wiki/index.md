@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-20 14:14:04
+updated: 2026-10-21 16:21:56
 tags:
   - meta
 ---
@@ -113,6 +113,7 @@ tags:
 
 ### 암호 (crypto)
 
+- [[kdf-java]] — Java 키 유도와 패스워드 검증
 - [[cmp-bouncycastle]] — BouncyCastle CMP 메시지 생성·파싱·검증 (개념은 [[cmp]])
 - [[ml-kem-bouncycastle]] — BouncyCastle ML-KEM 키 생성·캡슐화·복원, 키 인코딩·디코딩 (개념은 [[ml-kem]])
 - [[ml-dsa-bouncycastle]] — BouncyCastle ML-DSA 서명·검증, 키 인코딩·디코딩, X.509 인증서 발급 (개념은 [[ml-dsa]])
@@ -187,8 +188,7 @@ tags:
 ### Crypto
 
 - [[hash-function]] — 해시 함수: 요구 성질, 내부 구조(Merkle–Damgård/스펀지/HAIFA), 알고리즘, 주요 활용 사례
-- [[cms]] — CMS(RFC 5652) 암호화 메시지 규격: 구조와 콘텐츠 타입
-- [[kdf]] — KDF: 알고리즘 비교, 권장 파라미터, Java 예시
+- [[kdf]] — 패스워드와 공유 비밀 기반 키 유도
 - [[ml-kem]] — ML-KEM(FIPS 203) 격자 기반 PQC KEM: 대수 구조(R_q·NTT), MLWE, K-PKE, FO 변환, 파라미터
 - [[ml-dsa]] — ML-DSA(FIPS 204) 격자 기반 PQC 디지털 서명: 대수 구조, MLWE+MSIS, FS-with-Aborts, 힌트 메커니즘, 파라미터
 - [[hsm]] — HSM: 하드웨어 키 보호 장치, FIPS 140-3, PKCS#11, 클라우드 HSM
@@ -196,6 +196,7 @@ tags:
 
 ### PKI
 
+- [[cms]] — CMS 암호화 메시지 규격
 - [[cmp]] — CMP: X.509 인증서 생명주기 관리 프로토콜
 - [[certificate-revocation]] — 인증서 폐기: CRL과 OCSP 비교, 실무 동향
 - [[x509-certificate]] — X.509 인증서: 구조, 확장, 검증, 체인, 폐기
