@@ -1,6 +1,6 @@
 ---
-title: RDBMS 공통 SQL 함수
-updated: 2026-10-20 17:54:47
+title: SQL 함수
+updated: 2026-10-21 23:14:11
 tags:
   - dbms
   - sql
@@ -13,6 +13,8 @@ tags:
 ## 1. 개요
 
 실무에서 사용 빈도가 높은 SQL 함수를 DBMS별(Oracle, PostgreSQL, MySQL)로 정리한다. 순위 함수는 윈도우 함수, 나머지는 스칼라 함수에 속한다 (조건 분기의 CASE는 함수가 아닌 표현식이지만 함께 다룬다).
+
+---
 
 ## 2. 타입 변환
 
@@ -40,8 +42,7 @@ SELECT DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s');
 SELECT STR_TO_DATE('2026-07-16', '%Y-%m-%d');
 ```
 
-- 문자열 → 날짜/숫자의 암시적 변환은 세션 설정(Oracle `NLS_DATE_FORMAT` 등)에 의존하므로 명시적 변환이 권장된다.
-- 조건절 컬럼에 변환 함수를 적용하면 인덱스를 못 타는 문제는 [[index-scan]] 참고.
+- 문자열에서 날짜·숫자로의 암시적 변환은 세션 설정(Oracle `NLS_DATE_FORMAT` 등)에 따라 결과가 달라지므로 명시적으로 변환한다.
 
 ### 2.1. 대상 타입
 
@@ -61,6 +62,8 @@ SELECT CAST('123' AS integer);            -- PostgreSQL
 SELECT CAST('123' AS SIGNED);             -- MySQL
 ```
 
+---
+
 ## 3. 현재 날짜·시간
 
 | 함수 | 지원 | 기준 시각 |
@@ -74,8 +77,10 @@ SELECT CAST('123' AS SIGNED);             -- MySQL
 | `SYSDATE()` | MySQL | 함수 실행 시점. 문장 내에서도 값이 달라질 수 있음 |
 
 - 표준인 `CURRENT_TIMESTAMP`도 기준 시각은 DBMS마다 다르다.
-- 같은 이름이라도 의미가 다르다: Oracle `SYSDATE`는 표준적 현재 시각 용도지만, MySQL `SYSDATE()`는 비결정적이어서 statement 기반 복제에 안전하지 않고 인덱스 활용도 불가 — MySQL에서는 `NOW()` 사용이 권장된다.
+- 같은 이름이라도 의미가 다르다: Oracle `SYSDATE`는 표준적 현재 시각 용도지만, MySQL `SYSDATE()`는 비결정적이어서 statement 기반 복제에 안전하지 않고 인덱스로 평가할 수도 없다. 문장 내 고정 시각이 필요하면 `NOW()`를 쓴다.
 - PostgreSQL `now()`는 트랜잭션 시작 시각이므로 장시간 트랜잭션 내 실측 시각이 필요하면 `clock_timestamp()`를 쓴다.
+
+---
 
 ## 4. 날짜 연산
 
@@ -102,11 +107,14 @@ SELECT DATE_ADD(CURDATE(), INTERVAL 1 MONTH); -- MySQL
 
 - 날짜 차이 함수는 인자 순서에 따른 부호가 DBMS마다 다르다: MySQL `DATEDIFF`는 d1 − d2, `TIMESTAMPDIFF`는 d2 − d1.
 
+---
+
 ## 5. 문자열
 
 | 함수 | 지원 | 용도 |
 |---|---|---|
-| `SUBSTRING(s FROM pos FOR len)` | 전체 (표준) | 부분 문자열. `SUBSTR(s, pos, len)` 축약형도 전체 지원 |
+| `SUBSTRING(s FROM pos FOR len)` | PostgreSQL, MySQL (표준) | 부분 문자열 |
+| `SUBSTR(s, pos, len)` | 전체 | 부분 문자열. Oracle은 이 형식만 제공 |
 | `POSITION(sub IN s)` | PostgreSQL, MySQL (표준) | 부분 문자열 위치 (없으면 0) |
 | `INSTR(s, sub)` | Oracle, MySQL | 부분 문자열 위치 (없으면 0) |
 | `REPLACE(s, from, to)` | 전체 | 치환 |
@@ -127,6 +135,8 @@ SELECT DATE_ADD(CURDATE(), INTERVAL 1 MONTH); -- MySQL
 - MySQL `LENGTH`는 바이트 기준이므로 멀티바이트 문자(UTF-8 한글 = 3바이트)에서 문자 수와 다르다.
 - NULL 결합 동작 차이: PostgreSQL `||`과 MySQL `CONCAT`은 인자에 NULL이 있으면 결과가 NULL, Oracle `||`은 NULL을 빈 문자열로 취급한다.
 
+---
+
 ## 6. NULL 처리
 
 | 함수 | 표준 | 지원 | 동작 |
@@ -142,7 +152,9 @@ SELECT COALESCE(nickname, username, 'anonymous');  -- 다단계 기본값
 SELECT amount / NULLIF(qty, 0);                    -- 0 나눗셈 방지
 ```
 
-- 이식성과 다중 인자 지원을 고려하면 표준인 `COALESCE`/`NULLIF` 사용이 권장된다.
+- `COALESCE`/`NULLIF`는 표준이며 세 DBMS에서 모두 동작하고, `COALESCE`는 인자 수 제한이 없다.
+
+---
 
 ## 7. 조건 분기
 
@@ -161,11 +173,13 @@ FROM   exam;
 ```
 
 - `DECODE`는 예외적으로 NULL끼리 같다고 판정한다 (`DECODE(v, NULL, 'is null', ...)` 가능). CASE의 `WHEN v = NULL`은 항상 거짓.
-- 이식성·가독성은 표준 `CASE` 사용이 권장된다. ELSE 생략 시 미매칭은 NULL 반환.
+- `CASE`는 표준이며 세 DBMS에서 모두 동작한다. ELSE를 생략하면 매칭되지 않은 경우 NULL을 반환한다.
+
+---
 
 ## 8. 순위
 
-윈도우 함수로, `OVER (PARTITION BY ... ORDER BY ...)` 절과 함께 사용한다. GROUP BY와 달리 행을 집약하지 않고 각 행에 결과를 부여한다. MySQL은 8.0+에서 지원.
+윈도우 함수로, `OVER (PARTITION BY ... ORDER BY ...)` 절과 함께 사용한다. GROUP BY와 달리 행을 집약하지 않고 각 행에 결과를 부여한다. MySQL은 8.0+에서 지원한다.
 
 | 함수 | 동작 (ORDER BY 값 1, 1, 2 예시) |
 |---|---|
@@ -187,8 +201,10 @@ WHERE  rn <= 3;
 세 DBMS 모두 동일 문법·동일 동작이다.
 
 ---
+
 ## Sources
 - [Oracle SQL Language Reference — Functions (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Functions.html)
+- [Oracle SQL Language Reference — SUBSTR (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/SUBSTR.html)
 - [PostgreSQL: Data Type Formatting Functions](https://www.postgresql.org/docs/current/functions-formatting.html)
 - [PostgreSQL: Date/Time Functions and Operators](https://www.postgresql.org/docs/current/functions-datetime.html)
 - [PostgreSQL: Conditional Expressions](https://www.postgresql.org/docs/current/functions-conditional.html)
@@ -201,6 +217,7 @@ WHERE  rn <= 3;
 - [MySQL: Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html)
 
 ---
+
 ## Related pages
 - [[index-scan]]
 - [[execution-plan]]

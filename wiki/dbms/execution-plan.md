@@ -1,6 +1,6 @@
 ---
-title: RDBMS 실행 계획 (Execution Plan)
-updated: 2026-10-20 17:54:47
+title: 실행 계획
+updated: 2026-10-21 23:14:11
 tags:
   - dbms
   - sql
@@ -17,9 +17,11 @@ tags:
 
 - **예상 실행 계획**: 쿼리를 실행하지 않고 옵티마이저의 예측만 출력.
 - **실제 실행 계획**: 쿼리를 실행하고 단계별 실측치(행 수, 시간, I/O)를 함께 출력. 튜닝은 예상치와 실측치의 괴리를 찾는 것이 핵심이다.
-- **Cost는 상대적 예측치**다. 시간 단위가 아니며 DBMS 간, 서로 다른 쿼리 간 절대 비교에 쓸 수 없다.
+- Cost는 상대적 예측치다. 시간 단위가 아니며 DBMS 간, 서로 다른 쿼리 간 절대 비교에 쓸 수 없다.
 
-실행 계획은 계층적 트리 구조(row source tree)다. **가장 깊이 들여쓰기된 연산부터 실행**되고, 같은 레벨의 형제 노드는 위에서 아래로 실행되며, 결과 행은 부모 노드로 전달된다(bottom-up).
+실행 계획은 계층적 트리 구조(row source tree)다. 가장 깊이 들여쓰기된 연산부터 실행되고, 같은 레벨의 형제 노드는 위에서 아래로 실행되며, 결과 행은 부모 노드로 전달된다(bottom-up).
+
+---
 
 ## 2. Oracle
 
@@ -65,9 +67,9 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<sql_id>', 0, 'ALLSTATS LAST'));
 
 부가 섹션:
 
-- **Predicate Information**: `access()`는 스캔 범위를 좁히는 조건, `filter()`는 읽은 후 걸러내는 조건 ([[index-scan]] 7.2 참고)
+- **Predicate Information**: `access()`는 스캔 범위를 좁히는 조건, `filter()`는 읽은 후 걸러내는 조건 ([[index-scan]] §7.2)
 - **Note**: dynamic sampling 사용 여부 등
-- **Hint Report** (19c+): 힌트 적용·무시 내역 ([[oracle-hints]] 참고)
+- Hint Report (19c+): 힌트 적용·무시 내역 ([[oracle-hints]] §8)
 
 ### 2.3. 성능 확인 포인트
 
@@ -75,6 +77,8 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<sql_id>', 0, 'ALLSTATS LAST'));
 - **Buffers·Reads**: 쿼리의 실제 부하 지표. Cost보다 논리 I/O(Buffers) 감소를 기준으로 튜닝 효과를 판단한다.
 - **A-Time이 큰 단계**: 병목 지점. 상위 노드의 A-Time은 하위 노드를 포함한 누적치다.
 - **filter로 대량 탈락하는 단계**: 많이 읽고 대부분 버리는 패턴은 인덱스 구성 재검토 대상.
+
+---
 
 ## 3. PostgreSQL
 
@@ -86,7 +90,7 @@ EXPLAIN (ANALYZE, BUFFERS) <SQL>;           -- 실제 실행 + 실측치 + 버�
 EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) <SQL>;  -- 구조화 출력
 ```
 
-`ANALYZE`는 쿼리를 **실제 실행**하므로 DML은 `BEGIN; ... ROLLBACK;`으로 감싼다.
+`ANALYZE`는 쿼리를 실제 실행하므로 DML은 `BEGIN; ... ROLLBACK;`으로 감싼다.
 
 ### 3.2. 출력 항목
 
@@ -101,8 +105,8 @@ Index Scan using idx_x on t  (cost=0.29..8.31 rows=1 width=44)
 | cost=시작..총 | 첫 행 반환까지 비용..전체 완료 비용 (임의 단위, seq page fetch=1 기준) |
 | rows | 예측 결과 행 수 |
 | width | 행당 평균 바이트 |
-| actual time=시작..총 | 실측 시간 (ms). **loops당 평균** |
-| rows (actual) | 실측 행 수. **loops당 평균** |
+| actual time=시작..총 | 실측 시간 (ms). loops당 평균 |
+| rows (actual) | 실측 행 수. loops당 평균 |
 | loops | 해당 노드 실행 횟수 |
 | Buffers: shared hit/read | 버퍼 캐시 적중 / 디스크 읽기 (블록 수) |
 
@@ -110,11 +114,13 @@ Index Scan using idx_x on t  (cost=0.29..8.31 rows=1 width=44)
 
 ### 3.3. 성능 확인 포인트
 
-- **rows(예측) vs rows(실측)**: 실측은 loops당 평균이므로 **`actual rows × loops`로 환산해 비교**한다. 괴리가 크면 `ANALYZE` 재실행, `default_statistics_target` 상향, 확장 통계를 검토한다.
+- **rows(예측) vs rows(실측)**: 실측은 loops당 평균이므로 `actual rows × loops`로 환산해 비교한다. 괴리가 크면 `ANALYZE` 재실행, `default_statistics_target` 상향, 확장 통계를 검토한다.
 - **loops가 큰 Nested Loop**: inner 노드가 수만 회 반복되면 총비용이 급증한다.
 - **Buffers**: `read`가 크면 물리 I/O 병목, `hit` 포함 총량이 크면 비효율적 접근 경로.
 - **디스크 스필**: `Sort Method: external merge Disk: ...`, `Batches > 1`(해시)는 `work_mem` 부족 신호.
 - **startup cost**: `LIMIT` 쿼리는 총비용보다 시작 비용이 중요하다.
+
+---
 
 ## 4. MySQL
 
@@ -126,7 +132,7 @@ EXPLAIN FORMAT=TREE <SQL>;      -- 예상 (트리 형식, 8.0.16+)
 EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형식)
 ```
 
-`EXPLAIN ANALYZE`는 쿼리를 실제 실행한다 (SELECT 권장, 8.0.31+에서 DML도 지원되나 실제 변경 발생).
+`EXPLAIN ANALYZE`는 쿼리를 실제 실행한다. 대상은 `SELECT`, 다중 테이블 `UPDATE`/`DELETE`, `TABLE` 문이다.
 
 ### 4.2. 출력 항목
 
@@ -135,7 +141,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 | 항목 | 의미 |
 |---|---|
 | id / select_type | 쿼리 블록 번호와 유형 (SIMPLE, SUBQUERY, DERIVED 등) |
-| type | 접근 방식. `const` > `eq_ref` > `ref` > `range` > `index` > `ALL` ([[index-scan]] 4 참고) |
+| type | 접근 방식. `const` > `eq_ref` > `ref` > `range` > `index` > `ALL` ([[index-scan]] §4) |
 | possible_keys / key / key_len | 후보 인덱스 / 선택된 인덱스 / 사용된 키 길이 (복합 인덱스 활용 폭) |
 | rows | 예측 검사 행 수 |
 | filtered | 조건 통과 예상 비율(%). `rows × filtered`가 다음 단계 전달 행 수 |
@@ -148,7 +154,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
    (cost=1.1 rows=3) (actual time=0.02..0.04 rows=3 loops=1)
 ```
 
-`actual time=첫 행..마지막 행`(ms, loops당 평균), `rows`(loops당 평균), `loops`.
+`actual time=첫 행..마지막 행`은 ms 단위 loops당 평균이고, `rows`도 loops당 평균이다.
 
 ### 4.3. 성능 확인 포인트
 
@@ -159,6 +165,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 - **EXPLAIN ANALYZE의 actual time**: 병목 노드 식별. loops당 평균이므로 총량은 `× loops`로 환산한다.
 
 ---
+
 ## Sources
 - [Oracle SQL Tuning Guide — Generating and Displaying Execution Plans (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/generating-and-displaying-execution-plans.html)
 - [Oracle SQL Tuning Guide — Query Execution Plans (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/query-execution-plans.html)
@@ -167,6 +174,7 @@ EXPLAIN ANALYZE <SQL>;          -- 실제 실행 + 실측치 (8.0.18+, TREE 형�
 - [MySQL: Obtaining Information with EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html)
 
 ---
+
 ## Related pages
 - [[optimizer-statistics]]
 - [[index-scan]]

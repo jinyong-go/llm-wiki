@@ -258,16 +258,16 @@ tags:
 
 ## DBMS
 
-- [[oracle-hints]] — Oracle 옵티마이저 힌트: 문법, 종류, 충돌 규칙
-- [[clob-in-oracle]] — Oracle CLOB: 정의, 저장 방식(in-row/out-of-row, SecureFile), 저장 옵션, DBMS_LOB 패키지, 타입 선택 기준, PostgreSQL/MySQL 비교, AL16UTF16 내부 인코딩에 따른 용량 변화, 실측 검증
-- [[execution-plan]] — RDBMS 실행 계획: DBMS별 확인 방법, 출력 항목, 성능 확인 포인트
-- [[optimizer-statistics]] — RDBMS 옵티마이저 통계: DBMS별 수집·조회, 히스토그램
-- [[index-scan]] — RDBMS 인덱스 스캔: DBMS별 유형, 전체 테이블 스캔 대비 선택 기준
-- [[concurrency-control]] — DBMS 동시성 제어: 격리 수준, 락, MVCC
-- [[deadlock-livelock]] — DBMS 데드락·라이브락: 감지, 해소, 예방
-- [[sql-functions]] — DBMS별 자주 쓰는 SQL 함수: 타입 변환, 날짜·시간, 문자열, NULL 처리, 조건 분기, 순위
-- [[upsert-merge]] — DBMS별 upsert: 장단점, Oracle MERGE, PostgreSQL ON CONFLICT, MySQL ON DUPLICATE KEY UPDATE 오류 사례 비교
-- [[partitioning]] — RDBMS 파티셔닝: 장단점, Oracle(로컬/글로벌 인덱스), PostgreSQL(선언적 파티셔닝), MySQL(유니크 키 제약) 비교, 주의사항
+- [[oracle-hints]] — Oracle 옵티마이저 힌트
+- [[clob-in-oracle]] — Oracle CLOB 저장 방식과 문자 인코딩
+- [[execution-plan]] — RDBMS 실행 계획 확인과 해석
+- [[optimizer-statistics]] — RDBMS 옵티마이저 통계
+- [[index-scan]] — RDBMS 인덱스 스캔 유형과 선택 기준
+- [[concurrency-control]] — DBMS 격리 수준, 락, MVCC
+- [[deadlock-livelock]] — DBMS 데드락과 라이브락
+- [[sql-functions]] — DBMS별 SQL 함수 비교
+- [[upsert-merge]] — DBMS별 upsert 문법
+- [[partitioning]] — RDBMS 파티셔닝
 
 ## 디렉터리 서비스
 

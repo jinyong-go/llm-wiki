@@ -1,6 +1,6 @@
 ---
-title: RDBMS 인덱스 스캔 (Index Scan)
-updated: 2026-10-20 17:54:47
+title: 인덱스 스캔
+updated: 2026-10-21 23:14:11
 tags:
   - dbms
   - sql
@@ -18,14 +18,16 @@ tags:
 
 기본 동작은 두 단계이다.
 
-1. 루트 → 브랜치 → 리프로 수직 탐색해 시작 지점을 찾고, 리프 블록을 수평으로 스캔해 조건을 만족하는 rowid를 얻는다.
+1. 루트, 브랜치, 리프 순으로 수직 탐색해 시작 지점을 찾고, 리프 블록을 수평으로 스캔해 조건을 만족하는 rowid를 얻는다.
 2. rowid로 테이블 블록에 접근해 행을 읽는다 (`TABLE ACCESS BY INDEX ROWID`). 필요한 컬럼이 모두 인덱스에 있으면 이 단계는 생략된다.
 
 정렬 순서를 따라가는 인덱스 스캔은 현재 블록을 읽어야 다음 블록을 알 수 있으므로 single-block I/O를 사용한다. 전체 테이블 스캔이나 index fast full scan은 multiblock I/O를 사용한다.
 
-## 2. 인덱스 스캔 유형 - Oracle
+---
 
-인덱스 배제는 `NO_INDEX(t [idx])`, 전체 테이블 스캔 강제는 `FULL(t)`. 힌트 문법과 충돌 규칙은 [[oracle-hints]] 참고.
+## 2. Oracle
+
+인덱스 배제는 `NO_INDEX(t [idx])`, 전체 테이블 스캔 강제는 `FULL(t)`. 힌트 문법과 충돌 규칙은 [[oracle-hints]] §2, §7에서 다룬다.
 
 ### 2.1. Index Unique Scan
 
@@ -44,7 +46,7 @@ SELECT * FROM products WHERE prod_id = 19;  -- prod_id는 PK
 인덱스 선두 컬럼(leading column)에 `=`, `<`, `>`, `BETWEEN`, `LIKE '접두어%'` 등의 조건이 있을 때 선택된다. 시작 리프 블록부터 조건 범위가 끝날 때까지 연결 리스트를 따라 스캔하며, 결과는 인덱스 키 오름차순으로 반환된다. `ORDER BY ... DESC`는 리프를 역방향으로 읽는 `INDEX RANGE SCAN DESCENDING`으로 처리할 수 있다.
 
 - 사용 시점: 선택도가 높은(반환 행이 적은) 범위·등치 조건. 가장 일반적인 유형.
-- 한계: 선두 와일드카드(`LIKE '%ASD'`)에는 사용 불가. 반환 행이 많으면 rowid별 테이블 접근 비용이 누적되어 전체 테이블 스캔보다 불리해진다 (6 참고).
+- 한계: 선두 와일드카드(`LIKE '%ASD'`)에는 사용 불가. 반환 행이 많으면 rowid별 테이블 접근 비용이 누적되어 전체 테이블 스캔보다 불리해진다 (§6).
 - 지정: `INDEX(t [idx])`, 방향은 `INDEX_ASC` / `INDEX_DESC`
 
 ```sql
@@ -106,9 +108,11 @@ SELECT * FROM customers WHERE cust_email = 'Abbey@company.example.com';
 | Skip Scan | X | single-block | O | 선두 컬럼 없는 복합 인덱스 |
 | Join Scan | X | single-block | X | 다중 인덱스 커버링 |
 
-## 3. 인덱스 스캔 유형 - PostgreSQL
+---
 
-쿼리 힌트를 기본 지원하지 않는다. 스캔 방식 지정은 플래너 파라미터(`enable_*`, 완전 비활성화가 아닌 비용 페널티 부여)를 세션 수준에서 조정하거나 `pg_hint_plan` 확장의 힌트 주석을 사용한다. `pg_hint_plan`은 별도 확장으로 설치하며 `shared_preload_libraries`에 등록해야 사용할 수 있다.
+## 3. PostgreSQL
+
+쿼리 힌트를 기본 지원하지 않는다. 스캔 방식 지정은 플래너 파라미터(`enable_*`, 완전 비활성화가 아닌 비용 페널티 부여)를 세션 수준에서 조정하거나 `pg_hint_plan` 확장의 힌트 주석을 사용한다. `pg_hint_plan`은 별도 확장으로 설치하며, 세션에서 `LOAD 'pg_hint_plan'`으로 활성화하거나 `shared_preload_libraries`에 등록해 전역으로 적용한다.
 
 ```sql
 -- 힌트 주석은 쿼리 직전에 위치해야 하며 빈 줄이 있으면 무시됨
@@ -128,7 +132,7 @@ EXPLAIN SELECT * FROM orders WHERE order_id = 100;
 
 필요한 컬럼이 모두 인덱스에 있고 visibility map으로 가시성이 확인되면 힙 접근을 생략한다.
 
-- 사용 시점: 커버링 조회. 세 방식 중 가장 빠름.
+- 사용 시점: 커버링 조회. 힙 접근을 생략하므로 Index Scan보다 I/O가 적다.
 - 한계: 쓰기가 잦은 테이블은 visibility map 미갱신으로 힙 확인이 늘어 효과 감소.
 - 지정: `enable_indexonlyscan` 파라미터, pg_hint_plan `IndexOnlyScan(t [idx])`
 
@@ -140,33 +144,37 @@ EXPLAIN SELECT * FROM orders WHERE order_id = 100;
 - 한계: 페이지 물리 순서로 읽으므로 인덱스 정렬 순서가 사라져 별도 정렬 필요.
 - 지정: `enable_bitmapscan` 파라미터, pg_hint_plan `BitmapScan(t [idx])`
 
-## 4. 인덱스 스캔 유형 - MySQL
+---
+
+## 4. MySQL
 
 `EXPLAIN`의 `type` 컬럼이 인덱스 접근 방식을 나타낸다. 인덱스 선택은 유형 공통으로 인덱스 힌트(`USE INDEX`, `FORCE INDEX`, `IGNORE INDEX`) 또는 옵티마이저 힌트(`/*+ INDEX(t idx) */`, `NO_INDEX`, 8.0.20+)로 지정한다.
 
 ### 4.1. const, eq_ref
 
-PK·유니크 인덱스의 모든 컬럼 등치 조회. `const`는 상수 비교로 최대 1행, `eq_ref`는 조인에서 선행 테이블 행마다 1행을 읽는다. Oracle unique scan에 대응.
+PK·유니크 인덱스의 모든 컬럼 등치 조회에 사용된다. `const`는 상수 비교로 최대 1행, `eq_ref`는 조인에서 선행 테이블 행마다 1행을 읽는다. Oracle unique scan에 대응한다.
 
 ### 4.2. ref
 
-비유니크 인덱스 또는 선두 컬럼(leftmost prefix) 등치 조회. 매칭 행이 적을 때 적합.
+비유니크 인덱스 또는 선두 컬럼(leftmost prefix) 등치 조회에 사용되며 매칭 행이 적을 때 적합하다.
 
 ### 4.3. range
 
-인덱스 범위 스캔 (`BETWEEN`, `IN`, 부등호 등).
+`BETWEEN`, `IN`, 부등호 등에 의한 인덱스 범위 스캔이다.
 
 - 지정: `FORCE INDEX (idx)` 또는 `/*+ INDEX(t idx) */`. 범위 최적화 배제는 `/*+ NO_RANGE_OPTIMIZATION(t idx) */`
 
 ### 4.4. index
 
-인덱스 전체 스캔. `Extra: Using index`면 커버링 인덱스로 테이블 접근을 생략하며, 아니면 인덱스 순서의 전체 테이블 스캔이라 `ALL`(전체 테이블 스캔)과 비용이 비슷하다.
+인덱스 전체 스캔이다. `Extra: Using index`면 커버링 인덱스로 테이블 접근을 생략하며, 아니면 인덱스 순서의 전체 테이블 스캔이라 `ALL`(전체 테이블 스캔)과 비용이 비슷하다.
 
-InnoDB 세컨더리 인덱스는 리프에 PK 값을 포함하므로, PK 컬럼은 명시하지 않아도 커버링에 포함된다. 세컨더리 인덱스 → 테이블 행 접근은 PK(클러스터드 인덱스) 재탐색으로 이뤄진다.[^1]
+InnoDB 세컨더리 인덱스는 리프에 PK 값을 포함하므로, PK 컬럼은 명시하지 않아도 커버링에 포함된다. 세컨더리 인덱스에서 테이블 행으로의 접근은 PK(클러스터드 인덱스) 재탐색으로 이뤄진다.[^1]
 
-## 5. 인덱스 스캔 유형 - 기타
+---
 
-SQL Server 실행 계획 연산자 기준:
+## 5. SQL Server
+
+실행 계획 연산자 기준으로 구분한다.
 
 - **Index Seek / Clustered Index Seek**: B-tree를 수직 탐색해 조건(SeekPredicates)을 만족하는 행만 처리. Oracle unique/range scan에 대응.
   - 지정: `WITH (INDEX(idx))`, seek 강제는 `WITH (FORCESEEK)`
@@ -174,7 +182,9 @@ SQL Server 실행 계획 연산자 기준:
   - 지정: scan 강제는 `WITH (FORCESCAN)`
 - **Key Lookup / RID Lookup**: 논클러스터드 인덱스에 없는 컬럼을 클러스터드 인덱스 키(힙이면 RID)로 재조회. Oracle의 `TABLE ACCESS BY INDEX ROWID`에 대응하며, 실행 횟수가 많으면 커버링 인덱스 추가를 검토한다.
 
-## 6. 인덱스 스캔 vs 전체 테이블 스캔
+---
+
+## 6. 전체 테이블 스캔과 비교
 
 인덱스 스캔이 항상 유리한 것은 아니다. 옵티마이저는 두 경로의 예상 비용을 비교해 선택한다.
 
@@ -191,7 +201,9 @@ SQL Server 실행 계획 연산자 기준:
 - **커버링 여부**: 필요한 컬럼이 모두 인덱스에 있으면 테이블 접근이 없어 대량 조회도 인덱스(fast full scan, index only scan)가 유리할 수 있다.
 - **정렬 활용**: 인덱스 순서로 읽으면 sort 연산을 생략할 수 있어, I/O가 다소 많아도 인덱스 스캔이 선택될 수 있다.
 
-통계 정보가 낡으면 잘못된 경로가 선택된다. [[optimizer-statistics]] 참고.
+통계 정보가 낡으면 잘못된 경로가 선택된다([[optimizer-statistics]] §5).
+
+---
 
 ## 7. 주의사항
 
@@ -202,8 +214,8 @@ SQL Server 실행 계획 연산자 기준:
 컬럼 순서는 카디널리티가 아니라 쿼리의 조건 형태로 정한다.
 
 - 선두 컬럼 요건: `(A, B)` 인덱스는 `WHERE B = ?` 단독 쿼리에서 range scan을 못 탄다 (skip scan 또는 full scan으로 대체). 어떤 쿼리가 인덱스를 재사용할지가 순서로 결정된다.
-- 등치 조건을 범위 조건보다 앞에: 범위 조건이 다른 조건보다 선행하면 그 이후 컬럼의 조건이 필터 조건으로 강등된다 (7.2 참고).
-- 저카디널리티 선두의 이점: 선두 컬럼 고유값이 적으면 skip scan 활용 여지가 생기고 (2.5 참고), 반복 값이 앞에 몰려 prefix compression 효율도 높아진다.
+- 등치 조건을 범위 조건보다 앞에: 범위 조건이 다른 조건보다 선행하면 그 이후 컬럼의 조건이 필터 조건으로 강등된다 (§7.2).
+- 저카디널리티 선두의 이점: 선두 컬럼 고유값이 적으면 skip scan 활용 여지가 생기고 (§2.5), 반복 값이 앞에 몰려 prefix compression 효율도 높아진다.
 
 이 통념은 단일 컬럼 인덱스 선택 기준(고카디널리티 컬럼일수록 인덱스 효과가 큼)을 복합 인덱스의 컬럼 배치 기준으로 잘못 확장한 것이다.[^3]
 
@@ -214,7 +226,7 @@ SQL Server 실행 계획 연산자 기준:
 - **액세스 조건(access predicate)**: 리프 스캔의 시작·종료 지점을 결정해 스캔 범위 자체를 좁힌다.
 - **필터 조건(filter predicate)**: 리프 순회 중 엔트리별로 평가만 하며 스캔 범위를 좁히지 못한다.
 
-범위 조건(`<`, `>`, `BETWEEN`, `LIKE '접두어%'`)이 선행 컬럼에 적용되면 **그 이후 인덱스 컬럼의 조건은 액세스 조건이 아닌 필터 조건으로 동작**한다. 범위 안에서는 후행 컬럼 값이 정렬되어 있지 않아 시작·종료 지점 계산에 쓸 수 없기 때문이다. 조건에 맞지 않는 리프 엔트리까지 모두 읽고 버리게 되어 인덱스 스캔 성능이 감소한다.
+범위 조건(`<`, `>`, `BETWEEN`, `LIKE '접두어%'`)이 선행 컬럼에 적용되면 그 이후 인덱스 컬럼의 조건은 액세스 조건이 아닌 필터 조건으로 동작한다. 범위 안에서는 후행 컬럼 값이 정렬되어 있지 않아 시작·종료 지점 계산에 쓸 수 없기 때문이다. 조건에 맞지 않는 리프 엔트리까지 모두 읽고 버리게 되어 인덱스 스캔 성능이 감소한다.
 
 ```sql
 -- 인덱스: (order_date, status)
@@ -225,7 +237,7 @@ WHERE order_date > DATE '2026-01-01' AND status = 'PAID';
 -- 인덱스가 (status, order_date)면 두 조건 모두 access
 ```
 
-LIKE는 첫 와일드카드 앞의 문자열만 액세스 조건으로 쓰인다. `LIKE 'ABC%'`는 `'ABC'` 접두어 범위의 range scan이 되지만 그 시점부터 범위 조건이므로 후행 컬럼은 필터로 강등되며, `LIKE '%ABC'`처럼 와일드카드로 시작하면 액세스 조건 자체가 될 수 없다. 실행 계획의 Predicate Information에서 `access()`/`filter()` 구분으로 확인한다 ([[execution-plan]] 참고).
+LIKE는 첫 와일드카드 앞의 문자열만 액세스 조건으로 쓰인다. `LIKE 'ABC%'`는 `'ABC'` 접두어 범위의 range scan이 되지만 그 시점부터 범위 조건이므로 후행 컬럼은 필터로 강등되며, `LIKE '%ABC'`처럼 와일드카드로 시작하면 액세스 조건 자체가 될 수 없다. 실행 계획의 Predicate Information에서 `access()`/`filter()` 구분으로 확인한다 ([[execution-plan]] §2.2).
 
 ### 7.3. IN-List
 
@@ -240,10 +252,15 @@ WHERE status IN ('PAID', 'SHIPPED') AND order_date > DATE '2026-01-01';
 --     INDEX RANGE SCAN | ORDERS_STATUS_DATE_IX
 ```
 
-- 값별 실행이 각각 등치 조건이므로, 범위 조건과 달리 **후행 컬럼 조건이 액세스 조건으로 유지**된다. 위 예시는 (status, order_date) 각 조합의 좁은 범위만 스캔한다.
-- 값마다 루트→브랜치→리프 수직 탐색이 반복되므로, **IN 값 수가 많으면 반복 비용이 누적되어 오히려 성능이 감소**할 수 있다. 이 경우 옵티마이저는 단일 범위 스캔이나 전체 테이블 스캔을 선택할 수 있다.
-- **OR Expansion과의 차이**: 동일 컬럼에 대한 IN-list/OR 조건은 OR expansion 대상이 아니며 항상 INLIST ITERATOR로 처리된다. OR expansion은 서로 다른 컬럼·테이블에 걸친 top-level OR 조건을 `UNION ALL` 분기로 재작성하는 별개의 변환으로, 분기마다 서로 다른 접근 경로·조인 순서를 독립적으로 선택할 수 있다는 점이 다르다. 반면 INLIST ITERATOR는 동일한 하위 플랜을 값마다 반복 실행할 뿐 분기별로 플랜을 바꾸지 않는다.
-- **UNION ALL을 쓰는 이유**: 두 번째 이후 분기에는 원본 조건뿐 아니라 앞선 분기 조건의 NULL-safe 부정(`LNNVL(...)`)이 필터로 추가되어 분기끼리 상호 배타적이 되도록 만든다. 한 행이 여러 분기에 동시에 나타날 수 없으므로 `UNION`의 정렬 기반 중복 제거 없이 `UNION ALL`만으로 원본과 동일한 결과를 얻는다. 변환 후 비용이 원본보다 낮을 때만 비용 기반으로 적용된다.
+- 값별 실행이 각각 등치 조건이므로, 범위 조건과 달리 후행 컬럼 조건이 액세스 조건으로 유지된다. 위 예시는 (status, order_date) 각 조합의 좁은 범위만 스캔한다.
+- 값마다 루트에서 리프까지 수직 탐색이 반복되므로, IN 값 수가 많으면 반복 비용이 누적되어 오히려 성능이 감소할 수 있다. 이 경우 옵티마이저는 단일 범위 스캔이나 전체 테이블 스캔을 선택할 수 있다.
+- 동일 컬럼에 대한 IN-list/OR 조건은 OR expansion(§7.4) 대상이 아니며, 인덱스로 처리될 때 INLIST ITERATOR를 사용한다. INLIST ITERATOR는 동일한 하위 플랜을 값마다 반복 실행할 뿐 분기별로 플랜을 바꾸지 않는다.
+
+### 7.4. OR Expansion
+
+OR expansion은 서로 다른 컬럼·테이블에 걸친 top-level OR 조건을 `UNION ALL` 분기로 재작성하는 변환이다. 분기마다 접근 경로·조인 순서를 독립적으로 선택할 수 있으며, 변환 후 비용이 원본보다 낮을 때만 비용 기반으로 적용된다.
+
+- 두 번째 이후 분기에는 원본 조건과 함께 앞선 분기 조건의 NULL-safe 부정(`LNNVL(...)`)이 필터로 추가되어 분기끼리 상호 배타적이 된다. 한 행이 여러 분기에 동시에 나타날 수 없으므로 `UNION`의 정렬 기반 중복 제거 없이 `UNION ALL`만으로 원본과 동일한 결과를 얻는다.
 - 12.2 이전에는 `CONCATENATION` 연산자로, 12.2부터는 `UNION-ALL` 연산자(`VW_ORE_*` 뷰)로 표시된다.
 - 강제/억제는 각각 `OR_EXPAND` / `NO_EXPAND` 힌트로 지정한다.
 
@@ -259,6 +276,7 @@ AND e.department_id = d.department_id;
 ```
 
 ---
+
 ## Sources
 - [Oracle SQL Tuning Guide — Optimizer Access Paths (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/optimizer-access-paths.html)
 - [Oracle SQL Tuning Guide — Optimizer Statistics Concepts (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/optimizer-statistics-concepts.html)
@@ -278,8 +296,10 @@ AND e.department_id = d.department_id;
 - [SQL Server: Table Hints (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/queries/hints-transact-sql-table)
 - [PostgreSQL: Planner Method Configuration](https://www.postgresql.org/docs/current/runtime-config-query.html)
 - [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)
+- [pg_hint_plan: Installation](https://github.com/ossc-db/pg_hint_plan/blob/master/docs/installation.md)
 
 ---
+
 ## Related pages
 - [[execution-plan]]
 - [[optimizer-statistics]]

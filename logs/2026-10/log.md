@@ -2,6 +2,28 @@
 
 ---
 
+## 2026-10-21 23:14:11
+
+- **수정**: dbms 문서 10개 문체 정리(lint `report-20261021-dbms` 3단계). 제목 축약, 정의형 목록 통일, 강조 볼드·본문 화살표·대시 연결 제거, 명사형 종결 문장 서술형 전환, 근거 없는 권장 표현 정리
+
+## 2026-10-21 23:10:25
+
+- **수정**: dbms 문서 10개 구성 개선(lint `report-20261021-dbms` 2단계). 절 구분선·`§` 참조 통일, CLOB 인코딩 절을 저장 방식으로 이동, IN-list·OR expansion 절 분리, 통계 문서 절 순서 정렬, 데드락 순서도 추가, 중복 문장 정리, 접근 불가 출처를 Oracle Error Help로 교체
+- **수정**: `wiki/index.md` DBMS 항목 설명을 주제 수준으로 축약
+
+## 2026-10-21 23:04:48
+
+- **수정**: dbms 문서 9개 사실 정정(lint `report-20261021-dbms` C1–C13, W1–W3)
+	- `upsert-merge.md`: PostgreSQL `WHEN NOT MATCHED BY SOURCE` 지원 버전(17+), `ON CONFLICT` 잠금 범위, 비교표 MySQL 중복 매칭 항목
+	- `sql-functions.md`: Oracle `SUBSTRING` 미지원
+	- `optimizer-statistics.md`: MySQL 8.4 히스토그램 `AUTO UPDATE`
+	- `partitioning.md`: MySQL `EXCHANGE PARTITION`, 파티셔닝 변형 유형
+	- `clob-in-oracle.md`: CLOB 최대 크기, AL16UTF16 보충 문자 4바이트, 절 참조, `VARCHAR2` 선택 기준
+	- `execution-plan.md`: MySQL `EXPLAIN ANALYZE` 대상 문장
+	- `index-scan.md`: pg_hint_plan 로드 방식, IN-list 처리, Index Only Scan 설명
+	- `concurrency-control.md`: PostgreSQL READ UNCOMMITTED 동작
+	- `oracle-hints.md`: 근거 없는 권장 표현을 추론 각주로 전환
+
 ## 2026-10-21 22:52:59
 
 - **수정**: git 문서 18개 문체 정리(lint `report-20261021-git` 3단계). 제목·절 제목의 대시 설명 제거, 강조 볼드·인용 블록·이모지 제거, 명사형 종결 문장 서술형 전환, 근거 없는 권장 표현 정리

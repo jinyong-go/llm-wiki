@@ -1,6 +1,6 @@
 ---
 title: Oracle 옵티마이저 힌트
-updated: 2026-08-31 14:25:48
+updated: 2026-10-21 23:14:11
 tags:
   - dbms
   - oracle
@@ -13,14 +13,14 @@ tags:
 
 ## 1. 개요
 
-Oracle 옵티마이저 힌트는 SQL 문에 주석 형태로 삽입하여 실행 계획을 개발자가 직접 제어하는 메커니즘이다. 힌트는 **옵티마이저에 대한 지시(directive)**이며, 유효하지 않거나 충돌하는 힌트는 조용히 무시된다.
+Oracle 옵티마이저 힌트는 SQL 문에 주석 형태로 삽입하여 실행 계획을 개발자가 직접 제어하는 메커니즘이다. 힌트는 옵티마이저에 대한 지시(directive)이며, 유효하지 않거나 충돌하는 힌트는 조용히 무시된다.
 
 ---
 
 ## 2. 힌트 문법
 
 ```sql
--- 블록 주석 형식 (권장)
+-- 블록 주석 형식
 SELECT /*+ INDEX(emp emp_dept_idx) */ emp_id, name FROM emp;
 
 -- 단일 행 주석 형식 (힌트 뒤 나머지 문장은 반드시 다음 줄에 작성)
@@ -28,11 +28,11 @@ SELECT --+ FULL(emp)
     emp_id FROM emp;
 ```
 
-**규칙:**
-- `+`는 `/*` 바로 뒤에 붙어야 한다 — `/* +`처럼 공백이 있으면 일반 주석으로 처리됨
-- 한 쿼리 블록에 힌트 블록은 1개만 허용; 여러 힌트는 공백으로 구분
-- FROM 절에 alias가 있으면 반드시 alias를 사용 (테이블명 또는 스키마명 불가)
-- 서브쿼리에 힌트를 적용할 때는 Query Block 이름(`QB_NAME`) 또는 인라인 힌트 사용
+힌트 작성 규칙은 다음과 같다.
+- `+`는 `/*` 바로 뒤에 붙어야 하며, `/* +`처럼 공백이 있으면 일반 주석으로 처리된다.
+- 한 쿼리 블록에 힌트 블록은 1개만 허용되며, 여러 힌트는 공백으로 구분한다.
+- FROM 절에 alias가 있으면 테이블명이나 스키마명이 아닌 alias를 사용해야 한다.
+- 서브쿼리에 힌트를 적용할 때는 Query Block 이름(`QB_NAME`) 또는 인라인 힌트를 사용한다.
 
 ```sql
 -- alias 사용 예시
@@ -94,7 +94,7 @@ SELECT /*+ INDEX_FFS(emp emp_dept_idx) */ COUNT(*) FROM emp WHERE dept_id = 10;
 
 | 힌트 | 설명 |
 |---|---|
-| `LEADING(t1 t2 ...)` | 지정한 순서로 조인 (권장) |
+| `LEADING(t1 t2 ...)` | 지정한 순서로 조인 |
 | `ORDERED` | FROM 절에 나열된 순서로 조인 (레거시) |
 
 ```sql
@@ -104,7 +104,7 @@ FROM dept d, emp e
 WHERE d.dept_id = e.dept_id;
 ```
 
-`ORDERED`는 FROM 절 순서를 직접 제어해야 하므로 유지보수가 어렵다. `LEADING`을 사용하는 것이 권장된다.
+`ORDERED`는 FROM 절 순서를 직접 제어해야 하므로 유지보수가 어렵고, `LEADING`은 FROM 절 순서와 무관하게 조인 순서를 지정한다.
 
 ---
 
@@ -119,7 +119,7 @@ WHERE d.dept_id = e.dept_id;
 | `NO_USE_HASH(t)` | Hash Join 제외 |
 | `NO_USE_MERGE(t)` | Merge Join 제외 |
 
-**주의:** `USE_NL`, `USE_MERGE`, `USE_HASH`는 해당 테이블이 **inner(probe) 테이블**일 때만 적용된다.
+주의: `USE_NL`, `USE_MERGE`, `USE_HASH`는 해당 테이블이 inner(probe) 테이블일 때만 적용된다.
 
 ```sql
 -- Nested Loop: dept → emp (emp이 inner)
@@ -166,16 +166,19 @@ SELECT /*+ FIRST_ROWS(10) */ emp_id FROM emp ORDER BY hire_date;
 
 ## 7. 힌트 충돌 및 무시 규칙
 
-- 동일 인덱스에 `INDEX`와 `NO_INDEX` 동시 지정 → **둘 다 무시**
-- 충돌하는 조인 방법 힌트 → **둘 다 무시**
-- 유효하지 않은 테이블명/alias → 힌트 무시 (오류 없음)
-- 완전한 실행 계획 제어를 위해 `LEADING` + `USE_NL/HASH` + `INDEX` 세트로 지정 권장
+| 조건 | 결과 |
+|---|---|
+| 동일 인덱스에 `INDEX`와 `NO_INDEX` 동시 지정 | 둘 다 무시 |
+| 충돌하는 힌트 조합(예: `FULL`과 `INDEX`) | 대부분 둘 다 무시 |
+| 유효하지 않은 테이블명/alias | 힌트 무시 (오류 없음) |
+
+- 조인 순서·조인 방법·액세스 경로 중 일부만 지정하면 나머지는 옵티마이저가 정하므로, 계획을 고정하려면 `LEADING`, `USE_NL`/`USE_HASH`, `INDEX`를 함께 지정한다.[^1]
 
 ---
 
 ## 8. 힌트 적용 여부 확인
 
-Oracle 19c부터 `DBMS_XPLAN` 출력에 **Hint Report** 섹션이 포함된다.
+Oracle 19c부터 `DBMS_XPLAN` 출력에 Hint Report 섹션이 포함된다.
 
 ```sql
 EXPLAIN PLAN FOR
@@ -188,7 +191,7 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(format => 'ALL'));
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(format => 'TYPICAL'));
 ```
 
-**Hint Report 애노테이션:**
+Hint Report 애노테이션:
 
 | 기호 | 의미 |
 |---|---|
@@ -200,7 +203,7 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(format => 'TYPICAL'));
 
 ## Sources
 - [Oracle SQL Language Reference — Comments (Hints) (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Comments.html)
-- [SQL Tuning Guide](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/influencing-the-optimizer.html#GUID-125341C0-DBA3-4FAB-B4DB-8857CC36015C)
+- [Oracle SQL Tuning Guide — Influencing the Optimizer (19c)](https://docs.oracle.com/en/database/oracle/oracle-database/19/tgsql/influencing-the-optimizer.html)
 
 ---
 
@@ -208,3 +211,8 @@ SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY(format => 'TYPICAL'));
 - [[execution-plan]]
 - [[optimizer-statistics]]
 - [[concurrency-control]]
+- [[index-scan]]
+
+---
+
+[^1]: 추론. 힌트가 지정한 항목만 제어한다는 점에서 도출한 서술이며, 세트 지정을 권장하는 문구는 출처 문서에서 확인하지 못했음.
