@@ -1,16 +1,18 @@
 ---
-title: git merge — 브랜치 병합
-updated: 2026-10-20 17:54:47
+title: git merge
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
+## 1. 개요
+
 두 개 이상의 브랜치 이력을 하나로 합친다.
 
 ---
 
-## 1. Fast-Forward 제어
+## 2. Fast-Forward 제어
 
 ```bash
 git merge feature/login          # 기본: FF 가능하면 FF, 아니면 merge commit
@@ -19,18 +21,18 @@ git merge --ff-only feature/login  # FF만 허용, 불가능하면 중단
 git merge --squash feature/login   # 변경 내용만 적용, 커밋은 직접 생성
 ```
 
-### 1.1. 방식 비교
+### 2.1. 방식 비교
 
 | 옵션 | merge commit 생성 | 브랜치 이력 보존 | 용도 |
 |------|-----------------|----------------|------|
 | `--ff` (기본) | FF 가능 시 안 함 | 부분적 | 일반 |
-| `--no-ff` | 항상 | ✓ | feature 브랜치 병합 |
-| `--ff-only` | 안 함 | ✗ | pull 전략 강제 |
-| `--squash` | 안 함 (직접 커밋) | ✗ | 브랜치 이력 정리 |
+| `--no-ff` | 항상 | 예 | feature 브랜치 병합 |
+| `--ff-only` | 안 함 | 아니요 | 선형 이력 유지 (FF 불가 시 중단) |
+| `--squash` | 안 함 (직접 커밋) | 아니요 | 브랜치 이력 정리 |
 
 ---
 
-## 2. 머지 전략
+## 3. 머지 전략
 
 ```bash
 git merge -s ort feature         # ort 전략 (기본, 3-way merge)
@@ -38,7 +40,7 @@ git merge -s ours other          # 현재 브랜치 내용 유지, 상대 이력
 git merge -s octopus a b c       # 다수 브랜치 동시 병합
 ```
 
-### 2.1. 전략 옵션 (`-X`)
+### 3.1. 전략 옵션 (`-X`)
 
 ```bash
 git merge -X ours feature        # 충돌 시 현재 브랜치 우선
@@ -47,11 +49,13 @@ git merge -X ignore-space-change # 공백 변경 무시
 git merge -X patience            # patience 알고리즘으로 diff
 ```
 
+`-s ours`는 상대 브랜치의 변경을 모두 무시하고 현재 브랜치의 트리를 그대로 결과로 쓴다. `-X ours`는 충돌한 헝크만 현재 브랜치 쪽으로 해결하며 충돌하지 않는 상대 변경은 결과에 반영한다.
+
 ---
 
-## 3. 충돌 해결
+## 4. 충돌 해결
 
-### 3.1. 충돌 발생 시 흐름
+### 4.1. 충돌 발생 시 흐름
 
 ```bash
 git merge feature/login
@@ -68,7 +72,7 @@ git add src/UserService.java
 git merge --continue    # 또는 git commit
 ```
 
-### 3.2. 충돌 마커
+### 4.2. 충돌 마커
 
 ```
 <<<<<<< HEAD (현재 브랜치)
@@ -88,7 +92,9 @@ git merge --continue    # 또는 git commit
 >>>>>>> feature/login
 ```
 
-### 3.3. 충돌 확인 도구
+`zdiff3`는 `diff3`와 같되 충돌 영역 앞뒤에서 양쪽이 일치하는 줄을 충돌 영역 밖으로 뺀다.
+
+### 4.3. 충돌 확인 도구
 
 ```bash
 git diff                         # 현재 충돌 상태
@@ -99,9 +105,11 @@ git show :3:src/UserService.java # MERGE_HEAD 버전
 git log --merge -p src/UserService.java  # 양쪽 변경 이력
 ```
 
+`:<n>:<path>` 문법은 [[git-revisions]] §9에서 다룬다.
+
 ---
 
-## 4. 머지 중단 / 재개
+## 5. 머지 중단 / 재개
 
 ```bash
 git merge --abort     # 머지 전 상태로 완전 복구
@@ -111,7 +119,7 @@ git merge --quit      # 머지 상태만 초기화 (워킹 트리 유지)
 
 ---
 
-## 5. 주요 옵션
+## 6. 주요 옵션
 
 ```bash
 git merge --no-commit feature    # 머지는 하되 커밋 중단 (검토 후 직접 커밋)
@@ -124,15 +132,12 @@ git merge --verify-signatures feature  # 서명 검증
 
 ---
 
-## 6. 실용 패턴
+## 7. 실용 패턴
 
 ```bash
 # feature 브랜치 병합 (이력 보존)
 git switch main
 git merge --no-ff feature/login -m "Merge feature/login into main"
-
-# pull 시 FF만 허용 (merge commit 방지)
-git config pull.ff only
 
 # squash merge 후 직접 커밋
 git merge --squash feature/cleanup
@@ -145,10 +150,12 @@ git add src/config.yml
 ```
 
 ---
+
 ## Sources
 - [git-merge](https://git-scm.com/docs/git-merge)
 
 ---
+
 ## Related pages
 - [[git-rebase]]
 - [[git-branch]]

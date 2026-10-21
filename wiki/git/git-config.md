@@ -1,33 +1,43 @@
 ---
-title: git config — 설정 관리
-updated: 2026-10-20 17:54:47
+title: git config
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
-## 1. 설정 파일 위치와 우선순위
+## 1. 개요
 
-Git 설정은 범위(scope)에 따라 4개 레이어로 나뉜다. **아래로 갈수록 우선순위가 높다.**
+Git 설정값을 범위별 설정 파일에서 읽고 쓴다. 같은 키가 여러 범위에 있으면 우선순위가 가장 높은 범위의 값이 적용된다.
 
-| 범위 | 옵션 | 파일 위치 | 적용 대상 |
+---
+
+## 2. 설정 범위와 우선순위
+
+설정은 아래 순서로 읽히며 나중에 읽힌 값이 앞의 값을 덮어쓴다. 표의 아래 행일수록 우선순위가 높다.
+
+| 범위 | 옵션 | 위치 | 적용 대상 |
 |------|------|-----------|-----------|
 | system | `--system` | `/etc/gitconfig` | 시스템 전체 모든 사용자 |
 | global | `--global` | `~/.gitconfig` 또는 `~/.config/git/config` | 현재 사용자 전체 저장소 |
-| local | `--local` | `.git/config` | 해당 저장소만 (기본값) |
+| local | `--local` | `.git/config` | 해당 저장소만 (쓰기 기본값) |
 | worktree | `--worktree` | `.git/config.worktree` | 특정 worktree (extensions.worktreeConfig 필요) |
-
-`local` > `global` > `system` 순으로 적용된다. local에서 설정한 값이 global을 덮어쓴다.
+| command | — | `git -c`, `GIT_CONFIG_*` 환경 변수 | 해당 명령 실행 1회 (§6) |
 
 ```bash
 # 모든 설정과 출처 확인
 git config --list --show-origin
 git config --list --show-scope
+
+# 특정 키의 최종 적용값과 출처
+git config user.email
+git config --show-origin user.email
+git config --show-scope user.email
 ```
 
 ---
 
-## 2. 기본 명령어
+## 3. 기본 명령어
 
 ```bash
 # 설정값 읽기
@@ -53,9 +63,9 @@ git config --local  --edit             # .git/config 열기
 
 ---
 
-## 3. 자주 사용하는 설정
+## 4. 자주 사용하는 설정
 
-### 3.1. 사용자 정보
+### 4.1. 사용자 정보
 
 커밋 메타데이터에 기록된다. 저장소마다 다른 이메일을 써야 한다면 local로 덮어쓴다.
 
@@ -73,23 +83,25 @@ git config --local user.email "hong@company.com"
 git config --global user.useConfigOnly true
 ```
 
-### 3.2. 초기 브랜치명
+### 4.2. 초기 브랜치명
 
 ```bash
 git config --global init.defaultBranch main
 ```
 
-### 3.3. pull 동작 방식
+### 4.3. pull 동작 방식
 
 ```bash
-# merge 대신 rebase로 pull (히스토리 선형 유지 권장)
+# merge 대신 rebase로 pull
 git config --global pull.rebase true
 
 # fast-forward만 허용 (merge/rebase 모두 안 함)
 git config --global pull.ff only
 ```
 
-### 3.4. push 동작 방식
+각 방식의 동작은 [[git-fetch-pull-push]] §3에서 다룬다.
+
+### 4.4. push 동작 방식
 
 ```bash
 # 현재 브랜치와 같은 이름의 원격 브랜치로만 push (기본값, 안전)
@@ -99,17 +111,9 @@ git config --global push.default simple
 git config --global push.autoSetupRemote true
 ```
 
-`push.default` 값 비교:
+`push.default` 값별 동작은 [[git-fetch-pull-push]] §4.7에서 다룬다.
 
-| 값 | 동작 |
-|----|------|
-| `simple` | 현재 브랜치 → 같은 이름의 upstream (기본값) |
-| `current` | 현재 브랜치 → 같은 이름의 원격 브랜치 |
-| `upstream` | 현재 브랜치 → 추적 중인 upstream 브랜치 |
-| `matching` | 로컬-원격 이름이 같은 모든 브랜치 동시 push (위험) |
-| `nothing` | 명시적 refspec 없으면 push 거부 |
-
-### 3.5. 에디터
+### 4.5. 에디터
 
 ```bash
 git config --global core.editor "vim"
@@ -119,7 +123,7 @@ git config --global core.editor "nano"
 
 커밋 메시지, interactive rebase, `git commit --amend` 등에 사용된다.
 
-### 3.6. 줄바꿈 처리
+### 4.6. 줄바꿈 처리
 
 ```bash
 # macOS / Linux: 저장소에 CRLF가 들어오면 LF로 정규화, 체크아웃 시 변환 없음
@@ -132,7 +136,7 @@ git config --global core.autocrlf true
 git config --global core.autocrlf false
 ```
 
-### 3.7. 전역 .gitignore
+### 4.7. 전역 .gitignore
 
 IDE 파일, OS 파일 등 개인 환경에만 해당하는 무시 패턴을 저장소 `.gitignore`가 아닌 전역 파일로 관리한다.
 
@@ -149,20 +153,20 @@ git config --global core.excludesFile ~/.gitignore_global
 Thumbs.db
 ```
 
-### 3.8. 인증 정보 저장
+### 4.8. 인증 정보 저장
 
 ```bash
-# macOS keychain 사용 (macOS 권장)
+# macOS keychain 사용
 git config --global credential.helper osxkeychain
 
 # 메모리에 일정 시간 캐시 (Linux)
 git config --global credential.helper "cache --timeout=3600"
 
-# 파일에 평문 저장 (비권장)
+# 파일에 평문 저장 (비밀번호가 디스크에 평문으로 남음)
 git config --global credential.helper store
 ```
 
-### 3.9. Alias (단축 명령)
+### 4.9. alias
 
 ```bash
 git config --global alias.st   "status -s"
@@ -185,12 +189,12 @@ git unstage pom.xml   # git restore --staged pom.xml
 git config --global alias.publish '!git push -u origin $(git branch --show-current)'
 ```
 
-### 3.10. merge / diff 도구
+### 4.10. merge / diff 도구
 
 ```bash
 # merge 충돌 시 도구 지정
 git config --global merge.tool vimdiff
-git config --global merge.tool intellij
+git config --global merge.tool meld
 
 # diff 도구 지정
 git config --global diff.tool vimdiff
@@ -202,12 +206,11 @@ git mergetool    # 충돌 파일을 merge.tool로 열기
 git difftool     # diff.tool로 비교
 ```
 
-### 3.11. 프록시
+### 4.11. 프록시
 
 ```bash
-# 전체 HTTP/HTTPS 트래픽에 프록시
-git config --global http.proxy  http://proxy.company.com:3128
-git config --global https.proxy http://proxy.company.com:3128
+# 전체 HTTP/HTTPS 트래픽에 프록시 (http.proxy가 HTTPS에도 적용)
+git config --global http.proxy http://proxy.company.com:3128
 
 # 특정 URL만 프록시 예외
 git config --global http.https://internal.company.com.proxy ""
@@ -216,7 +219,7 @@ git config --global http.https://internal.company.com.proxy ""
 git config --global --unset http.proxy
 ```
 
-### 3.12. 그 외 유용한 설정
+### 4.12. 그 외 유용한 설정
 
 ```bash
 # 자동 수정 (오타 교정, 단위: 0.1초. 50 = 5초 후 자동 실행)
@@ -225,22 +228,15 @@ git config --global help.autocorrect 50
 # 색상 출력 (기본값 auto)
 git config --global color.ui auto
 
-# 커밋 diff를 커밋 메시지 편집기에 포함 (내용 보며 메시지 작성)
-git config --global commit.verbose true
-
-# rebase 중 autostash (작업 중 변경사항 자동 stash/unstash)
-git config --global rebase.autoStash true
-
-# 브랜치 생성 시 자동으로 원격 추적 설정
-git config --global branch.autoSetupMerge always
-
-# diff 알고리즘 (histogram이 Myers보다 가독성 좋음)
+# diff 알고리즘 (기본값 myers)
 git config --global diff.algorithm histogram
 ```
 
+명령별 설정(`commit.*`, `rebase.*`, `branch.*`)은 [[git-commit]], [[git-rebase]], [[git-branch]]에서 다룬다.
+
 ---
 
-## 4. includeIf — 조건부 설정 파일 포함
+## 5. includeIf
 
 디렉터리나 브랜치에 따라 다른 설정 파일을 자동 적용한다. 개인 프로젝트/회사 프로젝트를 구분하거나 특정 저장소 그룹에 다른 이메일을 적용할 때 유용하다.
 
@@ -278,7 +274,7 @@ git config --global diff.algorithm histogram
 
 ---
 
-## 5. 환경 변수 오버라이드
+## 6. 환경 변수 오버라이드
 
 설정 파일 없이 일회성으로 설정값을 주입할 때 사용한다. CI/CD 파이프라인에서 특히 유용하다.
 
@@ -303,33 +299,14 @@ GIT_CONFIG_NOSYSTEM=1 git config --list
 
 ---
 
-## 6. 설정 우선순위
-
-```
-GIT_CONFIG_* 환경변수 / git -c
-        ↓ (높은 우선순위)
-  .git/config  (local)
-        ↓
-  ~/.gitconfig  (global)
-        ↓
-  /etc/gitconfig  (system)
-        ↓ (낮은 우선순위)
-```
-
-특정 키의 실제 적용값 확인:
-```bash
-git config user.email                     # 최종 적용값
-git config --show-origin user.email       # 어느 파일에서 왔는지 포함
-git config --show-scope user.email        # 범위(scope) 포함
-```
-
----
 ## Sources
 - [git-config](https://git-scm.com/docs/git-config)
 - [Pro Git: Customizing Git Git Configuration](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
 
 ---
+
 ## Related pages
 - [[git-init]]
 - [[git-clone]]
 - [[git-internals]]
+- [[git-fetch-pull-push]]

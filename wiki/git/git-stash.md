@@ -1,16 +1,14 @@
 ---
-title: git stash — 변경 임시 보관
-updated: 2026-10-20 17:54:47
+title: git stash
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
+## 1. 개요
+
 커밋하지 않은 변경 내용을 스택에 임시 저장하고 워킹 트리를 HEAD 상태로 되돌린다. 브랜치 전환이나 긴급 수정 시 활용한다.
-
----
-
-## 1. 서브커맨드
 
 | 서브커맨드 | 설명 |
 |-----------|------|
@@ -25,15 +23,24 @@ tags:
 
 ---
 
-## 2. push — 저장
+## 2. 내부 구조
+
+스태시 엔트리는 두 부모를 가진 커밋이다.
+- 첫 번째 부모 `H`: 저장 시점의 HEAD
+- 두 번째 부모 `I`: 인덱스 상태 커밋
+- 트리 `W`: 워킹 트리 상태
+
+---
+
+## 3. push
 
 ```bash
-git stash                           # 기본 저장 (추적 파일의 수정/삭제)
+git stash                           # 기본 저장 (추적 파일의 변경, 스테이징 포함)
 git stash push -m "작업 중: 결제 모듈"  # 설명 추가
 git stash push src/Payment.java     # 특정 파일만 저장
 ```
 
-### 2.1. 주요 옵션
+### 3.1. 주요 옵션
 
 ```bash
 -u / --include-untracked   # Untracked 파일도 포함
@@ -43,7 +50,7 @@ git stash push src/Payment.java     # 특정 파일만 저장
 -S / --staged              # 스테이지된 변경만 저장
 ```
 
-#### 2.1.1. `-k` 사용 예시 — staged 상태 유지하며 테스트
+### 3.2. `-k` 예시
 
 ```bash
 git add -p                          # 일부만 스테이지
@@ -54,7 +61,7 @@ git stash pop                       # 나머지 복원
 
 ---
 
-## 3. pop / apply — 복원
+## 4. pop / apply
 
 ```bash
 git stash pop                  # 최근 스태시 적용 + 제거
@@ -68,7 +75,7 @@ git stash apply --index        # 워킹 트리 + 인덱스 상태 모두 복원
 
 ---
 
-## 4. list / show — 조회
+## 5. list / show
 
 ```bash
 git stash list
@@ -82,7 +89,7 @@ git stash show stash@{1}        # 특정 스태시
 
 ---
 
-## 5. stash 참조 문법
+## 6. stash 참조 문법
 
 ```
 stash@{0}           최근 스태시
@@ -94,7 +101,7 @@ stash@{2.hours.ago} 2시간 전 스태시
 
 ---
 
-## 6. branch — 스태시를 새 브랜치로
+## 7. branch
 
 브랜치가 많이 달라져 `pop` 시 충돌이 예상될 때 유용하다.
 
@@ -105,7 +112,7 @@ git stash branch feature/new-work stash@{1}
 
 ---
 
-## 7. 실용 패턴
+## 8. 실용 패턴
 
 ```bash
 # 긴급 hotfix: 현재 작업 보관 → 전환 → 복귀
@@ -130,18 +137,13 @@ git stash pop
 
 ---
 
-## 8. 내부 구조
-
-스태시 엔트리는 두 부모를 가진 커밋이다.
-- 첫 번째 부모 `H`: 저장 시점의 HEAD
-- 두 번째 부모 `I`: 인덱스 상태 커밋
-- 트리 `W`: 워킹 트리 상태
-
 ---
+
 ## Sources
 - [git-stash](https://git-scm.com/docs/git-stash)
 
 ---
+
 ## Related pages
 - [[git-add]]
 - [[git-commit]]

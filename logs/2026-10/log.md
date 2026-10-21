@@ -2,6 +2,32 @@
 
 ---
 
+## 2026-10-21 22:52:59
+
+- **수정**: git 문서 18개 문체 정리(lint `report-20261021-git` 3단계). 제목·절 제목의 대시 설명 제거, 강조 볼드·인용 블록·이모지 제거, 명사형 종결 문장 서술형 전환, 근거 없는 권장 표현 정리
+
+## 2026-10-21 22:49:50
+
+- **수정**: git 문서 18개 구성 개선(lint `report-20261021-git` 2단계). 개요 절 추가, 문서 간 중복을 링크로 대체, 흐름·상태 그림을 mermaid로 전환, 요약·실용 패턴 중복 절 정리, hooks 시점·mirror·`-s`/`-X ours`·stash 범위 등 사실 정정
+
+## 2026-10-21 22:37:40
+
+- **수정**: git 문서 14개 사실 정정(lint `report-20261021-git` C1–C25, W1)
+	- `git-fetch-pull-push.md`: pull 기본 동작(fast-forward only), `--force-with-lease`·`--follow-tags` 설명
+	- `git-tag.md`: lightweight tag 무시 명령, `--follow-tags` 설명
+	- `git-detached-head.md`: unreachable reflog 보존 기간 30일
+	- `git-file-states.md`: short status `D` 컬럼 의미, `git diff` 빈 출력 조건
+	- `git-switch-restore.md`: tree-ish 지정 checkout의 restore 대응
+	- `git-init.md`: Git 3.0 기본 브랜치 변경 예정, `.gitignore` 생성 예시
+	- `git-branch.md`: `-d` 병합 판정 기준, `branch.autoSetupRebase` 설명
+	- `git-clone.md`: single-branch 이후 fetch 동작, partial clone 예시 주석
+	- `git-config.md`: 존재하지 않는 `https.proxy`·비내장 `merge.tool` 예시
+	- `git-revisions.md`: 머지 부모·`~`/`^` 다이어그램, 범위 결과, `--short` 길이
+	- `git-rebase.md`: merge 이력 다이어그램
+	- `git-reset-revert.md`: `--hard` 복구 범위, 커밋 분리 예시
+	- `git-internals.md`: annotated tag·SHA-1 설명, Pro Git Git Internals 출처 추가
+	- `git-log.md`: `-S` 설명
+
 ## 2026-10-21 16:40:24
 
 - **수정**: `kdf.md`의 비교표를 알고리즘별 설명으로 통합하고 비용 파라미터·salt·HKDF·PBKDF2 설명과 용도 구분 보완

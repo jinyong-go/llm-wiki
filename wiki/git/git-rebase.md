@@ -1,43 +1,55 @@
 ---
-title: git rebase — 커밋 재배치
-updated: 2026-10-20 17:54:47
+title: git rebase
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
-커밋 시리즈를 다른 베이스 커밋 위로 재적용한다. 머지와 달리 이력을 선형으로 유지한다.
+## 1. 개요
 
-> **주의**: 이미 push한 커밋을 rebase하면 공유 브랜치가 분기된다. **원격에 공유된 커밋에는 rebase를 사용하지 않는다.**
+커밋 시리즈를 다른 베이스 커밋 위로 재적용한다. 머지와 달리 이력을 선형으로 유지한다. 재적용된 커밋은 SHA가 다른 새 커밋이므로, 이미 push해 공유된 커밋을 rebase하면 다른 사람의 이력과 분기된다. 원격에 공유된 커밋에는 rebase를 사용하지 않는다.
 
 ---
 
-## 1. 기본 rebase
+## 2. 기본 rebase
 
 ```bash
 git rebase main              # 현재 브랜치를 main 위로 재배치
 git rebase main feature      # feature 브랜치를 main 위로 재배치 (전환 없이)
 ```
 
-### 1.1. merge vs rebase 이력 비교
+### 2.1. merge vs rebase 이력 비교
 
+`git merge --no-ff feature` 결과:
+
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    branch feature
+    commit id: "D"
+    commit id: "E"
+    checkout main
+    commit id: "C"
+    merge feature id: "M"
 ```
-# merge --no-ff
-A---B---C  (main)
-     \
-      D---E  (feature)
-→ A---B---C---M  (merge commit)
-               \
-                D'--E'
 
-# rebase
-A---B---C  (main)
-→ A---B---C---D'---E'  (선형 이력)
+`git rebase main` (feature에서 실행) 결과:
+
+```mermaid
+gitGraph
+    commit id: "A"
+    commit id: "B"
+    commit id: "C"
+    branch feature
+    commit id: "D'"
+    commit id: "E'"
 ```
 
 ---
 
-## 2. `--onto` — 재배치 대상 지정
+## 3. `--onto`
 
 ```bash
 git rebase --onto <newbase> <upstream> [<branch>]
@@ -53,16 +65,20 @@ git rebase --onto HEAD~3 HEAD~1  # HEAD~1과 HEAD~2 두 커밋 삭제
 
 ---
 
-## 3. `-i` / `--interactive` — 대화형 rebase
+## 4. `-i` / `--interactive`
 
 ```bash
 git rebase -i HEAD~5    # 최근 5개 커밋 편집
 git rebase -i <SHA>     # 해당 커밋 이후 전체
 ```
 
-에디터에 커밋 목록이 열리고, 각 줄의 명령어를 변경해 동작을 지정한다.
+에디터에 커밋 목록이 열리고, 각 줄의 명령어를 변경해 동작을 지정한다. 목록 편집에 쓸 에디터는 `sequence.editor`로 지정한다.
 
-### 3.1. 명령어 목록
+```bash
+git config sequence.editor "code --wait"
+```
+
+### 4.1. 명령어 목록
 
 | 명령어 | 단축 | 동작 |
 |--------|------|------|
@@ -75,7 +91,7 @@ git rebase -i <SHA>     # 해당 커밋 이후 전체
 | `exec` | `x` | 셸 커맨드 실행 |
 | `break` | `b` | 이 지점에서 일시 중단 |
 
-### 3.2. 예시
+### 4.2. 예시
 
 ```
 pick a1b2c3 feat: 로그인 API 추가
@@ -88,13 +104,12 @@ exec   make test
 
 ---
 
-## 4. `--autosquash` — fixup/squash 자동 정렬
+## 5. `--autosquash`
 
-`git commit --fixup`/`--squash`로 생성된 커밋을 자동으로 대상 커밋 바로 뒤에 배치한다.
+`git commit --fixup`/`--squash`로 생성된 커밋([[git-commit]] §4)을 자동으로 대상 커밋 바로 뒤에 배치한다.
 
 ```bash
-git commit --fixup=abc1234          # "fixup! <원본메시지>" 커밋 생성
-git rebase -i --autosquash main     # fixup 커밋을 abc1234 바로 뒤로 이동 + fixup 표시
+git rebase -i --autosquash main     # fixup 커밋을 대상 커밋 바로 뒤로 이동 + fixup 표시
 
 # 기본 활성화
 git config rebase.autoSquash true
@@ -102,7 +117,7 @@ git config rebase.autoSquash true
 
 ---
 
-## 5. `--autostash` — dirty 상태에서 실행
+## 6. `--autostash`
 
 ```bash
 git rebase --autostash main         # 실행 전 자동 stash → 완료 후 자동 pop
@@ -111,7 +126,7 @@ git config rebase.autoStash true    # 기본 활성화
 
 ---
 
-## 6. 충돌 해결
+## 7. 충돌 해결
 
 rebase 중 충돌 발생 시:
 
@@ -134,7 +149,7 @@ git rebase --abort
 
 ---
 
-## 7. 커밋 분할 (`edit`)
+## 8. 커밋 분할
 
 ```bash
 git rebase -i HEAD~3
@@ -150,7 +165,7 @@ git rebase --continue
 
 ---
 
-## 8. 주요 옵션
+## 9. 주요 옵션
 
 ```bash
 git rebase --exec "./gradlew test" main   # 각 커밋마다 테스트 실행
@@ -160,19 +175,11 @@ git rebase --keep-base main               # 현재 분기 지점을 베이스 �
 
 ---
 
-## 9. 설정
-
-```bash
-git config rebase.autoSquash true
-git config rebase.autoStash true
-git config sequence.editor "code --wait"  # interactive rebase 에디터 지정
-```
-
----
 ## Sources
 - [git-rebase](https://git-scm.com/docs/git-rebase)
 
 ---
+
 ## Related pages
 - [[git-merge]]
 - [[git-commit]]

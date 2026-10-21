@@ -1,14 +1,18 @@
 ---
-title: git log — 커밋 이력 조회
-updated: 2026-07-08 10:32:15
+title: git log
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
+## 1. 개요
+
 커밋 히스토리를 조회하고 필터링한다. 기본적으로 현재 브랜치의 커밋을 최신순으로 출력한다.
 
-## 1. 기본 사용법
+---
+
+## 2. 기본 사용법
 
 ```bash
 git log                    # 현재 브랜치 전체 이력
@@ -18,7 +22,7 @@ git log --oneline --graph --all --decorate  # 모든 브랜치 그래프
 
 ---
 
-## 2. 출력 개수 및 범위 제한
+## 3. 출력 개수 및 범위 제한
 
 ```bash
 git log -5                           # 최근 5개
@@ -30,11 +34,11 @@ git log HEAD..origin                 # 내가 받지 않은 원격 커밋 (pull 
 git log main..feature/login          # feature/login에 있고 main에 없는 커밋
 ```
 
-범위 문법(`..`, `...`)의 자세한 설명은 [[git-revisions]] 참조.
+범위 문법(`..`, `...`)은 [[git-revisions]] §8에서 다룬다.
 
 ---
 
-## 3. 작성자·메시지 필터링
+## 4. 작성자·메시지 필터링
 
 ```bash
 git log --author="홍길동"
@@ -48,13 +52,13 @@ git log --grep="feat" --grep="api" --all-match  # 두 패턴 모두 만족
 git log --invert-grep --grep="WIP"    # WIP 제외
 
 # 파일 내용 변경 기준 검색
-git log -S "UserService"              # 추가/삭제된 코드에 문자열 포함
+git log -S "UserService"              # 문자열의 등장 횟수가 바뀐 커밋 (추가·삭제)
 git log -G "TODO.*refactor"           # 변경된 줄에 정규식 일치
 ```
 
 ---
 
-## 4. 머지 커밋 처리
+## 5. 머지 커밋 처리
 
 ```bash
 git log --no-merges                   # 머지 커밋 제외
@@ -62,11 +66,11 @@ git log --merges                      # 머지 커밋만
 git log --first-parent                # 첫 번째 부모만 따라감 (main 브랜치 흐름만)
 ```
 
-`--first-parent`는 feature 브랜치의 개별 커밋을 숨기고 main에 머지된 시점만 보여준다. 릴리즈 이력 파악에 유용.
+`--first-parent`는 feature 브랜치의 개별 커밋을 숨기고 main에 머지된 시점만 보여준다. 릴리즈 이력을 파악할 때 유용하다.
 
 ---
 
-## 5. 특정 파일 이력
+## 6. 특정 파일 이력
 
 ```bash
 git log -- src/UserService.java       # 파일 이력 (삭제된 파일도 포함)
@@ -78,7 +82,7 @@ git log -L :parseToken:src/Auth.java  # 함수/메서드 변경 이력
 
 ---
 
-## 6. 변경 내용 포함 출력
+## 7. 변경 내용 포함 출력
 
 ```bash
 git log -p                  # 각 커밋의 diff 포함
@@ -90,9 +94,9 @@ git log --name-status       # 파일명 + 변경 유형(A/M/D/R)
 
 ---
 
-## 7. 출력 형식
+## 8. 출력 형식
 
-### 7.1. 기본 제공 형식
+### 8.1. 기본 제공 형식
 
 ```bash
 git log --oneline           # <단축SHA> <제목>
@@ -103,7 +107,7 @@ git log --pretty=fuller     # 작성자/커밋 날짜 모두
 git log --pretty=raw        # 내부 객체 원문
 ```
 
-### 7.2. --format 커스텀 플레이스홀더
+### 8.2. `--format` 플레이스홀더
 
 ```bash
 git log --pretty=format:"<형식 문자열>"
@@ -127,7 +131,7 @@ git log --pretty=format:"<형식 문자열>"
 | `%d` | 브랜치/태그 데코레이션 `(HEAD -> main)` |
 | `%n` | 줄바꿈 |
 
-**자주 쓰는 포맷:**
+자주 쓰는 형식:
 
 ```bash
 # 단축 해시 + 작성자 + 상대 날짜 + 제목
@@ -140,7 +144,7 @@ git log --pretty=format:"%Cred%h%Creset %C(yellow)%d%Creset %s %Cgreen(%ar)%Cres
 git log --pretty=format:"%H,%as,%an,%s" --no-merges
 ```
 
-### 7.3. 날짜 형식 (`--date=`)
+### 8.3. `--date`
 
 ```bash
 git log --date=relative    # "2 hours ago"
@@ -149,9 +153,19 @@ git log --date=iso         # "2026-05-13 17:11:20 +0900"
 git log --date=unix        # Unix timestamp
 ```
 
+### 8.4. alias
+
+[[git-config]] §4.9의 alias로 자주 쓰는 형식을 등록한다.
+
+```bash
+git config --global alias.lg "log --oneline --graph --all --decorate"
+git config --global alias.ll "log --pretty=format:'%h %as %an %s' --no-merges"
+git config --global alias.lf "log --pretty=fuller --stat"
+```
+
 ---
 
-## 8. 그래프 시각화
+## 9. 그래프 시각화
 
 ```bash
 git log --oneline --graph --all --decorate
@@ -169,33 +183,11 @@ git log --oneline --graph --all --decorate
 
 ---
 
-## 9. 유용한 alias 조합
-
-[[git-config]]의 alias 설정과 함께 사용:
-
-```bash
-git config --global alias.lg "log --oneline --graph --all --decorate"
-git config --global alias.ll "log --pretty=format:'%h %as %an %s' --no-merges"
-git config --global alias.lf "log --pretty=fuller --stat"
-```
-
----
-
-## 10. 관련 명령어
-
-```bash
-git show <commit>           # 특정 커밋 상세 + diff
-git diff <c1>..<c2>         # 두 커밋 간 전체 차이
-git blame <file>            # 줄별 마지막 변경 커밋
-git reflog                  # HEAD 이동 이력 (로컬)
-git shortlog -sn            # 작성자별 커밋 수 통계
-```
-
----
 ## Sources
 - [git-log](https://git-scm.com/docs/git-log)
 
 ---
+
 ## Related pages
 - [[git-revisions]]
 - [[git-file-states]]

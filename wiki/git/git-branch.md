@@ -1,16 +1,18 @@
 ---
-title: git branch — 브랜치 관리
-updated: 2026-10-20 17:54:47
+title: git branch
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
-브랜치를 생성·삭제·이름 변경·목록 조회하고 upstream 추적 설정을 관리한다. 체크아웃(작업 트리 전환)은 `git switch` 또는 `git checkout`이 담당하며, `git branch`는 **참조(ref) 관리** 전용이다.
+## 1. 개요
+
+브랜치를 생성·삭제·이름 변경·목록 조회하고 upstream 추적 설정을 관리한다. 체크아웃(작업 트리 전환)은 `git switch` 또는 `git checkout`이 담당하며, `git branch`는 참조(ref) 관리만 담당한다.
 
 ---
 
-## 1. 브랜치 목록 조회
+## 2. 브랜치 목록 조회
 
 ```bash
 git branch                  # 로컬 브랜치 목록 (현재 브랜치는 * 표시)
@@ -21,7 +23,7 @@ git branch -vv              # upstream 정보까지 포함
 git branch --show-current   # 현재 브랜치 이름만 출력 (Detached HEAD이면 빈 출력)
 ```
 
-### 1.1. -vv 출력 예시
+### 2.1. -vv 출력 예시
 
 ```
 * feature/login  a3f1d2e [origin/feature/login: ahead 2] feat: 로그인 구현
@@ -29,11 +31,11 @@ git branch --show-current   # 현재 브랜치 이름만 출력 (Detached HEAD�
   hotfix/null    7d3e8b2 [origin/hotfix/null: gone] fix: NPE 수정
 ```
 
-- `ahead N` — 로컬이 upstream보다 N개 앞섬 (push 필요)
-- `behind N` — upstream이 N개 앞섬 (pull 필요)
-- `gone` — upstream 브랜치가 원격에서 삭제됨
+- `ahead N`: 로컬이 upstream보다 N개 앞섬 (push 필요)
+- `behind N`: upstream이 N개 앞섬 (pull 필요)
+- `gone`: upstream 브랜치가 원격에서 삭제됨
 
-### 1.2. 필터링
+### 2.2. 필터링
 
 ```bash
 git branch --merged          # HEAD에 병합된 브랜치 (삭제 안전)
@@ -44,7 +46,7 @@ git branch --contains <SHA>  # 특정 커밋을 포함하는 브랜치
 git branch -l 'feature/*'   # 패턴 매칭 (--list 필수)
 ```
 
-### 1.3. 정렬
+### 2.3. 정렬
 
 ```bash
 git branch --sort=-committerdate   # 최근 커밋순 내림차순
@@ -58,7 +60,7 @@ git config --global branch.sort -committerdate
 
 ---
 
-## 2. 브랜치 생성
+## 3. 브랜치 생성
 
 ```bash
 git branch <name>              # 현재 HEAD에서 생성 (전환 안 함)
@@ -72,22 +74,12 @@ git switch -c <name>           # 생성 + 전환
 git switch -c <name> <start>   # 특정 지점에서 생성 + 전환
 ```
 
-### 2.1. upstream 추적 설정 (`--track`)
-
-```bash
-git branch --track feature/login origin/feature/login
-# 또는 -t 축약
-git branch -t feature/login origin/feature/login
-```
-
-`branch.autoSetupMerge=true`(기본값)일 때, 원격 추적 브랜치를 시작점으로 사용하면 upstream이 자동 설정된다.
-
 ---
 
-## 3. 브랜치 삭제
+## 4. 브랜치 삭제
 
 ```bash
-git branch -d <name>     # 안전 삭제 (HEAD 또는 upstream에 병합된 경우만)
+git branch -d <name>     # 안전 삭제 (upstream에 병합된 경우만, upstream 미설정 시 HEAD 기준)
 git branch -D <name>     # 강제 삭제 (병합 여부 무관)
 git branch -d -r origin/feature/old   # 원격 추적 브랜치 삭제 (로컬 참조만 제거)
 ```
@@ -104,7 +96,7 @@ git branch --merged main | grep -v '^\*\|main\|develop' | xargs git branch -d
 
 ---
 
-## 4. 브랜치 이름 변경
+## 5. 브랜치 이름 변경
 
 ```bash
 git branch -m <new-name>            # 현재 브랜치 이름 변경
@@ -122,9 +114,13 @@ git branch -u origin/new-name new-name  # upstream 재설정
 
 ---
 
-## 5. upstream 설정
+## 6. upstream 설정
+
+`branch.autoSetupMerge=true`(기본값)일 때 원격 추적 브랜치를 시작점으로 브랜치를 만들면 upstream이 자동 설정된다. 생성 시 명시하려면 `--track`(`-t`)을 사용한다.
 
 ```bash
+git branch --track feature/login origin/feature/login   # 생성 + upstream 설정
+
 # upstream 설정
 git branch -u origin/main               # 현재 브랜치의 upstream 설정
 git branch --set-upstream-to=origin/main feature/login  # 특정 브랜치 지정
@@ -143,12 +139,12 @@ git config branch.<name>.merge    # merge 대상 ref
 
 ---
 
-## 6. 주요 설정 (`git config`)
+## 7. 주요 설정 (`git config`)
 
 | 설정 키 | 기본값 | 설명 |
 |---------|--------|------|
 | `branch.autoSetupMerge` | `true` | 원격 추적 브랜치 기점 시 upstream 자동 설정 |
-| `branch.autoSetupRebase` | `never` | pull 시 merge 대신 rebase 사용 여부 |
+| `branch.autoSetupRebase` | `never` | 추적 브랜치 생성 시 pull을 rebase로 설정할지 여부 |
 | `branch.sort` | `refname` | 기본 정렬 기준 |
 | `branch.<name>.remote` | — | 해당 브랜치의 추적 원격 이름 |
 | `branch.<name>.merge` | — | 추적 대상 ref (예: `refs/heads/main`) |
@@ -156,37 +152,11 @@ git config branch.<name>.merge    # merge 대상 ref
 
 ---
 
-## 7. 요약 치트시트
-
-```
-브랜치 조회
-  git branch -vv               현재 + upstream + ahead/behind
-  git branch -a                로컬 + 원격 전체
-  git branch --merged          삭제 가능 후보
-  git branch --sort=-committerdate  최근 활동순
-
-브랜치 생성/전환
-  git switch -c <name>         생성 + 전환 (권장)
-  git branch <name>            생성만 (전환 없음)
-
-브랜치 삭제
-  git branch -d <name>         안전 삭제
-  git branch -D <name>         강제 삭제
-  git push origin --delete <name>  원격 삭제
-
-이름 변경
-  git branch -m <old> <new>
-
-upstream
-  git branch -u origin/<name>  upstream 설정
-  git branch --unset-upstream  upstream 해제
-```
-
----
 ## Sources
 - [git-branch](https://git-scm.com/docs/git-branch)
 
 ---
+
 ## Related pages
 - [[git-internals]]
 - [[git-detached-head]]

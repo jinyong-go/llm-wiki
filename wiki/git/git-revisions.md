@@ -1,16 +1,18 @@
 ---
-title: Git 리비전 참조 문법 및 git rev-parse
-updated: 2026-07-08 10:50:28
+title: Git 리비전
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
-Git에서 특정 커밋, 트리, 블롭을 가리킬 때 사용하는 참조 문법 전체. `git log`, `git diff`, `git checkout`, `git reset` 등 커밋을 인수로 받는 모든 명령에서 사용된다.
+## 1. 개요
+
+Git에서 특정 커밋, 트리, blob을 가리킬 때 사용하는 참조 문법을 다룬다. `git log`, `git diff`, `git checkout`, `git reset` 등 커밋을 인수로 받는 모든 명령에서 사용된다.
 
 ---
 
-## 1. SHA-1 참조
+## 2. SHA-1 참조
 
 ```bash
 git show dae86e1950b1277e545cee180551750029cfe735  # 전체 40자
@@ -19,7 +21,7 @@ git show dae86e                                     # 앞 6~7자 (저장소 내 
 
 ---
 
-## 2. 심볼릭 참조
+## 3. 심볼릭 참조
 
 ```bash
 git show HEAD           # 현재 체크아웃된 커밋
@@ -28,7 +30,7 @@ git show origin/main    # 원격 추적 브랜치
 git show v1.2.0         # 태그
 ```
 
-### 2.1. 특수 참조
+### 3.1. 특수 참조
 
 | 참조 | 의미 |
 |------|------|
@@ -47,9 +49,9 @@ git reset --hard ORIG_HEAD   # 직전 merge/rebase/reset 취소
 
 ---
 
-## 3. `~` (Tilde) — 선형 조상
+## 4. `~`(Tilde)
 
-`~n`은 **첫 번째 부모만** 따라 n세대 위 조상을 가리킨다.
+`~n`은 첫 번째 부모만 따라 n세대 위 조상을 가리킨다.
 
 ```
 HEAD~1   = HEAD의 부모 (= HEAD^)
@@ -67,9 +69,9 @@ git log HEAD~10..HEAD  # 최근 10개 커밋
 
 ---
 
-## 4. `^` (Caret) — n번째 부모
+## 5. `^`(Caret)
 
-`^n`은 **n번째 부모**를 가리킨다. 일반 커밋은 부모가 1개이므로 `^`와 `^1`이 동일하다. **머지 커밋**은 부모가 여러 개이므로 `^2`, `^3`으로 각 부모를 지정할 수 있다.
+`^n`은 n번째 부모를 가리킨다. 일반 커밋은 부모가 1개이므로 `^`와 `^1`이 동일하다. 머지 커밋은 부모가 여러 개이므로 `^2`, `^3`으로 각 부모를 지정할 수 있다.
 
 ```
 HEAD^    = HEAD^1   = 첫 번째 부모 (= HEAD~1)
@@ -77,14 +79,12 @@ HEAD^2              = 두 번째 부모 (머지 커밋에서만 의미 있음)
 HEAD^3              = 세 번째 부모
 ```
 
-### 4.1. 머지 커밋에서의 ^
+### 5.1. 머지 커밋
 
 ```
-         A (main)
-        / \
-       M   \      ← M 은 머지 커밋
-      / \   \
-     B   C---D (feature)
+X---A---M  (main)
+ \     /
+  C---D    (feature)
 ```
 
 `M` 이 `A`와 `D`를 머지한 커밋이라면:
@@ -92,13 +92,13 @@ HEAD^3              = 세 번째 부모
 - `M^2` = `D` (feature 쪽 부모, 머지 된 쪽)
 
 ```bash
-git log M^2..M      # feature 브랜치에서 머지된 커밋들
+git log M^1..M^2    # feature에서 머지된 커밋
 git diff M^1 M^2    # 두 부모 브랜치 간 차이
 ```
 
 ---
 
-## 5. `~` vs `^` 핵심 차이
+## 6. `~`와 `^` 비교
 
 | 표기 | 의미 |
 |------|------|
@@ -108,27 +108,26 @@ git diff M^1 M^2    # 두 부모 브랜치 간 차이
 | `HEAD^2` | 두 번째 부모 (머지 커밋 전용) |
 
 ```
-G   H
- \ /
-  D   E
-  |\ /
-  | B
-  |/
-  A  ← 현재 HEAD
+G   H   E
+ \ /    |
+  D     B
+   \   /
+    \ /
+     A  ← 현재 HEAD
 
 HEAD     = A
 HEAD^    = HEAD^1 = D  (첫 번째 부모)
 HEAD^2   = B           (두 번째 부모, 머지된 쪽)
 HEAD~2   = HEAD^^  = G (첫 번째 부모를 2번 따라감)
 HEAD^2^  = E           (B의 첫 번째 부모)
-HEAD~2^2 = H           (G의 형제, D의 두 번째 부모)
+HEAD^^2  = H           (D의 두 번째 부모, = HEAD~1^2)
 ```
 
 ---
 
-## 6. `@` — reflog 및 특수 참조
+## 7. `@`
 
-### 6.1. reflog 인덱스 — `@{n}`
+### 7.1. `@{n}`
 
 ```bash
 HEAD@{0}       = 현재 HEAD
@@ -143,7 +142,7 @@ git log HEAD@{5}..HEAD         # 최근 5번의 HEAD 이동 동안의 커밋
 git diff HEAD@{2} HEAD         # 2번 전과 현재 비교
 ```
 
-### 6.2. 날짜 기반 — `@{date}`
+### 7.2. `@{date}`
 
 ```bash
 git show main@{yesterday}            # 어제의 main
@@ -151,14 +150,14 @@ git show main@{"1 week ago"}         # 1주 전 main
 git log main@{"2026-01-01"}..main    # 올해 초 이후 main의 변경
 ```
 
-### 6.3. 직전 브랜치 — `@{-n}`
+### 7.3. `@{-n}`
 
 ```bash
 git checkout @{-1}    # 방금 전에 있던 브랜치로 이동 (= git switch -)
 git log @{-1}..HEAD   # 직전 브랜치와 현재 브랜치의 차이
 ```
 
-### 6.4. upstream / push 참조
+### 7.4. `@{upstream}` / `@{push}`
 
 ```bash
 @{upstream}  또는  @{u}    # 현재 브랜치의 원격 추적 브랜치
@@ -170,11 +169,11 @@ git diff @{u}              # push 안 된 변경 내용 전체
 
 ---
 
-## 7. 범위 지정 (Revision Ranges)
+## 8. 범위 지정
 
-### 7.1. `..` (두 점) — 차집합
+### 8.1. `..`
 
-`A..B` = **B에서 도달 가능하지만 A에서는 도달 불가능한 커밋**
+`A..B`는 B에서 도달 가능하지만 A에서는 도달 불가능한 커밋을 가리킨다.
 
 ```bash
 git log main..feature      # feature에 있고 main에 없는 커밋
@@ -182,9 +181,9 @@ git log origin/main..HEAD  # push 안 된 내 커밋
 git log HEAD..origin/main  # pull 안 된 원격 커밋
 ```
 
-### 7.2. `...` (세 점) — 대칭 차집합
+### 8.2. `...`
 
-`A...B` = **A 또는 B에서 도달 가능하지만 양쪽 모두에서 도달 가능하지는 않은 커밋**
+`A...B`는 A 또는 B에서 도달 가능하지만 양쪽 모두에서 도달 가능하지는 않은 커밋을 가리킨다.
 
 ```bash
 git log main...feature     # main과 feature가 분기된 이후 양쪽의 커밋
@@ -201,11 +200,11 @@ A
   B---C---D      ← feature only
 
 main..feature  → B, C, D
-feature..main  → Y, Z
-main...feature → Y, Z, B, C, D (대칭 차집합)
+feature..main  → X, Y, Z
+main...feature → X, Y, Z, B, C, D (대칭 차집합)
 ```
 
-### 7.3. `^` (배제)
+### 8.3. `^` 배제
 
 ```bash
 git log ^main feature      # = git log main..feature
@@ -214,21 +213,34 @@ git log feature --not main # 동일
 
 ---
 
-## 8. git rev-parse — 참조를 SHA-1로 변환
+## 9. `<rev>:<path>`
 
-참조 이름을 실제 SHA-1 해시로 변환하거나, 저장소 경로 정보를 추출하는 도구. 주로 셸 스크립트에서 사용한다.
+`<rev>:<path>`는 해당 커밋(또는 트리)에서 경로에 있는 blob이나 tree를 가리킨다. `:<n>:<path>`는 인덱스의 n번 스테이지 blob을 가리키며 스테이지 번호를 생략하면 0번이다. 머지 중에는 1이 공통 조상, 2가 현재 브랜치, 3이 머지되는 브랜치 버전이다.
 
-### 8.1. 참조 → SHA-1 변환
+```bash
+git show HEAD:pom.xml          # 현재 커밋 시점의 파일 내용
+git show HEAD~3:src/Main.java  # 3개 전 커밋 시점의 파일
+git show :src/Main.java        # 인덱스(스테이지 0)의 파일 내용
+git show :2:src/Main.java      # 머지 충돌 중 현재 브랜치 버전
+```
+
+---
+
+## 10. git rev-parse
+
+참조 이름을 실제 SHA-1 해시로 변환하거나 저장소 경로 정보를 추출한다. 주로 셸 스크립트에서 사용한다.
+
+### 10.1. SHA-1 변환
 
 ```bash
 git rev-parse HEAD              # HEAD의 SHA-1
 git rev-parse main              # main 브랜치의 SHA-1
 git rev-parse HEAD~3            # 3개 전 커밋의 SHA-1
-git rev-parse --short HEAD      # 단축 해시 (7자)
+git rev-parse --short HEAD      # core.abbrev 기준 단축 해시 (최소 4자)
 git rev-parse --short=12 HEAD   # 12자 단축 해시
 ```
 
-### 8.2. 브랜치 이름 확인
+### 10.2. 브랜치 이름 확인
 
 ```bash
 git rev-parse --abbrev-ref HEAD           # 현재 브랜치 이름 (예: "main")
@@ -236,7 +248,7 @@ git rev-parse --symbolic-full-name HEAD   # 전체 ref 이름 (예: "refs/heads/
 git rev-parse --abbrev-ref @{upstream}    # upstream 브랜치 이름
 ```
 
-### 8.3. 저장소 경로
+### 10.3. 저장소 경로
 
 ```bash
 git rev-parse --show-toplevel    # 저장소 루트 절대경로
@@ -245,7 +257,7 @@ git rev-parse --show-prefix      # 현재 위치의 저장소 루트 기준 상�
 git rev-parse --show-cdup        # 저장소 루트까지의 상대경로 (예: "../../")
 ```
 
-### 8.4. 저장소 상태 확인
+### 10.4. 저장소 상태 확인
 
 ```bash
 git rev-parse --is-inside-work-tree    # "true" / "false"
@@ -253,7 +265,7 @@ git rev-parse --is-bare-repository     # "true" / "false"
 git rev-parse --is-inside-git-dir      # "true" / "false"
 ```
 
-### 8.5. 셸 스크립트 활용 패턴
+### 10.5. 셸 스크립트
 
 ```bash
 # 저장소 루트로 이동
@@ -279,23 +291,12 @@ fi
 
 ---
 
-## 9. git show — 특정 커밋/객체 상세 출력
-
-```bash
-git show HEAD             # 최신 커밋 + diff
-git show HEAD~2           # 2개 전 커밋
-git show abc1234          # SHA로 지정
-git show v1.0.0           # 태그
-git show HEAD:pom.xml     # 특정 커밋 시점의 파일 내용
-git show HEAD~3:src/Main.java  # 3개 전 커밋 시점의 파일
-```
-
----
 ## Sources
 - [gitrevisions](https://git-scm.com/docs/gitrevisions)
 - [git-rev-parse](https://git-scm.com/docs/git-rev-parse)
 
 ---
+
 ## Related pages
 - [[git-log]]
 - [[git-internals]]

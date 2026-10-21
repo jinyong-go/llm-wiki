@@ -1,16 +1,18 @@
 ---
-title: git commit — 커밋 생성
-updated: 2026-07-08 10:32:15
+title: git commit
+updated: 2026-10-21 22:52:59
 tags:
   - git
   - vcs
 ---
 
+## 1. 개요
+
 인덱스(스테이징 영역)의 스냅샷을 저장소에 영구 기록한다.
 
 ---
 
-## 1. 기본 사용법
+## 2. 기본 사용법
 
 ```bash
 git commit -m "메시지"          # 메시지 직접 지정
@@ -22,9 +24,9 @@ git commit -vv                  # staged + unstaged diff 모두 표시
 
 ---
 
-## 2. 커밋 수정
+## 3. 커밋 수정
 
-### 2.1. `--amend` — 직전 커밋 수정
+### 3.1. `--amend`
 
 ```bash
 git commit --amend              # 메시지 + 내용 변경 (에디터 오픈)
@@ -32,9 +34,9 @@ git commit --amend --no-edit    # 메시지 유지, 내용만 추가
 git commit --amend -m "새 메시지"
 ```
 
-`--amend`는 직전 커밋을 새 커밋으로 대체한다. **이미 push한 커밋에 사용하면 force push가 필요**하므로 공유 브랜치에서는 주의한다.
+`--amend`는 직전 커밋을 새 커밋으로 대체한다. 이미 push한 커밋에 사용하면 force push가 필요하므로 공유 브랜치에서는 주의한다.
 
-### 2.2. 커밋 메시지 재사용
+### 3.2. 커밋 메시지 재사용
 
 ```bash
 git commit -C <SHA>     # 해당 커밋의 메시지·작성자·타임스탬프 그대로 사용
@@ -43,7 +45,7 @@ git commit -c <SHA>     # 위와 동일하나 에디터를 열어 편집 가능
 
 ---
 
-## 3. fixup / squash — 대화형 rebase 연계
+## 4. fixup / squash
 
 `git rebase -i --autosquash`와 함께 사용해 특정 커밋에 변경을 자동 합치는 워크플로우다.
 
@@ -61,7 +63,7 @@ git rebase -i --autosquash <upstream>
 
 ---
 
-## 4. Author / Committer
+## 5. Author / Committer
 
 Git은 두 가지 신원을 별도로 저장한다.
 
@@ -77,22 +79,22 @@ git commit --date="2026-01-01T09:00:00" -m "날짜 지정 커밋"
 
 ---
 
-## 5. Hooks
+## 6. Hooks
 
 커밋 과정에서 순서대로 실행된다.
 
 | Hook | 시점 | 비정상 종료 시 |
 |------|------|--------------|
-| `pre-commit` | `git commit` 직후 | 커밋 중단 |
+| `pre-commit` | 커밋 메시지 입력 전 | 커밋 중단 |
 | `prepare-commit-msg` | 메시지 템플릿 준비 후 | 커밋 중단 |
 | `commit-msg` | 메시지 입력 완료 후 | 커밋 중단 |
 | `post-commit` | 커밋 완료 후 | 영향 없음 |
 
-`-n` / `--no-verify`로 `pre-commit`과 `commit-msg` hook을 건너뛸 수 있다.
+`-n` / `--no-verify`는 `pre-commit`과 `commit-msg` hook을 건너뛰며, `prepare-commit-msg`는 건너뛰지 않는다.
 
 ---
 
-## 6. 주요 설정
+## 7. 주요 설정
 
 ```bash
 git config commit.verbose true        # 항상 -v 모드
@@ -102,7 +104,7 @@ git config commit.gpgSign true        # 모든 커밋 GPG 서명
 
 ---
 
-## 7. 실용 패턴
+## 8. 실용 패턴
 
 ```bash
 # staged 내용 확인 후 커밋
@@ -120,10 +122,13 @@ git rebase -i --autosquash HEAD~5  # fixup 자동 정렬 + squash
 ```
 
 ---
+
 ## Sources
 - [git-commit](https://git-scm.com/docs/git-commit)
+- [githooks](https://git-scm.com/docs/githooks)
 
 ---
+
 ## Related pages
 - [[git-add]]
 - [[git-rebase]]
