@@ -1,6 +1,6 @@
 ---
 title: MockServer
-updated: 2026-10-20 17:46:04
+updated: 2026-10-22 23:02:05
 tags:
   - java
   - testing
@@ -15,6 +15,8 @@ MockServer는 요청이 Expectation(요청 조건과 응답 동작을 묶은 규
 
 외부 HTTP API를 호출하는 코드를 실제 네트워크 통신으로 테스트할 때 사용한다. 유사 도구로 WireMock이 있다.
 
+---
+
 ## 2. 의존성
 
 | 용도 | artifact |
@@ -24,11 +26,13 @@ MockServer는 요청이 Expectation(요청 조건과 응답 동작을 묶은 규
 | 서버 직접 제어 | `mockserver-netty-no-dependencies` |
 | 클라이언트 | `mockserver-client-java-no-dependencies` |
 
-groupId는 `org.mock-server`, 최신 버전은 8.0.0이다. `-no-dependencies` artifact는 의존 라이브러리를 패키지 relocate로 내장해 전이 의존성이 없다.
+groupId는 `org.mock-server`이며 2026-10-22 기준 최신 버전은 9.1.0이다. 이 문서의 API 서술은 8.0.0 API 문서 기준이다. `-no-dependencies` artifact는 의존 라이브러리를 패키지 relocate로 내장해 전이 의존성이 없다.
 
 ```groovy
-testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:8.0.0'
+testImplementation 'org.mock-server:mockserver-junit-jupiter-no-dependencies:9.1.0'
 ```
+
+---
 
 ## 3. JUnit 5 통합
 
@@ -88,6 +92,8 @@ class PaymentServiceTest {
 }
 ```
 
+---
+
 ## 4. Expectation
 
 요청 매처와 응답을 `when().respond()`로 연결한다.
@@ -139,6 +145,8 @@ server.when(request().withPath("/slow"))
       .respond(response().withBody("ok").withDelay(TimeUnit.SECONDS, 3));
 ```
 
+---
+
 ## 5. 검증
 
 ```java
@@ -172,6 +180,8 @@ server.verify(request, VerificationTimes.exactly(1));
 
 비동기 요청은 테스트 대상이 요청을 보낸 직후 검증하면 아직 기록되지 않았을 수 있다. Java 클라이언트에서는 `verify(request, times, Duration)` 오버로드로 제한 시간 동안 도착 여부를 확인할 수 있다. `retrieveRecordedRequests(null)`은 실패 진단을 위한 수신 요청 조회에 사용한다.
 
+---
+
 ## 6. 주의사항
 
 1. `@ExtendWith(MockServerExtension.class)`와 `@MockServerSettings`를 함께 선언하지 않는다.
@@ -179,6 +189,8 @@ server.verify(request, VerificationTimes.exactly(1));
 3. 고정 포트를 쓰는 테스트 클래스를 병렬 실행하면 포트가 충돌한다[^2].
 4. `perTestSuite = true`와 `@MockServerTest`는 서버를 공유한다. 병렬 실행 시 경로, 헤더, 쿼리 매개변수에 테스트별 고유 값을 사용한다. `@MockServerTest`는 처음 로드된 클래스의 `mockserver.*` 프로퍼티만 적용한다.
 5. HTTPS 인증서는 MockServer CA가 서명하므로 클라이언트가 이 CA를 신뢰해야 한다.
+
+---
 
 ## 7. FAQ
 
@@ -227,19 +239,19 @@ Netty, Jackson 버전이 충돌하면 `-no-dependencies` artifact를 사용한�
 ---
 
 ## Sources
-- [MockServer — Running MockServer](https://www.mock-server.com/mock_server/running_mock_server.html)
-- [MockServer — Creating Expectations](https://www.mock-server.com/mock_server/creating_expectations.html)
-- [MockServer — Verification](https://www.mock-server.com/mock_server/verification.html)
-- [MockServer — MockServer Clients](https://www.mock-server.com/mock_server/mockserver_clients.html)
-- [MockServer — Getting Started (Matching Order)](https://www.mock-server.com/mock_server/getting_started.html)
-- [MockServer — Troubleshooting Matching](https://www.mock-server.com/mock_server/troubleshooting_matching.html)
-- [MockServer — HTTPS & TLS](https://www.mock-server.com/mock_server/HTTPS_TLS.html)
-- [MockServer — Running Tests In Parallel](https://www.mock-server.com/mock_server/running_tests_in_parallel.html)
-- [MockServer API — MockServerSettings (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/junit/jupiter/MockServerSettings.html)
-- [MockServer API — Times (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/matchers/Times.html)
-- [MockServer API — TimeToLive (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/matchers/TimeToLive.html)
-- [MockServer 소스 — MockServerExtension](https://github.com/mock-server/mockserver-monorepo/blob/master/mockserver/mockserver-junit-jupiter/src/main/java/org/mockserver/junit/jupiter/MockServerExtension.java)
-- [MockServer 소스 — MockServer(Netty)](https://github.com/mock-server/mockserver-monorepo/blob/master/mockserver/mockserver-netty/src/main/java/org/mockserver/netty/MockServer.java)
+- [MockServer: Running MockServer](https://www.mock-server.com/mock_server/running_mock_server.html)
+- [MockServer: Creating Expectations](https://www.mock-server.com/mock_server/creating_expectations.html)
+- [MockServer: Verification](https://www.mock-server.com/mock_server/verification.html)
+- [MockServer: MockServer Clients](https://www.mock-server.com/mock_server/mockserver_clients.html)
+- [MockServer: Getting Started (Matching Order)](https://www.mock-server.com/mock_server/getting_started.html)
+- [MockServer: Troubleshooting Matching](https://www.mock-server.com/mock_server/troubleshooting_matching.html)
+- [MockServer: HTTPS & TLS](https://www.mock-server.com/mock_server/HTTPS_TLS.html)
+- [MockServer: Running Tests In Parallel](https://www.mock-server.com/mock_server/running_tests_in_parallel.html)
+- [MockServer API: MockServerSettings (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/junit/jupiter/MockServerSettings.html)
+- [MockServer API: Times (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/matchers/Times.html)
+- [MockServer API: TimeToLive (8.0.0)](https://mock-server.com/versions/8.0.0/apidocs/org/mockserver/matchers/TimeToLive.html)
+- [MockServer: MockServerExtension 소스](https://github.com/mock-server/mockserver-monorepo/blob/master/mockserver/mockserver-junit-jupiter/src/main/java/org/mockserver/junit/jupiter/MockServerExtension.java)
+- [MockServer: MockServer(Netty) 소스](https://github.com/mock-server/mockserver-monorepo/blob/master/mockserver/mockserver-netty/src/main/java/org/mockserver/netty/MockServer.java)
 
 ---
 

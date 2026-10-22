@@ -1,9 +1,9 @@
 ---
-title: JMH를 이용한 Java 마이크로벤치마크 (Java Microbenchmark Harness)
-updated: 2026-10-20 17:46:04
+title: JMH
+updated: 2026-10-22 23:09:21
 tags:
   - java
-  - test
+  - testing
   - jmh
   - benchmark
   - performance
@@ -13,7 +13,7 @@ tags:
 
 JMH(Java Microbenchmark Harness)는 OpenJDK가 관리하는 공식 마이크로벤치마크 프레임워크이다. 나노초~밀리초 단위 코드의 성능을 측정할 때 JVM의 JIT 워밍업, 데드 코드 제거, 상수 폴딩 등이 결과를 왜곡하는데, JMH는 이를 통제한 상태로 측정한다.
 
-JUnit처럼 라이브러리만 추가하는 방식이 아니다. **어노테이션 프로세서가 벤치마크 실행 코드를 컴파일 시점에 생성**하므로 `jmh-core`와 `jmh-generator-annprocess`가 모두 필요하며, IDE에서 직접 실행하는 것은 환경 통제가 되지 않아 공식적으로 비권장이다(빌드된 uber-jar 실행 권장).
+JUnit처럼 라이브러리만 추가하는 방식이 아니다. 어노테이션 프로세서가 벤치마크 실행 코드를 컴파일 시점에 생성하므로 `jmh-core`와 `jmh-generator-annprocess`가 모두 필요하며, IDE에서 직접 실행하는 것은 환경 통제가 되지 않아 공식적으로 비권장이다(빌드된 uber-jar 실행 권장).
 
 ### 1.1. 단순 반복 측정과의 차이
 
@@ -49,7 +49,7 @@ JMH는 각 문제를 구조적으로 해결한다.
 
 ## 2. 설정
 
-### 2.1. Maven — 신규 프로젝트
+### 2.1. Maven 신규 프로젝트
 
 archetype으로 벤치마크 프로젝트를 생성하는 것이 공식 권장 방식이다.
 
@@ -66,7 +66,7 @@ mvn clean verify
 java -jar target/benchmarks.jar
 ```
 
-### 2.2. Maven — 기존 프로젝트에 추가
+### 2.2. Maven 기존 프로젝트
 
 ```xml
 <dependency>
@@ -101,14 +101,14 @@ jmh {                       // 실행 프로파일을 빌드 스크립트에서 
 ```
 
 - 벤치마크 소스는 `src/jmh/java`에 배치한다.
-- `gradle jmh` — 전체 벤치마크 실행, `gradle jmhJar` — 실행용 uber-jar 생성.
+- `gradle jmh`는 전체 벤치마크를 실행하고, `gradle jmhJar`는 실행용 uber-jar를 생성한다.
 
 ---
 
 ## 3. 주요 어노테이션
 
 ### 3.1. `@Benchmark`
-측정 대상 메서드를 지정한다. `public` 메서드여야 하며, 어노테이션 프로세서가 이 메서드를 감싸는 측정 루프 코드를 생성한다. 한 클래스에 여러 `@Benchmark` 메서드를 두면 각각 독립적으로 측정·비교된다. 메서드의 **반환값은 JMH가 자동으로 소비(consume)** 하므로, 계산 결과를 반환하도록 작성하면 데드 코드 제거를 막을 수 있다.
+측정 대상 메서드를 지정한다. `public` 메서드여야 하며, 어노테이션 프로세서가 이 메서드를 감싸는 측정 루프 코드를 생성한다. 한 클래스에 여러 `@Benchmark` 메서드를 두면 각각 독립적으로 측정·비교된다. 메서드의 반환값은 JMH가 자동으로 소비(consume)하므로, 계산 결과를 반환하도록 작성하면 데드 코드 제거를 막을 수 있다.
 
 ### 3.2. `@BenchmarkMode`
 무엇을 측정할지 `Mode` 값으로 정의한다. 배열로 여러 모드를 동시에 지정할 수 있다.
@@ -142,7 +142,7 @@ public long increment(SharedCounter s) {   // 파라미터로 상태 주입
 ```
 
 ### 3.5. `@Setup` / `@TearDown`
-상태 초기화/정리 메서드를 지정한다. 실행 시간은 **측정에 포함되지 않는다**. `Level`로 실행 시점을 제어한다.
+상태 초기화/정리 메서드를 지정한다. 실행 시간은 측정에 포함되지 않는다. `Level`로 실행 시점을 제어한다.
 
 - **`Level.Trial`** (기본값): 포크(벤치마크 전체 실행)당 1회. 데이터 로딩 등 비용 큰 준비 작업에 사용.
 - **`Level.Iteration`**: 이터레이션마다 실행. 이터레이션 간 상태 리셋이 필요할 때.
@@ -152,21 +152,21 @@ public long increment(SharedCounter s) {   // 파라미터로 상태 주입
 `@State` 클래스의 필드를 파라미터화한다. `@Param({"10", "1000"})`처럼 지정한 값마다 벤치마크가 자동 반복되어 입력 크기별 비교표가 만들어진다.
 
 - 필드 타입은 문자열에서 변환 가능한 기본형·`String`·enum이어야 한다.
-- `@Param` 필드가 여러 개면 **모든 조합(데카르트 곱)** 이 실행된다 — 조합 폭발 주의.
+- `@Param` 필드가 여러 개면 모든 조합(데카르트 곱)이 실행되므로 조합 수가 급격히 늘 수 있다.
 - CLI에서 `-p size=50,500`으로 재정의할 수 있다.
 
 ### 3.7. `@Fork`
-벤치마크를 실행할 **독립 JVM 프로세스 수**를 지정한다. 기본값은 5이다. 포크별 결과가 합산 집계된다.
+벤치마크를 실행할 독립 JVM 프로세스 수를 지정한다. 기본값은 5이다. 포크별 결과가 합산 집계된다.
 
-- 같은 JVM에서 여러 벤치마크를 이어 돌리면 JIT 프로파일이 섞여 결과가 오염되므로 **최소 1 이상**이 필수다. `@Fork(0)`은 호스트 JVM에서 실행하며 디버깅 전용.
+- 같은 JVM에서 여러 벤치마크를 이어 돌리면 JIT 프로파일이 섞여 결과가 오염되므로 최소 1 이상이 필수다. `@Fork(0)`은 호스트 JVM에서 실행하며 디버깅에만 쓴다.
 - `jvmArgs`/`jvmArgsAppend`/`jvmArgsPrepend`로 포크 JVM에 힙 크기, GC 등 JVM 플래그를 지정할 수 있다: `@Fork(value = 2, jvmArgsAppend = "-Xmx2g")`
 - `warmups = n`으로 결과를 버리는 워밍업 전용 포크를 앞에 추가할 수 있다.
 
 ### 3.8. `@Warmup` / `@Measurement`
 워밍업/측정 이터레이션의 횟수와 길이를 지정한다. 두 어노테이션 모두 `iterations`(횟수), `time`(이터레이션 길이), `timeUnit`, `batchSize`(호출 묶음 크기) 속성을 가진다.
 
-- 워밍업은 JIT 컴파일(C2)이 완료된 **정상 상태(steady state)** 에 도달시키기 위한 단계로, 결과 집계에서 제외된다.
-- 기본값(1.37): 워밍업 5회 × 10초, 측정 5회 × 10초, 포크 5 — 벤치마크당 수 분이 걸린다. 개발 중에는 축소 설정을 쓰고, 최종 수치는 기본값에 가깝게 측정한다.
+- 워밍업은 JIT 컴파일(C2)이 완료된 정상 상태(steady state)에 도달시키기 위한 단계로, 결과 집계에서 제외된다.
+- 기본값(1.37)은 워밍업 5회 × 10초, 측정 5회 × 10초, 포크 5로 벤치마크당 수 분이 걸린다. 개발 중에는 축소 설정을 쓰고, 최종 수치는 기본값에 가깝게 측정한다.
 
 ### 3.9. `@Threads`
 같은 벤치마크를 동시에 실행할 스레드 수를 지정한다. 기본값은 1이다. `Threads.MAX`는 사용 가능한 모든 코어를 사용한다. 멀티스레드 환경에서의 확장성·경합 측정에 사용하며, `Scope.Benchmark` 상태와 조합하면 공유 자원 경합을 재현할 수 있다.
@@ -231,13 +231,13 @@ StringConcatBenchmark.builderConcat    10  avgt    5    45.123 ±  1.204  ns/op
 StringConcatBenchmark.plusConcat       10  avgt    5   152.398 ± 12.887  ns/op
 ```
 
-- **Score**: 측정값 평균. 단위는 모드에 따라 다름 — `thrpt`는 ops/s(클수록 좋음), `avgt`는 time/op(작을수록 좋음)
-- **Error**: **99.9% 신뢰구간의 폭**. `Score ± Error`가 실제 값의 추정 범위
+- **Score**: 측정값 평균. 단위는 모드에 따라 다르며 `thrpt`는 ops/s(클수록 좋음), `avgt`는 time/op(작을수록 좋음)
+- **Error**: 99.9% 신뢰구간의 반폭(half-width). `Score ± Error`가 신뢰구간이다
 - **Cnt**: 집계에 사용된 측정 횟수 (포크 수 × 측정 이터레이션 수)
 - 워밍업 이터레이션 결과는 집계에서 제외된다
 
 판단 기준:
-- 두 벤치마크의 신뢰구간(`Score ± Error`)이 **겹치면 성능 차이를 단정할 수 없다**
+- 두 벤치마크의 신뢰구간(`Score ± Error`)이 겹치면 성능 차이를 단정할 수 없다.
 - Error가 Score 대비 수 % 이상으로 크면 측정 신뢰도가 낮다. 원인: 워밍업 부족, 백그라운드 프로세스, CPU 주파수 스케일링(터보 부스트), GC 개입
 - 포크 간 결과 편차가 크면 fork 수를 늘려 확인한다
 - `SampleTime` 모드는 p50/p90/p99 등 백분위를 출력하므로 지연 시간 분포 확인에 사용
@@ -252,17 +252,17 @@ StringConcatBenchmark.plusConcat       10  avgt    5   152.398 ± 12.887  ns/op
 - **상수 폴딩**: 입력을 `final` 리터럴/지역 상수로 두면 컴파일 시점에 결과가 계산된다. 입력은 반드시 `@State`의 non-final 필드에서 읽는다.
 - **수동 루프 반복**: 벤치마크 메서드 안에서 직접 N회 반복하면 JIT 루프 최적화로 왜곡된다. 반복은 JMH 하네스에 맡긴다.
 - **fork 생략 금지**: 같은 JVM에서 여러 벤치마크를 이어 돌리면 JIT 프로파일이 섞여 결과가 오염된다.
-- 마이크로벤치마크 결과가 실제 애플리케이션 성능을 보장하지 않는다 — 병목 검증은 실측 프로파일링과 병행한다.[^1]
-
+- 마이크로벤치마크 결과가 실제 애플리케이션 성능을 보장하지는 않으므로 병목 검증은 실측 프로파일링과 병행한다.[^1]
 
 ---
 
 ## Sources
-- [OpenJDK JMH — 공식 GitHub](https://github.com/openjdk/jmh)
-- [JMH Samples — 공식 예제 (함정·어노테이션 설명 근거)](https://github.com/openjdk/jmh/tree/master/jmh-samples/src/main/java/org/openjdk/jmh/samples)
-- [jmh-gradle-plugin (me.champeau.jmh)](https://github.com/melix/jmh-gradle-plugin)
-- [Gradle Plugin Portal — me.champeau.jmh](https://plugins.gradle.org/plugin/me.champeau.jmh)
-- [Baeldung — Microbenchmarking with Java](https://www.baeldung.com/java-microbenchmark-harness)
+- [OpenJDK: JMH](https://github.com/openjdk/jmh)
+- [OpenJDK: JMH AbstractStatistics.java](https://github.com/openjdk/jmh/blob/master/jmh-core/src/main/java/org/openjdk/jmh/util/AbstractStatistics.java)
+- [OpenJDK: JMH Samples](https://github.com/openjdk/jmh/tree/master/jmh-samples/src/main/java/org/openjdk/jmh/samples)
+- [melix: jmh-gradle-plugin](https://github.com/melix/jmh-gradle-plugin)
+- [Gradle Plugin Portal: me.champeau.jmh](https://plugins.gradle.org/plugin/me.champeau.jmh)
+- [Baeldung: Microbenchmarking with Java](https://www.baeldung.com/java-microbenchmark-harness)
 
 ---
 

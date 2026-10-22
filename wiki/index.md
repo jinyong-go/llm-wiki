@@ -127,18 +127,18 @@ tags:
 ### 테스트
 
 - [[java-testing-libraries]] — Java 테스트 라이브러리 목적별 개요
-- [[jmh]] — JMH 마이크로벤치마크: 설정, 어노테이션, 결과 해석
-- [[mockito-doreturn-vs-when]] — Mockito 스터빙 구문 비교: when().thenXxx() vs doXxx().when()
-- [[mockito-void-methods]] — Mockito void 메서드 모킹: doNothing/doThrow/doAnswer, verify·ArgumentCaptor, checked exception 제약
-- [[inverse-operation-testing]] — 역연산 함수 테스트 전략 (KAT, 라운드트립, 프로퍼티)
+- [[jmh]] — JMH 마이크로벤치마크
+- [[mockito-doreturn-vs-when]] — Mockito 스터빙 구문 비교
+- [[mockito-void-methods]] — Mockito void 메서드 모킹
+- [[inverse-operation-testing]] — 역연산 함수 테스트 전략
 - [[good-test-practices]] — 좋은 테스트 코드 작성법
-- [[test-double]] — 테스트 더블: Mock/Stub/Spy 차이와 선택 기준
-- [[spock]] — Spock: Groovy 기반 BDD 테스트 프레임워크
+- [[test-double]] — 테스트 더블 분류와 검증 방식
+- [[spock]] — Groovy 기반 Spock 테스트 프레임워크
 - [[junit-test-suite]] — JUnit 테스트 스위트와 태그 필터링
-- [[junit-parameterized-test]] — JUnit 5 ParameterizedTest: 인자 소스, 변환, 집계
-- [[junit-test-execution-order]] — JUnit 테스트 실행 순서 제어와 순서 의존 통합 테스트
-- [[jacoco]] — JaCoCo 테스트 커버리지: 원리, 설정, 기준
-- [[mockserver]] — MockServer: HTTP 목 서버, JUnit 5·Spring 통합, Expectation, 검증, 병렬 테스트 격리
+- [[junit-parameterized-test]] — JUnit 매개변수화 테스트
+- [[junit-test-execution-order]] — JUnit 테스트 실행 순서
+- [[jacoco]] — JaCoCo 테스트 커버리지
+- [[mockserver]] — MockServer HTTP 목 서버
 
 ### Spring
 

@@ -1,6 +1,6 @@
 ---
-title: JUnit 5 ParameterizedTest — 매개변수화 테스트, 인자 소스·변환·집계·표시 이름
-updated: 2026-10-20 17:54:47
+title: JUnit ParameterizedTest
+updated: 2026-10-22 23:09:21
 tags:
   - java
   - junit
@@ -8,28 +8,29 @@ tags:
   - parameterized-test
 ---
 
-## 1. 개요 — 언제 쓰는가
+## 1. 개요
 
-`@ParameterizedTest`는 **하나의 테스트 메서드를 여러 인자 집합으로 반복 실행**한다. 같은 검증 로직을 입력만 바꿔 돌릴 때 `@Test`를 여러 개 복제하는 대신 사용한다.
+`@ParameterizedTest`는 하나의 테스트 메서드를 여러 인자 집합으로 반복 실행한다. 같은 검증 로직을 입력만 바꿔 돌릴 때 `@Test`를 여러 개 복제하는 대신 사용한다.
 
-적합한 상황:
-- **경계값·동치 분할** — 0, 음수, 최대값 등 여러 입력으로 같은 단언.
-- **표(table) 기반 테스트** — `입력 → 기대출력` 쌍을 데이터로 나열.
-- **enum 전수 검증** — 모든 enum 상수에 대해 동작 확인.
+적합한 상황은 다음과 같다.
+
+- **경계값·동치 분할**: 0, 음수, 최대값 등 여러 입력으로 같은 단언
+- **표(table) 기반 테스트**: 입력과 기대 출력 쌍을 데이터로 나열
+- **enum 전수 검증**: 모든 enum 상수에 대해 동작 확인
 
 | 어노테이션 | 용도 |
 |------------|------|
 | `@Test` | 단일 실행 |
 | `@RepeatedTest(n)` | 같은 입력으로 n회 반복 |
-| `@ParameterizedTest` | **서로 다른 입력**으로 반복 |
+| `@ParameterizedTest` | 서로 다른 입력으로 반복 |
 
-> `@ParameterizedTest` 메서드는 `@ArgumentsSource`(또는 그 합성 어노테이션 `@ValueSource` 등)로 **인자 소스를 최소 하나** 지정해야 한다.
+`@ParameterizedTest` 메서드는 `@ArgumentsSource`(또는 그 합성 어노테이션 `@ValueSource` 등)로 인자 소스를 최소 하나 지정해야 한다.
 
 ---
 
 ## 2. 의존성
 
-`junit-jupiter-params` 아티팩트가 필요하다. 보통 `junit-jupiter` 집계 의존성에 포함된다.
+`junit-jupiter-params` 아티팩트가 필요하다. 보통 `junit-jupiter` 집계 의존성에 포함된다. JUnit Jupiter 5.0 이상에서 사용하며, 2026-10 기준 최신은 6.1.3이다.
 
 ```xml
 <dependency>
@@ -47,9 +48,9 @@ testImplementation("org.junit.jupiter:junit-jupiter-params")
 
 ## 3. 인자 소스 (Argument Sources)
 
-### 3.1. @ValueSource — 단일 리터럴 배열
+### 3.1. @ValueSource
 
-원시 타입·`String`·`Class` 리터럴 하나의 배열을 공급한다. 인자가 **1개**일 때만 쓴다.
+원시 타입·`String`·`Class` 리터럴 하나의 배열을 공급한다. 인자가 1개일 때만 쓴다.
 
 ```java
 @ParameterizedTest
@@ -64,9 +65,9 @@ void isPositive(int n) {
 
 `@ValueSource`는 `null`을 표현할 수 없으므로 별도 제공한다.
 
-- `@NullSource` — `null` 1건
-- `@EmptySource` — 빈 값(빈 `String`/컬렉션/배열/맵)
-- `@NullAndEmptySource` — 위 둘 결합
+- **`@NullSource`**: `null` 1건
+- **`@EmptySource`**: 빈 값(빈 `String`/컬렉션/배열/맵)
+- **`@NullAndEmptySource`**: 위 둘 결합
 
 ```java
 @ParameterizedTest
@@ -77,7 +78,9 @@ void blankStrings(String text) {
 }
 ```
 
-### 3.3. @EnumSource — enum 상수
+### 3.3. @EnumSource
+
+enum 상수를 인자로 공급한다.
 
 ```java
 @ParameterizedTest
@@ -94,9 +97,9 @@ void mostUnits(ChronoUnit unit) { }
 ```
 `mode`: `INCLUDE`(기본)·`EXCLUDE`·`MATCH_ALL`·`MATCH_ANY`(정규식 매칭).
 
-### 3.4. @MethodSource — 팩토리 메서드
+### 3.4. @MethodSource
 
-같은 클래스의 `static` 메서드(또는 외부 클래스의 FQN 메서드)가 반환하는 `Stream`/`Collection`/배열을 인자로 쓴다. **여러 인자**는 `Arguments`로 묶는다.
+같은 클래스의 `static` 메서드(또는 외부 클래스의 FQN 메서드)가 반환하는 `Stream`/`Collection`/배열을 인자로 쓴다. 여러 인자는 `Arguments`로 묶는다.
 
 ```java
 @ParameterizedTest
@@ -115,9 +118,9 @@ static Stream<Arguments> addCases() {
 // 단일 인자면 Stream<String> 처럼 단순 반환도 가능
 static Stream<String> fruits() { return Stream.of("apple", "banana"); }
 ```
-메서드 이름을 생략하면 테스트 메서드와 **같은 이름**의 팩토리를 찾는다.
+메서드 이름을 생략하면 테스트 메서드와 같은 이름의 팩토리를 찾는다.
 
-### 3.5. @FieldSource — static 필드
+### 3.5. @FieldSource
 
 JUnit 5.11부터 지원한다.
 
@@ -131,7 +134,7 @@ void field(String fruit) { assertNotNull(fruit); }
 static final List<String> fruits = List.of("apple", "banana");
 ```
 
-### 3.6. @CsvSource — 인라인 CSV
+### 3.6. @CsvSource
 
 여러 인자를 CSV 행으로 나열한다. 표 기반 테스트에 가장 흔히 쓴다.
 
@@ -157,7 +160,7 @@ void rank(String fruit, int rank) { }
 ```
 구분자 변경(`delimiter`/`delimiterString`), `null` 표현(`nullValues = "NIL"`) 등을 지원한다.
 
-### 3.7. @CsvFileSource — 외부 CSV 파일
+### 3.7. @CsvFileSource
 
 클래스패스(`resources`) 또는 파일시스템(`files`)의 CSV를 읽는다.
 
@@ -167,14 +170,14 @@ void rank(String fruit, int rank) { }
 void fromFile(String country, int ref) { }
 ```
 
-### 3.8. @ArgumentsSource — 커스텀 공급자
+### 3.8. @ArgumentsSource
 
 `ArgumentsProvider`를 직접 구현해 복잡한 인자 생성 로직을 캡슐화한다.
 
-**ArgumentsProvider**는 인자 집합의 스트림을 공급하는 인터페이스다.
+`ArgumentsProvider`는 인자 집합의 스트림을 공급하는 인터페이스다.
 - `provideArguments(...)`가 `Stream<? extends Arguments>`를 반환하며, 스트림의 각 `Arguments`가 한 번의 테스트 실행이 된다.
-- 인자 생성 로직이 **테스트 클래스에서 분리**되므로 여러 테스트 클래스에서 재사용할 수 있다. `@MethodSource` 팩토리가 커지거나 외부 자원(파일·DB) 기반 생성이 필요할 때 쓴다.
-- 구현 제약: **최상위 클래스 또는 `static` 중첩 클래스**여야 하고 **기본 생성자**가 필요하다.
+- 인자 생성 로직이 테스트 클래스에서 분리되므로 여러 테스트 클래스에서 재사용할 수 있다. `@MethodSource` 팩토리가 커지거나 외부 자원(파일·DB) 기반 생성이 필요할 때 쓴다.
+- 구현 클래스는 최상위 클래스 또는 `static` 중첩 클래스여야 하고 기본 생성자가 필요하다.
 - `ExtensionContext`로 실행 컨텍스트(테스트 클래스·설정 파라미터 등)에 접근할 수 있다.
 
 ```java
@@ -193,7 +196,7 @@ public class MyArgumentsProvider implements ArgumentsProvider {
 
 ### 3.9. 커스텀 소스 어노테이션
 
-`@ArgumentsSource`를 메타 어노테이션으로 붙인 **합성(composed) 어노테이션**을 만들면 `@ValueSource`처럼 쓰이는 자체 소스 어노테이션이 된다. `@ValueSource`·`@CsvSource` 등 내장 소스도 모두 이 구조(합성 어노테이션 + `ArgumentsProvider`)로 구현되어 있다.
+`@ArgumentsSource`를 메타 어노테이션으로 붙인 합성(composed) 어노테이션을 만들면 `@ValueSource`처럼 쓰이는 자체 소스 어노테이션이 된다. `@ValueSource`·`@CsvSource` 등 내장 소스도 모두 이 구조(합성 어노테이션 + `ArgumentsProvider`)로 구현되어 있다.
 
 어노테이션 속성 값은 `AnnotationBasedArgumentsProvider<A>`를 상속하면 파라미터로 받을 수 있다.
 
@@ -230,9 +233,12 @@ void range(int n) { assertTrue(n < 5); }
 
 ### 4.1. 암시적 변환
 - **확대 변환**: `@ValueSource(ints=...)`를 `long`/`float`/`double` 파라미터로 받을 수 있다.
-- **`String` → 타입**: CSV/ValueSource의 문자열을 `int`·`boolean`·`enum`·`UUID`·`LocalDate`·`File`·`Class` 등으로 자동 변환.
+- **`String`에서 타입으로**: CSV/ValueSource의 문자열을 `int`·`boolean`·`enum`·`UUID`·`LocalDate`·`File`·`Class` 등으로 자동 변환.
 
-### 4.2. 명시적 변환 — @ConvertWith
+### 4.2. @ConvertWith
+
+변환기를 지정해 인자를 명시적으로 변환한다.
+
 ```java
 @ParameterizedTest
 @EnumSource(ChronoUnit.class)
@@ -246,7 +252,10 @@ public class ToStringArgumentConverter extends SimpleArgumentConverter {
 }
 ```
 
-### 4.3. 날짜·시간 — @JavaTimeConversionPattern
+### 4.3. @JavaTimeConversionPattern
+
+문자열을 지정한 패턴으로 날짜·시간 타입에 변환한다.
+
 ```java
 @ParameterizedTest
 @ValueSource(strings = { "01.01.2017", "31.12.2017" })
@@ -257,7 +266,7 @@ void dates(@JavaTimeConversionPattern("dd.MM.yyyy") LocalDate date) { }
 
 ## 5. 인자 집계 (Aggregation)
 
-### 5.1. ArgumentsAccessor — 전체 인자 접근
+### 5.1. ArgumentsAccessor
 인자가 많을 때 개별 파라미터 대신 접근자 하나로 받는다.
 
 ```java
@@ -270,7 +279,7 @@ void accessor(ArgumentsAccessor args) {
 }
 ```
 
-### 5.2. @AggregateWith — 도메인 객체로 집계
+### 5.2. @AggregateWith
 여러 컬럼을 하나의 객체로 묶는다.
 
 ```java
@@ -301,19 +310,19 @@ void display(String fruit, int rank) { }
 
 플레이스홀더 목록:
 
-- `{displayName}` — 테스트 메서드의 표시 이름. `@DisplayName`이 있으면 그 값
-- `{index}` — 현재 실행 회차. 1부터 시작
-- `{arguments}` — 전체 인자를 콤마로 연결한 문자열
-- `{argumentsWithNames}` — 전체 인자를 `파라미터명=값` 형태로 연결
-- `{argumentSetName}` — `argumentSet(...)`으로 부여한 인자 집합 이름. argumentSet을 쓴 경우에만 유효 (5.11+)
-- `{argumentSetNameOrArgumentsWithNames}` — 집합 이름이 있으면 `{argumentSetName}`, 없으면 `{argumentsWithNames}` (5.11+)
-- `{0}`, `{1}`, … — 개별 인자. 0부터 시작
+- **`{displayName}`**: 테스트 메서드의 표시 이름. `@DisplayName`이 있으면 그 값
+- **`{index}`**: 현재 실행 회차. 1부터 시작
+- **`{arguments}`**: 전체 인자를 콤마로 연결한 문자열
+- **`{argumentsWithNames}`**: 전체 인자를 `파라미터명=값` 형태로 연결
+- **`{argumentSetName}`**: `argumentSet(...)`으로 부여한 인자 집합 이름. argumentSet을 쓴 경우에만 유효(5.11+)
+- **`{argumentSetNameOrArgumentsWithNames}`**: 집합 이름이 있으면 `{argumentSetName}`, 없으면 `{argumentsWithNames}`(5.11+)
+- **`{0}`, `{1}`, …**: 개별 인자. 0부터 시작
 
 추가 규칙:
 - 기본 표시 이름 패턴은 `[{index}] {argumentSetNameOrArgumentsWithNames}`이며, 설정 파라미터 `junit.jupiter.params.displayname.default`로 전역 변경할 수 있다.
 - `name`은 `MessageFormat` 패턴으로 처리되므로 작은따옴표는 `''`로 이스케이프한다.
 
-명명 인자(`Named.of`/`named`) — 이름이 표시 이름에 반영된다:
+명명 인자(`Named.of`/`named`)를 쓰면 이름이 표시 이름에 반영된다.
 ```java
 static Stream<Arguments> namedArgs() {
     return Stream.of(
@@ -330,25 +339,25 @@ static List<Arguments> sets = List.of(
 
 ---
 
-## 7. 여러 소스 조합 / 파라미터 선언 순서
+## 7. 소스 조합과 파라미터 순서
 
-- 소스 어노테이션은 **반복 적용**할 수 있다.
+- 소스 어노테이션은 반복 적용할 수 있다.
 ```java
 @ParameterizedTest
 @MethodSource("provider1")
 @MethodSource("provider2")
 void multiSource(String arg) { }
 ```
-- 파라미터 선언 순서 규칙: **① 인덱스 인자 → ② 집계자(`ArgumentsAccessor`/`@AggregateWith`) → ③ 그 외 `ParameterResolver`가 주입하는 인자(`TestInfo` 등)** 순으로 선언한다.
+- 파라미터는 인덱스 인자, 집계자(`ArgumentsAccessor`/`@AggregateWith`), 그 외 `ParameterResolver`가 주입하는 인자(`TestInfo` 등) 순으로 선언한다.
 
 ---
 
 ## Sources
-- JUnit User Guide (6.0.3) — Parameterized Classes and Tests: https://docs.junit.org/6.0.3/writing-tests/parameterized-classes-and-tests.html
-- JUnit Jupiter API — org.junit.jupiter.params.provider (current): https://junit.org/junit5/docs/current/api/org.junit.jupiter.params/org/junit/jupiter/params/provider/package-summary.html
+- [JUnit 6.0.3: Parameterized Classes and Tests](https://docs.junit.org/6.0.3/writing-tests/parameterized-classes-and-tests.html)
+- [JUnit: org.junit.jupiter.params.provider (current)](https://junit.org/junit5/docs/current/api/org.junit.jupiter.params/org/junit/jupiter/params/provider/package-summary.html)
 
 ---
 
 ## Related pages
-- [[java-testing-libraries]] — Java 테스트 라이브러리 전체 개요(목적별 분류)
-- [[java17-features]] — Text Block(@CsvSource textBlock에 사용)
+- [[java-testing-libraries]]
+- [[java17-features]]

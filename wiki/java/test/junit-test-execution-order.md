@@ -1,6 +1,6 @@
 ---
 title: JUnit 테스트 실행 순서
-updated: 2026-10-20 17:46:04
+updated: 2026-10-22 23:09:21
 tags:
   - java
   - junit
@@ -10,7 +10,7 @@ tags:
 
 ## 1. 개요
 
-JUnit Jupiter는 기본적으로 테스트 클래스와 메서드를 **결정적이지만 의도적으로 비자명한(nonobvious)** 알고리즘으로 정렬한다. 같은 스위트를 다시 실행하면 같은 순서가 보장되어 빌드는 재현 가능하지만, 소스 선언 순서나 메서드 이름 순서에 의존할 수는 없다.
+JUnit Jupiter는 기본적으로 테스트 클래스와 메서드를 결정적이지만 의도적으로 비자명한(nonobvious) 알고리즘으로 정렬한다. 같은 스위트를 다시 실행하면 같은 순서가 보장되어 빌드는 재현 가능하지만, 소스 선언 순서나 메서드 이름 순서에 의존할 수는 없다.
 
 단위 테스트는 실행 순서에 의존하지 않아야 한다([[good-test-practices]]). 순서 강제가 정당한 경우는 시퀀스 자체가 검증 대상인 통합 테스트나 기능 테스트로 한정되며, 보통 §4의 `@TestInstance(Lifecycle.PER_CLASS)`와 함께 쓴다.
 
@@ -55,7 +55,7 @@ class OrderedTestsDemo {
 
 ### 2.3. @Nested 상속
 
-클래스에 설정한 `MethodOrderer`는 그 안의 `@Nested` 클래스에 **재귀적으로 상속**된다. 중첩 클래스마다 애너테이션을 반복할 필요가 없다. 특정 중첩 클래스만 상속을 끊으려면 `@TestMethodOrder(MethodOrderer.Default.class)`를 명시한다.
+클래스에 설정한 `MethodOrderer`는 그 안의 `@Nested` 클래스에 재귀적으로 상속된다. 중첩 클래스마다 애너테이션을 반복할 필요가 없다. 특정 중첩 클래스만 상속을 끊으려면 `@TestMethodOrder(MethodOrderer.Default.class)`를 명시한다.
 
 ### 2.4. 전역 설정
 
@@ -81,14 +81,14 @@ junit.jupiter.testmethod.order.default = \
 
 ### 3.2. 전역 설정
 
-**최상위 클래스의 순서는 설정 파라미터로만 지정할 수 있다.** 클래스에 `@Order`를 붙여도 `ClassOrderer.OrderAnnotation`을 등록하지 않으면 무시된다.
+최상위 클래스의 순서는 설정 파라미터로만 지정할 수 있다. 클래스에 `@Order`를 붙여도 `ClassOrderer.OrderAnnotation`을 등록하지 않으면 무시된다.
 
 ```properties
 junit.jupiter.testclass.order.default = \
     org.junit.jupiter.api.ClassOrderer$OrderAnnotation
 ```
 
-정렬 범위는 계층별로 나뉜다. 최상위 클래스는 최상위끼리, `@Nested` 클래스는 **같은 enclosing 클래스를 공유하는 중첩 클래스끼리** 정렬된다. 서로 다른 최상위 클래스의 중첩 클래스 사이에는 순서가 성립하지 않는다.
+정렬 범위는 계층별로 나뉜다. 최상위 클래스는 최상위끼리, `@Nested` 클래스는 같은 enclosing 클래스를 공유하는 중첩 클래스끼리 정렬된다. 서로 다른 최상위 클래스의 중첩 클래스 사이에는 순서가 성립하지 않는다.
 
 ### 3.3. @TestClassOrder
 
@@ -130,7 +130,7 @@ junit.jupiter.testinstance.lifecycle.default = per_class
 
 ### 5.1. 트랜잭션 롤백
 
-Spring TestContext에서 `@Transactional`이 붙은 테스트는 **완료 시 자동 롤백**된다. 단계별로 데이터를 쌓아 가는 시나리오 테스트에 붙이면 앞 단계의 결과가 사라져 다음 단계가 실패한다. 시나리오 테스트에는 `@Transactional`을 쓰지 않고 `@Sql` 스크립트나 `@AfterAll`에서 명시적으로 정리한다.
+Spring TestContext에서 `@Transactional`이 붙은 테스트는 완료 시 자동 롤백된다. 단계별로 데이터를 쌓아 가는 시나리오 테스트에 붙이면 앞 단계의 결과가 사라져 다음 단계가 실패한다. 시나리오 테스트에는 `@Transactional`을 쓰지 않고 `@Sql` 스크립트나 `@AfterAll`에서 명시적으로 정리한다.
 
 일부만 커밋이 필요하다면 `@Commit`/`@Rollback`으로 선언적으로 뒤집거나, `TestTransaction`의 정적 메서드로 트랜잭션을 직접 시작·종료한다.
 
@@ -191,7 +191,7 @@ tasks.named<Test>("test") {
 
 `@Order`로 순서를 고정해도 1단계가 실패한 뒤 2·3단계는 그대로 실행된다. 선행 조건이 무너진 상태에서 나온 실패라 로그만 늘어난다.
 
-[junit-pioneer](https://junit-pioneer.org)의 `@DisableIfTestFails`를 클래스에 붙이면 **첫 실패 이후 같은 클래스의 남은 테스트가 비활성화**된다.
+[junit-pioneer](https://junit-pioneer.org)의 `@DisableIfTestFails`를 클래스에 붙이면 첫 실패 이후 같은 클래스의 남은 테스트가 비활성화된다.
 
 ```java
 @DisableIfTestFails
@@ -220,9 +220,9 @@ class Tests {
 
 ## 7. 병렬 실행
 
-병렬 실행을 켜도 `MethodOrderer`를 사용하는 클래스와 `Lifecycle.PER_CLASS` 클래스는 **기본 실행 모드 적용 대상에서 제외**된다. 전자는 지정한 순서와 충돌하고, 후자는 스레드 안전성을 보장할 수 없기 때문이다. 이런 클래스는 `@Execution(CONCURRENT)`를 명시적으로 붙인 경우에만 병렬로 실행된다. 즉 순서 의존 테스트에 `@Execution(SAME_THREAD)`를 따로 붙일 필요는 없다.
+병렬 실행을 켜도 `MethodOrderer`를 사용하는 클래스와 `Lifecycle.PER_CLASS` 클래스는 기본 실행 모드 적용 대상에서 제외된다. 전자는 지정한 순서와 충돌하고, 후자는 스레드 안전성을 보장할 수 없기 때문이다. 이런 클래스는 `@Execution(CONCURRENT)`를 명시적으로 붙인 경우에만 병렬로 실행된다. 즉 순서 의존 테스트에 `@Execution(SAME_THREAD)`를 따로 붙일 필요는 없다.
 
-반면 `ClassOrderer`는 병렬 실행 시 **스케줄 순서만 보장**한다. 최상위 클래스는 정렬된 순서로 스케줄되지만 실행 스레드를 JUnit이 직접 제어하지 않으므로 그 순서대로 시작된다는 보장이 없다.
+반면 `ClassOrderer`는 병렬 실행 시 스케줄 순서만 보장한다. 최상위 클래스는 정렬된 순서로 스케줄되지만 실행 스레드를 JUnit이 직접 제어하지 않으므로 그 순서대로 시작된다는 보장이 없다.
 
 여러 시나리오 클래스가 같은 DB 테이블 같은 공유 자원을 쓴다면 `@ResourceLock`으로 동시 접근을 막는다.
 
@@ -248,62 +248,41 @@ Stream<DynamicTest> 주문_시나리오() {
 
 ---
 
-## 9. JUnit 4
+## 9. 주의점
 
-JUnit 4는 `@FixMethodOrder`로 정렬 방식만 고를 수 있고 `@Order` 같은 임의 순서 지정은 지원하지 않는다. 순서를 강제하려면 메서드 이름에 접두사를 붙여 사전순으로 맞추는 방식을 쓴다.
-
-```java
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class OrderedTest {
-    @Test public void t1_createOrder() { }
-    @Test public void t2_pay() { }
-}
-```
-
-| 상수 | 동작 |
-|------|------|
-| `DEFAULT` | 결정적이지만 예측 불가능한 순서 |
-| `NAME_ASCENDING` | 메서드명 사전순. `Method.toString()`이 tiebreaker |
-| `JVM` | JVM이 반환한 순서. 실행마다 달라질 수 있음 |
-
----
-
-## 10. 주의점
-
-### 10.1. 개별 실행 시 실패
+### 9.1. 개별 실행 시 실패
 
 순서 의존 테스트는 IDE에서 메서드 하나만 골라 실행하면 선행 상태가 없어 실패한다. 디버깅 비용이 높으므로 시나리오 단위를 너무 길게 만들지 않는다.
 
-### 10.2. @Order 값 간격
+### 9.2. @Order 값 간격
 
 `@Order(1)`, `@Order(2)`처럼 촘촘하게 매기면 중간에 단계를 끼워 넣을 때 이후 값을 모두 수정해야 한다. 10 단위로 띄우면 재번호 없이 삽입할 수 있다.
 
-### 10.3. 클래스 @Order 무시
+### 9.3. 클래스 @Order 무시
 
 §3.2대로 최상위 클래스의 `@Order`는 `junit.jupiter.testclass.order.default` 설정 없이는 아무 효과가 없다. 애너테이션만 붙이고 동작하지 않는다면 이 설정을 먼저 확인한다.
 
-### 10.4. 원칙과의 상충
+### 9.4. 원칙과의 상충
 
 순서 의존은 [[good-test-practices]]의 Independent·Isolated 속성을 의도적으로 포기하는 선택이다. 단위 테스트에는 적용하지 않고, E2E 시나리오 검증에 한정해 §5.3처럼 태그로 분리해 운영한다.
 
 ---
 
 ## Sources
-- JUnit User Guide — Test Execution Order: https://docs.junit.org/current/writing-tests/test-execution-order.html
-- JUnit User Guide — Test Instance Lifecycle: https://docs.junit.org/current/writing-tests/test-instance-lifecycle.html
-- JUnit User Guide — Parallel Execution: https://docs.junit.org/current/writing-tests/parallel-execution.html
-- JUnit User Guide — Dynamic Tests: https://docs.junit.org/current/writing-tests/dynamic-tests.html
-- JUnit Pioneer — @DisableIfTestFails: https://junit-pioneer.org/docs/disable-if-test-fails/
-- Spring Framework Reference — Transaction Management: https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html
-- JUnit 4 Javadoc — MethodSorters: https://junit.org/junit4/javadoc/latest/org/junit/runners/MethodSorters.html
+- [JUnit: Test Execution Order](https://docs.junit.org/current/writing-tests/test-execution-order.html)
+- [JUnit: Test Instance Lifecycle](https://docs.junit.org/current/writing-tests/test-instance-lifecycle.html)
+- [JUnit: Parallel Execution](https://docs.junit.org/current/writing-tests/parallel-execution.html)
+- [JUnit: Dynamic Tests](https://docs.junit.org/current/writing-tests/dynamic-tests.html)
+- [JUnit Pioneer: @DisableIfTestFails](https://junit-pioneer.org/docs/disable-if-test-fails/)
+- [Spring: Transaction Management](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html)
 
 ---
 
 ## Related pages
-- [[good-test-practices]] — 좋은 테스트 코드 작성법
-- [[junit-test-suite]] — JUnit 테스트 스위트와 태그 필터링
-- [[junit-parameterized-test]] — JUnit 5 매개변수화 테스트
-- [[java-testing-libraries]] — Java 테스트 라이브러리 전체 개요
+- [[good-test-practices]]
+- [[junit-test-suite]]
+- [[junit-parameterized-test]]
+- [[java-testing-libraries]]
 
 ---
 

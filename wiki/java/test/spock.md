@@ -1,6 +1,6 @@
 ---
-title: Spock — Groovy 기반 테스트·명세 프레임워크
-updated: 2026-09-14 16:34:37
+title: Spock
+updated: 2026-10-22 23:09:21
 tags:
   - java
   - groovy
@@ -9,15 +9,15 @@ tags:
   - bdd
 ---
 
-## 1. 개요 — Spock이란
+## 1. 개요
 
-**Spock**은 Java/Groovy 애플리케이션을 위한 **테스트·명세(specification) 프레임워크**다. 테스트 클래스가 곧 동작 명세서가 되도록 BDD 스타일의 표현력 있는 문법을 제공한다.
+Spock은 Java/Groovy 애플리케이션을 위한 테스트·명세(specification) 프레임워크다. 테스트 클래스가 곧 동작 명세서가 되도록 BDD 스타일 문법을 제공한다.
 
-- **Groovy로 작성**하지만 테스트 대상은 Java 코드도 무방하다.
-- **JUnit Platform 위에서 실행**된다 → 기존 IDE·빌드 도구·리포팅과 그대로 호환된다([[junit-test-suite]]의 Platform 생태계 공유).
+- **Groovy**: 명세는 Groovy로 작성하며 테스트 대상은 Java 코드도 무방하다.
+- **JUnit Platform**: JUnit Platform 위에서 실행되어 기존 IDE·빌드 도구·리포팅과 호환된다([[junit-test-suite]]).
 - **Power Assert**: 단언이 실패하면 표현식의 모든 중간 값을 출력한다.
-- **모킹/스터빙이 내장**되어 별도 Mockito 없이 `Mock`/`Stub`/`Spy`를 쓴다.
-- **데이터 테이블**로 데이터 주도 테스트를 간결하게 표현한다.
+- **내장 모킹**: 별도 Mockito 없이 `Mock`/`Stub`/`Spy`를 쓴다.
+- **데이터 테이블**: 데이터 주도 테스트를 표 형태로 표현한다.
 
 ### 1.1. 핵심 용어
 
@@ -29,7 +29,7 @@ tags:
 
 ## 2. 의존성 설정
 
-Spock 버전 문자열은 **`{spock}-groovy-{groovy}`** 규칙을 따른다(예: `2.3-groovy-4.0`, `2.4-groovy-5.0`). BOM으로 버전을 일괄 관리하는 것이 권장된다.
+Spock 버전 문자열은 `{spock}-groovy-{groovy}` 규칙을 따른다(예: `2.3-groovy-4.0`, `2.4-groovy-5.0`). BOM으로 버전을 일괄 관리할 수 있다.
 
 ### 2.1. Gradle
 
@@ -74,7 +74,7 @@ Groovy 컴파일을 위해 `gmavenplus-plugin`이 필요하고, Surefire가 `*Sp
 </build>
 ```
 - `spock-core`만 필수, `spock-spring`은 Spring 연동 시 추가한다.
-- Maven Surefire의 디스커버리 패턴([[junit-test-suite]] §7 참고)은 기본적으로 `.java`만 잡으므로 `*Spec` 포함 설정이 필요하다.
+- Maven Surefire의 기본 디스커버리 패턴([[junit-test-suite]] §6 참고)에 `*Spec`이 없으므로 포함 설정이 필요하다.
 
 ---
 
@@ -132,24 +132,14 @@ feature 메서드는 라벨 블록으로 단계를 구분한다. 블록은 중�
 | 블록 | 역할 |
 |------|------|
 | `given:` (= `setup:`) | 픽스처·전제 조건 |
-| `when:` | 자극(stimulus) — 대상 행위 실행 |
-| `then:` | 검증 — 조건·예외·상호작용 |
+| `when:` | 자극(stimulus). 대상 행위 실행 |
+| `then:` | 조건·예외·상호작용 검증 |
 | `expect:` | `when`+`then` 결합 (순수 함수 검증에 적합) |
 | `and:` | 같은 종류 블록을 가독성 위해 분할 |
 | `cleanup:` | 자원 해제 (실패해도 실행) |
 | `where:` | 데이터 주도 반복 데이터 공급 |
 
-```groovy
-def "두 수의 최댓값"() {
-    expect:
-    Math.max(a, b) == c
-
-    where:
-    a | b || c
-    1 | 3 || 3
-    7 | 4 || 7
-}
-```
+`expect:`·`where:` 사용 예는 §6.1.
 
 ### 4.3. 조건과 Power Assert
 
@@ -171,7 +161,7 @@ stack.size() == 2   // 실제로는 1이라 실패
 // [push me]
 ```
 
-### 4.4. 이전 값 비교 — old()
+### 4.4. old()
 
 `then` 블록에서 `old(expr)`로 같은 표현식이 `when` 실행 전에 가졌던 값을 가져와, 실행 후 값과 비교할 수 있다. 상태 변화를 검증할 때 유용하다.
 
@@ -229,7 +219,7 @@ def "최댓값 계산"() {
 }
 ```
 
-### 6.2. 데이터 파이프 — `<<`
+### 6.2. 데이터 파이프
 
 변수에 데이터 프로바이더(컬렉션·이터러블)를 연결한다.
 
@@ -241,7 +231,7 @@ message << ["hello", "world", "test"]
 [a, b, c] << sql.rows("select a, b, c from table")
 ```
 
-### 6.3. @Unroll — 반복별 리포트
+### 6.3. @Unroll
 
 데이터 주도 feature는 기본적으로 각 반복이 별도 테스트로 표시(unroll)된다. 표시 이름은 `#변수` 플레이스홀더로 꾸민다.
 
@@ -269,15 +259,15 @@ def "최댓값"() {
 ```groovy
 def subscriber = Mock(Subscriber)   // 명시 타입
 Subscriber sub = Mock()             // 타입 추론
-def stub      = Stub(Subscriber)    // 스텁 (카디널리티 검증 없음)
+def stub      = Stub(Subscriber)    // 스텁 (카디널리티 지정 불가)
 def spy       = Spy(realSubscriber) // 실제 객체 래핑
 ```
 
-- **Mock**: 호출을 받아 기본값(`null`/`0`/`false`) 반환. 상호작용(호출 횟수) 검증 가능.
-- **Stub**: 협력자 응답만 제공, 호출 횟수는 검증하지 않음.
-- **Spy**: 실제 객체를 감싸 실제 동작 유지하면서 상호작용 검증.
+- **Mock**: 호출을 받아 기본값(`null`/`0`/`false`)을 반환하며, 상호작용(호출 횟수)을 검증할 수 있다.
+- **Stub**: 협력자 응답만 제공한다. 필수 상호작용(`1 * ...`)과 일치하면 `InvalidSpecException`이 발생한다.
+- **Spy**: 실제 객체를 감싸 실제 동작을 유지하면서 상호작용을 검증한다.
 
-### 7.2. 상호작용 검증 — 카디널리티
+### 7.2. 카디널리티
 
 `then:` 블록에서 `횟수 * 대상.메서드(인자)` 형식으로 호출을 검증한다.
 
@@ -303,7 +293,7 @@ def "이벤트가 구독자에게 전달된다"() {
 1 * _.receive("x")             // 임의 mock 대상
 ```
 
-### 7.3. 스터빙 — 응답 지정
+### 7.3. 스터빙
 
 ```groovy
 subscriber.receive(_) >> "ok"                 // 항상 "ok"
@@ -315,22 +305,14 @@ subscriber.receive(_) >> { String m -> m.length() > 3 ? "ok" : "fail" } // 클�
 
 ## 8. 장단점
 
-**장점**
-- 블록 구조(`given/when/then`)로 의도가 드러나는 가독성 높은 명세.
-- Power Assert의 풍부한 실패 진단 — 단언 API 없이 평범한 boolean 식만 쓴다.
-- 데이터 테이블 기반 데이터 주도 테스트가 매우 간결.
-- 모킹/스터빙 내장 — 프레임워크 일관성.
-- Groovy의 클로저·연산자 오버로딩을 활용한 표현력.
+장단점은 다음과 같다.[^1]
 
-**단점**
-- Groovy 런타임·컴파일 단계가 추가된다(빌드에 Groovy 플러그인 필요).
-- Java만 쓰는 팀에는 Groovy 학습 비용이 진입장벽.
-- IDE·정적 분석 지원이 순수 JUnit보다 다소 약하다.
-- 순수 Java 단언 대비 디버깅 시 Groovy 동적 타입 특성을 감안해야 한다.
+- **장점**: 블록 구조(`given/when/then`)로 의도가 드러난다. Power Assert가 단언 API 없이 boolean 식만으로 실패 원인을 보여 준다. 데이터 테이블로 데이터 주도 테스트를 간결하게 쓴다. 모킹·스터빙이 내장되어 있고, Groovy의 클로저·연산자 오버로딩을 활용할 수 있다.
+- **단점**: 빌드에 Groovy 컴파일 단계와 플러그인이 추가된다. Java만 쓰는 팀에는 Groovy 학습 비용이 생긴다. IDE·정적 분석 지원이 순수 JUnit보다 약하고, 디버깅 시 Groovy 동적 타입 특성을 감안해야 한다.
 
 ---
 
-## 9. 기타 및 주의점
+## 9. 주의점
 
 ### 9.1. Groovy-Spock 버전 불일치
 
@@ -346,24 +328,28 @@ Groovy 테스트 소스는 `src/test/groovy`에 위치해야 하며 해당 디�
 
 ### 9.4. final 클래스/메서드 모킹 제약
 
-기본 모킹 백엔드(ByteBuddy)는 final 클래스·메서드 모킹에 제약이 있다. `byte-buddy` 1.9+를 classpath에 추가하거나, Mockito 4.11+ 사용 시 `Mock(mockMaker: MockMakers.mockito)`로 Mockito 모크 메이커를 선택하면 final 모킹이 가능하다. 명세 대상이 Groovy 코드라면 `GroovyMock`으로도 우회할 수 있다.
+java-proxy·byte-buddy·cglib mock maker는 final 클래스·메서드를 모킹할 수 없다. `mockito-core` 4.11+가 classpath에 있으면 mockito mock maker로 final 클래스 모킹이 자동 활성화되고, final 메서드는 `Mock(mockMaker: MockMakers.mockito)`로 mock maker를 명시해야 한다. 지원하지 않는 mock maker로 final 메서드를 모킹하면 오류 없이 상호작용 지정이 무시된다. 명세 대상이 Groovy 코드라면 `GroovyMock`으로도 우회할 수 있다.
 
 ---
 
 ## Sources
-- Spock Framework Reference (2.3): https://spockframework.org/spock/docs/2.3/all_in_one.html
-- Spock Primer (2.4): https://spockframework.org/spock/docs/2.4/spock_primer.html
-- spockframework/spock-example build.gradle: https://github.com/spockframework/spock-example/blob/master/build.gradle
-- Maven Repository — spock-core: https://mvnrepository.com/artifact/org.spockframework/spock-core
-- Baeldung — Setting up and Using Spock With Gradle: https://www.baeldung.com/groovy-spock-gradle-setup
-- Solid Soft — Running Spock with unsupported Groovy version (Gradle + Maven): https://blog.solidsoft.pl/2021/11/19/running-spock-with-unsupported-groovy-version-gradle-maven/
-- GMavenPlus Wiki — Usage: https://github.com/groovy/GMavenPlus/wiki/Usage
-- JetBrains — Getting started with Spock: https://www.jetbrains.com/help/idea/spock.html
-- Spock Extensions docs (Mock maker 선택): https://spockframework.org/spock/docs/2.4-M2/extensions.html
+- [Spock: Framework Reference 2.3](https://spockframework.org/spock/docs/2.3/all_in_one.html)
+- [Spock: Spock Primer 2.4](https://spockframework.org/spock/docs/2.4/spock_primer.html)
+- [spockframework: spock-example build.gradle](https://github.com/spockframework/spock-example/blob/master/build.gradle)
+- [mvnrepository: spock-core](https://mvnrepository.com/artifact/org.spockframework/spock-core)
+- [Baeldung: Setting up and Using Spock With Gradle](https://www.baeldung.com/groovy-spock-gradle-setup)
+- [Solid Soft: Running Spock with unsupported Groovy version (Gradle + Maven)](https://blog.solidsoft.pl/2021/11/19/running-spock-with-unsupported-groovy-version-gradle-maven/)
+- [GMavenPlus: Usage](https://github.com/groovy/GMavenPlus/wiki/Usage)
+- [JetBrains: Getting started with Spock](https://www.jetbrains.com/help/idea/spock.html)
+- [Spock: Extensions 2.4-M2](https://spockframework.org/spock/docs/2.4-M2/extensions.html)
 
 ---
 
 ## Related pages
-- [[java-testing-libraries]] — Java 테스트 라이브러리 개요(Spock의 위치: 프레임워크 분류)
-- [[junit-test-suite]] — JUnit Platform 실행 생태계·Surefire 디스커버리 패턴
-- [[test-double]] — Mock/Stub/Spy 차이(Spock §7 모킹의 개념적 배경)
+- [[java-testing-libraries]]
+- [[junit-test-suite]]
+- [[test-double]]
+
+---
+
+[^1]: 공식 문서의 직접 서술이 아니라 §1~§7의 기능 설명과 Groovy 의존(§2, §9)으로부터 정리한 평가다.

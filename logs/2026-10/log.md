@@ -2,6 +2,20 @@
 
 ---
 
+## 2026-10-22 23:09:21
+
+- **수정**: java/test 문서 12개 문체 정리(lint `report-20261022-java-test` 3단계). 대시 연결·본문 화살표·강조 볼드·이모지 제거, 정의형 목록 통일, 명사형 종결 서술형 전환, 근거 없는 권장 표현 정리, test-double·spock 추론 서술에 각주 추가
+
+## 2026-10-22 23:02:05
+
+- **수정**: java/test 문서 13개 구성 개선(lint `report-20261022-java-test` 2단계). 제목·절 제목 축약, 요약 절을 작성 규칙·선택 기준으로 정리, 중복 예시 제거, Sources·Related pages 형식 통일, mockserver 절 구분선 추가
+- **수정**: `wiki/index.md` java/test 항목 설명을 주제 수준으로 축약
+
+## 2026-10-22 22:53:27
+
+- **수정**: java/test 문서 13개 사실 정정(lint `report-20261022-java-test` 1단계). Mockito doXxx 체이닝·final 모킹·doNothing 사용 사례, Spock Stub 카디널리티·final mock maker, Spy 정의, GCM 테스트 벡터, Test Desiderata·FIRST 서술, JMH Error 정의, starter-test 구성, Suite failIfNoTests, MockServer 버전, JUnit 버전 표기 정정. 문서 내 깨진 앵커 링크 수정
+- **수정**: `junit-test-suite.md`, `junit-test-execution-order.md`, `java-testing-libraries.md` JUnit 4 내용 제거
+
 ## 2026-10-21 23:14:11
 
 - **수정**: dbms 문서 10개 문체 정리(lint `report-20261021-dbms` 3단계). 제목 축약, 정의형 목록 통일, 강조 볼드·본문 화살표·대시 연결 제거, 명사형 종결 문장 서술형 전환, 근거 없는 권장 표현 정리
