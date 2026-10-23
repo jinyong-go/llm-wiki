@@ -2,6 +2,31 @@
 
 ---
 
+## 2026-10-24 00:28:11
+
+- **수정**: `docker-volume.md`의 볼륨 초기 파일 처리 설명을 기존 §2.1과 일치하도록 보완
+
+## 2026-10-24 00:27:44
+
+- **수정**: Docker 문서 도입부와 설명 흐름 정리. 네트워크 드라이버·마운트 비교표를 확인 가능한 동작 기준으로 재구성하고 Dockerfile 지시어 설명 보완
+
+## 2026-10-24 00:23:08
+
+- **수정**: Docker 문서 8개 사실·적용 범위 정정. VM 비교 수치 제거, containerd 저장 방식·네트워크 기본값·Dockerfile 지시어·user namespace 설명 보완
+
+## 2026-10-24 00:17:34
+
+- **수정**: docker 문서 12개 문체 정리(lint `report-20261024-docker` 3단계). '-다'체·도커 표기 통일, 강조 볼드·설명성 괄호·대시 연결·수사 표현 제거, 명령 문서 옵션 목록 정리, 축약어 원어 병기, ps virtual size·exec 기본 사용자·shell form 시그널·bind mount 가림 동작·macvlan 용도 서술 정정, netstat을 ss로 교체
+
+## 2026-10-24 00:10:08
+
+- **수정**: docker 문서 12개 구성 개선(lint `report-20261024-docker` 2단계). 제목·절 제목 축약, 개념 문서 개요 절 추가, 문서 간 중복 제거(네트워크 3개 문서 역할 분리, CoW·최적화·레이어·격리 원리·stats 단일화), security 절 재배치, stop·copy-up·entrypoint·네트워크 디버깅 다이어그램 추가, Sources 형식 통일, 태그 정리
+- **수정**: `wiki/index.md` docker 항목 설명을 주제 수준으로 축약
+
+## 2026-10-24 00:04:55
+
+- **수정**: docker 문서 12개 사실 정정(lint `report-20261024-docker` 1단계). volume prune·rm -v 동작, ADD 원격 다운로드 권장, ARG 노출, ENTRYPOINT 덮어쓰기, containerd image store 기본값, 매니페스트·config 구분, docker0 서브넷, host 드라이버 지원 환경, overlay Swarm 필수·IPsec 암호화, macvlan 제약 원인, 컨테이너 상태 removing, USER 네임스페이스 적용 조건, userns 제한 사항, run·stop 옵션 정정. 성능 등급·크기 수치 각주 추가, network-commands 깨진 앵커 수정, dockerfile 미반영 출처 삭제
+
 ## 2026-10-23 23:56:44
 
 - **수정**: DBMS 문서 10개 도입부와 설명 문단을 읽기 쉽게 정리하고, 실행 순서·복합 인덱스·upsert 설명의 문장 구성을 다듬음

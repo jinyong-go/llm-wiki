@@ -1,86 +1,115 @@
 ---
 title: 도커파일 지시어
-updated: 2026-09-01 11:43:12
+updated: 2026-10-24 00:27:44
 tags:
   - docker
   - dockerfile
-  - instructions
   - devops
 ---
 
-## 1. 실행 형식: Exec Form vs Shell Form
-`RUN`, `CMD`, `ENTRYPOINT` 지시어는 명령을 실행하는 두 가지 형식을 지원한다.
+## 1. 개요
 
-### 1.1. Exec Form
-권장 형식이다.
-- **형식**: `["executable", "param1", "param2"]`
-- **특징**:
-    - JSON 배열 형태로 작성한다.
-    - 셸을 호출하지 않고 실행 파일을 직접 실행한다.
-    - **PID 1 처리**: 실행 파일이 컨테이너의 PID 1이 되어 커널 시그널(`SIGTERM`)을 직접 받을 수 있다. 이는 애플리케이션의 **우아한 종료(Graceful Shutdown)**를 위해 필수적이다.
-    - 셸 변수(예: `$VAR`) 확장이 수행되지 않는다.
-- **예시**: `ENTRYPOINT ["java", "-jar", "app.jar"]`
-
-### 1.2. Shell Form
-- **형식**: `command param1 param2`
-- **특징**:
-    - 일반적인 셸 명령어 형태로 작성한다.
-    - 내부적으로 `/bin/sh -c`를 통해 실행된다.
-    - 셸 환경 변수 확장, 파이프(`|`), 리다이렉션(`>`) 등을 사용할 수 있다.
-    - **문제점**: 실행 파일이 PID 1인 셸의 자식 프로세스로 실행되므로, `docker stop` 시 시그널이 앱에 전달되지 않아 강제 종료될 위험이 있다.
-- **예시**: `RUN apt-get update && apt-get install -y git`
+이 문서는 Dockerfile의 실행 형식과 `RUN`, `COPY`, `ADD`, `ENTRYPOINT`, `CMD` 등 주요 지시어의 동작을 설명한다.
 
 ---
 
-## 2. RUN: 명령 실행 및 캐시 관리
+## 2. 실행 형식
 
-### 2.1. 캐시 버스팅 (Cache Busting)
-`RUN` 지시어는 빌드 성능을 위해 캐싱되지만, 패키지 관리자 사용 시 주의가 필요하다.
-- **잘못된 예시**: `RUN apt-get update`와 `RUN apt-get install -y curl`을 별도 레이어로 두면, 나중에 패키지 목록만 추가했을 때 `update` 레이어는 캐시를 사용하게 되어 구버전 패키지를 설치하거나 빌드에 실패할 수 있다.
-- **권장 방식**: `RUN apt-get update && apt-get install -y ...`와 같이 **업데이트와 설치를 하나의 RUN 문으로 묶어야** 한다. 이를 통해 패키지 목록이 변경될 때만 `update`가 다시 실행되도록 강제할 수 있다.
+`RUN`, `CMD`, `ENTRYPOINT`는 exec form과 shell form 두 형식을 지원한다.
+
+### 2.1. Exec Form
+
+`["executable", "param1", "param2"]`처럼 JSON 배열로 작성한다. 셸을 거치지 않고 실행 파일을 직접 실행하므로 `$VAR` 같은 셸 변수 확장이 일어나지 않는다. 컨테이너의 주 프로세스를 exec form으로 실행하면 실행 파일이 PID 1이 되어 `docker stop`의 종료 시그널을 직접 처리할 수 있다.
+
+```dockerfile
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+### 2.2. Shell Form
+
+`command param1 param2`처럼 셸 명령 형태로 작성하며 `/bin/sh -c`로 실행된다. 셸 변수 확장, 파이프(`|`), 리다이렉션(`>`)을 쓸 수 있다. `ENTRYPOINT`에 이 형식을 쓰면 실행 파일이 PID 1인 셸의 자식 프로세스가 되어 Unix 시그널을 받지 못하고, `docker stop` 시 grace period가 지나 `SIGKILL`로 종료된다.
+
+```dockerfile
+RUN apt-get update && apt-get install -y git
+```
 
 ---
 
-## 3. 복사: COPY vs ADD
+## 3. RUN
 
-### 3.1. COPY
-- 호스트의 파일이나 디렉터리를 이미지 내부로 복사하는 기본 지시어이다.
-- 기능이 단순하고 투명하여 가장 널리 권장된다.
-- **빌드 컨텍스트 최적화**: `.dockerignore`를 통해 불필요한 파일이 복사되지 않도록 관리해야 한다.
+### 3.1. 캐시 버스팅
 
-### 3.2. ADD
-- `COPY` 기능 + 원격 URL 다운로드 및 자동 압축 해제 지원.
-- **압축 해제 용도**: 로컬의 `tar.gz` 등을 복사하면서 즉시 압축을 풀 때 유용하다.
-- **URL 다운로드**: `ADD`보다는 `RUN wget/curl && rm` 방식을 권장한다 (동일 레이어에서 잔여물을 삭제하여 크기 최적화 가능).
+`RUN apt-get update`와 `RUN apt-get install -y curl`을 별도 지시어로 두면, 이후 설치 패키지만 바꿔도 `update` 레이어는 캐시를 재사용해 오래된 패키지 목록으로 설치하게 된다. `update`와 `install`을 하나의 `RUN`으로 묶으면 설치 목록이 바뀔 때 `update`도 다시 실행된다.
+
+```dockerfile
+RUN apt-get update && apt-get install -y \
+    curl \
+    git
+```
 
 ---
 
-## 4. 실행 명령: ENTRYPOINT vs CMD
-두 지시어는 모두 컨테이너 시작 시 실행될 명령을 정의하지만 역할이 다르다.
+## 4. COPY·ADD
 
-- **ENTRYPOINT**: 컨테이너의 **메인 명령**. 무조건 실행되며, `docker run` 인자는 뒤에 덧붙여진다.
-- **CMD**: 컨테이너의 **기본 인자**. `docker run` 시 인자를 전달하면 완전히 덮어씌워진다.
+### 4.1. COPY
 
-### 4.1. 헬퍼 스크립트 패턴 (Helper Script)
-복잡한 초기화 로직(권한 설정, DB 준비 등)이 필요한 경우 `ENTRYPOINT`에 셸 스크립트를 지정한다.
+빌드 컨텍스트나 다른 빌드 스테이지의 파일을 이미지로 복사한다. 기능이 단순해 일반적인 파일 복사에 권장된다. 복사할 필요가 없는 파일은 `.dockerignore`로 빌드 컨텍스트에서 제외한다.
+
+### 4.2. ADD
+
+`ADD`는 `COPY`의 기본 복사 기능에 원격 HTTPS·Git URL 가져오기와 빌드 컨텍스트 tar 아카이브 자동 압축 해제를 더한 지시어다. 로컬 tar 아카이브는 복사하면서 압축을 풀지만, 원격 URL에서 받은 tar 파일은 기본적으로 압축을 풀지 않는다. 원격 파일을 가져올 때는 `ADD --checksum`으로 체크섬을 검증할 수 있다. 일반 파일 복사에는 `COPY`를 사용하고, `ADD`는 원격 소스나 자동 압축 해제가 필요한 경우에 선택한다.
+
+```dockerfile
+ADD --checksum=sha256:<digest> https://example.com/app.tar.gz /tmp/
+```
+
+---
+
+## 5. ENTRYPOINT·CMD
+
+`ENTRYPOINT`는 컨테이너의 주 실행 파일을 지정하고, `CMD`는 기본 명령이나 기본 인자를 지정한다. 두 지시어를 함께 사용할 때와 `docker run`에서 인자를 전달할 때의 관계는 다음과 같다.
+
+| 구성 | 동작 |
+|---|---|
+| `CMD`만 지정 | 컨테이너 시작 시 실행할 기본 명령과 인자를 지정한다. |
+| `ENTRYPOINT`와 `CMD` 지정 | `ENTRYPOINT`를 주 명령으로 실행하고 `CMD`를 기본 인자로 전달한다. |
+| `docker run`에 인자 전달 | 이미지의 `CMD` 기본값을 대체한다. |
+| `docker run --entrypoint` 지정 | 이미지의 `ENTRYPOINT`를 대체한다. |
+
+### 5.1. 헬퍼 스크립트
+
+권한 설정, DB 준비 등 초기화가 필요하면 `ENTRYPOINT`에 셸 스크립트를 지정한다. 스크립트 끝에서 `exec "$@"`로 `CMD`를 실행하면 셸 프로세스가 애플리케이션으로 대체되어 애플리케이션이 PID 1로 시그널을 받는다.
+
 ```dockerfile
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["postgres"]
 ```
-- 스크립트 내부에서 `exec "$@"`를 사용하여 전달받은 `CMD`를 실행함으로써, 최종 앱 프로세스가 PID 1을 유지하게 하는 것이 핵심이다.
+
+```mermaid
+sequenceDiagram
+    participant R as docker run
+    participant S as docker-entrypoint.sh (PID 1)
+    participant A as postgres
+    R->>S: ENTRYPOINT + CMD 인자 "postgres"
+    S->>S: 초기화 (권한, DB 준비)
+    S->>A: exec "$@"
+    Note over A: 셸을 대체해 PID 1 유지, 시그널 직접 수신
+```
 
 ---
 
-## 5. 변수: ARG vs ENV
-- **ARG (Build-time)**: 빌드 시점에만 사용 (`--build-arg`). 이미지 레이어에 남지 않음.
-- **ENV (Runtime)**: 컨테이너 실행 시에도 유지되는 환경 변수. 애플리케이션 설정값 전달에 적합.
+## 6. ARG·ENV
+
+- **ARG**: 빌드 시점 변수로 `--build-arg`로 값을 전달하며, ENV처럼 이미지에 영속되지 않는다. 값이 `docker history`와 max 모드 provenance에 노출되므로 시크릿은 `RUN --mount=type=secret`으로 전달한다.
+- **ENV**: 이미지에 영속되어 컨테이너 실행 시에도 유지되는 환경 변수이다.
 
 ---
 
 ## Sources
-- [Difference Between run, cmd and entrypoint in a Dockerfile](https://www.baeldung.com/ops/dockerfile-run-cmd-entrypoint)
-- [Building best practices](https://docs.docker.com/build/building/best-practices/)
+- [Baeldung: Difference Between run, cmd and entrypoint in a Dockerfile](https://www.baeldung.com/ops/dockerfile-run-cmd-entrypoint)
+- [Docker Docs: Building best practices](https://docs.docker.com/build/building/best-practices/)
+- [Docker Docs: Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
 
 ---
 

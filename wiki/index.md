@@ -243,17 +243,17 @@ tags:
 
 ## Docker
 
-- [[docker-overview]] — 도커 기본 개념, 아키텍처, VM과의 차이
-- [[dockerfile]] — 도커 이미지 빌드 스크립트: 원리, 지시어, 베스트 프랙티스
-- [[dockerfile-directives]] — 도커파일 지시어 상세 (Exec vs Shell Form 등)
-- [[docker-image]] — 도커 이미지: 레이어 구조, CoW, 최적화
-- [[docker-container]] — 도커 컨테이너: 격리 원리, 자원 제한, OCI
-- [[docker-container-commands]] — 도커 컨테이너 명령어: 라이프사이클, 모니터링
-- [[docker-network]] — 도커 네트워크 구조와 드라이버 종류
-- [[docker-network-drivers]] — 도커 네트워크 드라이버 상세 (Bridge, Overlay, Macvlan)
+- [[docker-overview]] — 도커 개념과 VM 비교
+- [[dockerfile]] — 도커 이미지 빌드 스크립트
+- [[dockerfile-directives]] — 도커파일 지시어의 실행 형식과 동작
+- [[docker-image]] — 도커 이미지 구조와 스토리지 드라이버
+- [[docker-container]] — 도커 컨테이너 격리와 상태
+- [[docker-container-commands]] — 도커 컨테이너 CLI
+- [[docker-network]] — 도커 네트워크 구조
+- [[docker-network-drivers]] — 도커 네트워크 드라이버
 - [[docker-network-commands]] — 도커 네트워크 CLI와 디버깅
-- [[docker-volume]] — 도커 볼륨과 데이터 마운트 (Volumes, Bind Mounts, tmpfs)
-- [[docker-volume-commands]] — 도커 볼륨 관리 CLI
+- [[docker-volume]] — 도커 볼륨과 마운트 타입
+- [[docker-volume-commands]] — 도커 볼륨 CLI
 - [[docker-security]] — 도커 보안과 격리
 
 ## DBMS
