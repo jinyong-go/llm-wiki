@@ -1,6 +1,6 @@
 ---
 title: Upsert와 Merge
-updated: 2026-10-21 23:14:11
+updated: 2026-10-23 23:56:44
 tags:
   - dbms
   - sql
@@ -11,11 +11,11 @@ tags:
 
 ## 1. 개요
 
-Upsert는 키가 존재하면 UPDATE, 없으면 INSERT를 한 문장으로 수행하는 연산이다("update" + "insert"). SELECT로 존재 여부를 먼저 확인한 뒤 INSERT/UPDATE를 분기하는 방식(check-then-act)은 두 문장 사이에 다른 트랜잭션이 같은 키를 먼저 삽입할 수 있어 경쟁 조건(race condition)이나 유니크 제약 위반 예외로 이어진다. 배치 적재·동기화 작업에서 "있으면 갱신, 없으면 추가"가 반복적으로 필요한 경우, 매 행마다 SELECT를 날리는 대신 DBMS별 원자적 upsert 문법을 쓰면 문장 수와 왕복(round-trip)이 줄고 동시성 문제도 DB 엔진이 처리한다.
+Upsert는 지정한 키가 이미 있으면 행을 갱신하고, 없으면 새 행을 삽입하는 연산이다. 이름은 update와 insert를 결합한 표현이다.
 
-세 DBMS 모두 공통적으로 다음 원칙을 갖는다.
+먼저 `SELECT`로 존재 여부를 확인한 뒤 삽입 또는 갱신하는 방식은 두 작업 사이에 다른 트랜잭션이 같은 키를 삽입할 수 있다. DBMS가 제공하는 upsert 문법을 사용하면 이 경쟁을 데이터베이스 안에서 처리하고 애플리케이션의 왕복 횟수도 줄일 수 있다.
 
-- 결정적(deterministic) 동작만 허용한다. 한 문장 안에서 타깃의 같은 행을 두 번 이상 갱신하는 상황(소스에 중복 키가 있는 경우 등)은 오류로 처리된다(다만 뒤에서 보듯 MySQL은 예외적으로 오류 없이 침묵하는 경우가 있다). 이 결정성을 보장하는 방식은 DBMS마다 다르다: PostgreSQL·MySQL은 매칭 대상에 유니크 인덱스/제약을 요구해 애초에 충돌 판단 기준을 명확히 하는 반면, Oracle MERGE는 유니크 제약을 요구하지 않고 대신 실행 시점에 매칭이 1:1인지 검사해 위반 시 오류(`ORA-30926`)로 막는다.
+각 DBMS는 중복 입력과 충돌 대상을 서로 다른 방식으로 처리한다. Oracle `MERGE`, PostgreSQL `ON CONFLICT`, MySQL `ON DUPLICATE KEY UPDATE`의 차이는 §3–§6에서 비교한다.
 
 ---
 

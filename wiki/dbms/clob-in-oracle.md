@@ -1,6 +1,6 @@
 ---
 title: Oracle CLOB
-updated: 2026-10-21 23:14:11
+updated: 2026-10-23 23:56:44
 tags:
   - dbms
   - oracle
@@ -12,9 +12,9 @@ tags:
 
 ## 1. 개요
 
-CLOB(Character Large Object)은 Oracle에서 대용량 문자 데이터를 저장하는 LOB(Large Object) 데이터 타입이다. 단일바이트·멀티바이트 문자 데이터를 모두 지원하며 데이터베이스 문자셋(character set)을 사용한다. XML/HTML 문서, 텍스트 파일, 길이 제한 없는 메모 필드 등에 사용된다.
+CLOB(Character Large Object)은 Oracle에서 큰 문자 데이터를 저장하는 LOB(Large Object) 데이터 타입이다. XML, HTML, 텍스트 파일처럼 일반 문자열 타입의 크기 제한을 넘는 데이터에 사용할 수 있다.
 
-테이블 컬럼에는 CLOB 값 자체가 아니라 LOB 로케이터(locator)가 저장되며, 값은 조건에 따라 행 안(in-row)에 함께 저장되거나 별도 LOB 세그먼트(out-of-row)에 저장된다 (§3).
+테이블에는 CLOB 데이터 자체가 아니라 해당 데이터에 접근하는 로케이터(locator)가 저장된다. 실제 데이터는 크기와 저장 옵션에 따라 테이블 행 안이나 별도 LOB 세그먼트에 저장된다(§3).
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: SQL 함수
-updated: 2026-10-21 23:14:11
+updated: 2026-10-23 23:56:44
 tags:
   - dbms
   - sql
@@ -12,7 +12,7 @@ tags:
 
 ## 1. 개요
 
-실무에서 사용 빈도가 높은 SQL 함수를 DBMS별(Oracle, PostgreSQL, MySQL)로 정리한다. 순위 함수는 윈도우 함수, 나머지는 스칼라 함수에 속한다 (조건 분기의 CASE는 함수가 아닌 표현식이지만 함께 다룬다).
+이 문서는 Oracle, PostgreSQL, MySQL에서 자주 사용하는 SQL 함수와 표현식을 비교한다. 날짜·시간, 문자열, NULL 처리, 조건 분기, 순위 기능을 다루며 DBMS별 문법과 동작 차이에 초점을 둔다.
 
 ---
 
