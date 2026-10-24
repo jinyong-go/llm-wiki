@@ -1,6 +1,6 @@
 ---
 title: Git 파일 상태
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:20:53
 tags:
   - git
   - vcs
@@ -22,6 +22,7 @@ stateDiagram-v2
     Staged --> Unmodified: git commit
     Modified --> Unmodified: git restore
     Staged --> Modified: git restore --staged
+    Staged --> Untracked: git restore --staged (신규 파일)
     Unmodified --> Untracked: git rm --cached
 ```
 
@@ -130,6 +131,7 @@ git rm -r --cached <dir>/  # 디렉터리 전체를 추적 중단 (.gitignore �
 ```bash
 git rm --cached .env
 echo ".env" >> .gitignore
+git add .gitignore
 git commit -m "chore: remove .env from tracking"
 ```
 
@@ -149,19 +151,26 @@ git mv src/Foo.java src/bar/Foo.java
 Untracked 파일 중 Git이 무시해야 할 파일 패턴을 정의한다.
 
 ```
-# 주석
-*.class          # 확장자 일치
+# 확장자 일치
+*.class
 *.jar
-target/          # 디렉터리 전체 (하위 포함)
+*.a
+# 디렉터리 전체 (하위 포함)
+target/
 build/
-.env             # 특정 파일
+# 특정 파일
+.env
 *.log
 
-/TODO            # 루트의 TODO만 (하위 디렉터리 TODO는 제외)
-doc/*.txt        # doc 바로 아래 .txt (doc/sub/a.txt 제외)
-doc/**/*.pdf     # doc 하위 전체 .pdf
+# 루트의 TODO만 (하위 디렉터리 TODO는 제외)
+/TODO
+# doc 바로 아래 .txt (doc/sub/a.txt 제외)
+doc/*.txt
+# doc 하위 전체 .pdf
+doc/**/*.pdf
 
-!lib.a           # 예외: *.a 무시하지만 lib.a는 추적
+# 예외: *.a는 무시하지만 lib.a는 추적
+!lib.a
 ```
 
 자바 백엔드 프로젝트 기본:
@@ -196,26 +205,12 @@ Thumbs.db
 
 ---
 
-## 6. 상태 전환 표
-
-| 명령어 | Before | After |
-|--------|--------|-------|
-| `git add <file>` | Untracked | Staged |
-| `git add <file>` | Modified | Staged |
-| `git commit` | Staged | Committed (Unmodified) |
-| 파일 편집 | Unmodified | Modified |
-| `git restore <file>` | Modified | Unmodified |
-| `git restore --staged <file>` | Staged | Modified 또는 Untracked |
-| `git rm <file>` | Unmodified/Modified | 삭제됨 (Staged for deletion) |
-| `git rm --cached <file>` | Staged/Unmodified | Untracked (파일 유지) |
-
----
-
 ## Sources
 - [Pro Git: Git Basics Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
 - [Pro Git: Getting Started What is Git?](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)
 - [git-status](https://git-scm.com/docs/git-status)
 - [git-diff](https://git-scm.com/docs/git-diff)
+- [gitignore](https://git-scm.com/docs/gitignore)
 
 ---
 

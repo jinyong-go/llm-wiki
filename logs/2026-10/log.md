@@ -2,6 +2,14 @@
 
 ---
 
+## 2026-10-24 23:20:53
+
+- **수정**: git 문서 4개 구성 개선(lint `report-20261024-git` 2단계). file-states 중복 상태 전환 표 삭제 및 다이어그램 보완, config useConfigOnly 예시 중복 정리·§6 제목 변경, log 중복 alias 제거, stash 중복 구분선 제거
+
+## 2026-10-24 23:16:15
+
+- **수정**: git 문서 14개 사실 정정(lint `report-20261024-git` 1단계). 템플릿 디렉터리 복사 대상, 태그 사전순 정렬, --prune-tags 조건, add -p a/d 범위, clone -b 태그 detached HEAD, useConfigOnly 사용법, diff @{u} 의미, merge --abort 한계, 경로 reset·revert 계수 정정. stash·reflog·gitignore·diff3 예시 수정, 단축 SHA 서술 통일, 프록시 해제 예시를 remote.<name>.proxy로 교체, 누락 출처 추가
+
 ## 2026-10-24 00:28:11
 
 - **수정**: `docker-volume.md`의 볼륨 초기 파일 처리 설명을 기존 §2.1과 일치하도록 보완

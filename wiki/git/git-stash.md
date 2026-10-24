@@ -1,6 +1,6 @@
 ---
 title: git stash
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:20:53
 tags:
   - git
   - vcs
@@ -128,14 +128,13 @@ git stash
 git pull
 git stash pop
 
-# staged만 별도 스태시에 보관
-git add -p
-git stash push --staged -m "1차 커밋 예정분"
+# 보류할 변경만 스태시에 보관하고 나머지를 먼저 커밋
+git add -p                          # 보류할 변경만 스테이지
+git stash push --staged -m "보류분"
+git add -A
 git commit -m "우선 처리 건"
 git stash pop
 ```
-
----
 
 ---
 

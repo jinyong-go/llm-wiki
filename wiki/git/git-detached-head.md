@@ -1,6 +1,6 @@
 ---
 title: Detached HEAD
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:22:01
 tags:
   - git
   - vcs
@@ -142,8 +142,9 @@ git cherry-pick <SHA>              # 특정 커밋만 가져오기
 ```bash
 # 1. reflog에서 잃어버린 커밋 찾기
 git reflog
+# 9c2b4f1 HEAD@{0}: checkout: moving from a3f1d2e to main
 # a3f1d2e HEAD@{1}: commit: 실험적 수정   ← 이 SHA
-# 9c2b4f1 HEAD@{2}: checkout: moving from main to a3f1d2e
+# 7e4c8b0 HEAD@{2}: checkout: moving from main to v1.1.0
 
 # 2. 해당 SHA로 브랜치 생성
 git branch rescued-work a3f1d2e
@@ -161,7 +162,7 @@ reflog 항목은 기본 90일(`gc.reflogExpire`) 보존되지만, 현재 끝에�
 # 잘못된 방법 (Detached HEAD 발생)
 git checkout origin/feature/login
 
-# 올바른 방법 — 로컬 추적 브랜치 생성
+# 올바른 방법: 로컬 추적 브랜치 생성
 git checkout -b feature/login origin/feature/login
 # 또는 (Git 2.23+)
 git switch feature/login           # origin에 같은 이름이 있으면 자동 추적 설정
@@ -173,6 +174,8 @@ git switch feature/login           # origin에 같은 이름이 있으면 자동
 - [gitrevisions](https://git-scm.com/docs/gitrevisions)
 - [git-rev-parse](https://git-scm.com/docs/git-rev-parse)
 - [git-gc](https://git-scm.com/docs/git-gc)
+- [git-checkout](https://git-scm.com/docs/git-checkout)
+- [git-switch](https://git-scm.com/docs/git-switch)
 
 ---
 

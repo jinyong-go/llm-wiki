@@ -1,6 +1,6 @@
 ---
 title: git add
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:22:01
 tags:
   - git
   - vcs
@@ -51,8 +51,8 @@ git add -p src/User.java  # 특정 파일만
 | `y` | 이 헝크를 스테이지 |
 | `n` | 스킵 |
 | `q` | 종료 (나머지 모두 스킵) |
-| `a` | 이 헝크 및 이후 모두 스테이지 |
-| `d` | 이 헝크 및 이후 모두 스킵 |
+| `a` | 이 헝크 및 같은 파일의 이후 헝크 모두 스테이지 |
+| `d` | 이 헝크 및 같은 파일의 이후 헝크 모두 스킵 |
 | `s` | 현재 헝크를 더 작게 분할 |
 | `e` | 에디터로 직접 편집 |
 | `?` | 도움말 |
@@ -87,7 +87,6 @@ git add --renormalize -A  # core.autocrlf 변경 후 전체 파일 line ending �
 
 ## Sources
 - [git-add](https://git-scm.com/docs/git-add)
-- [git-restore](https://git-scm.com/docs/git-restore)
 
 ---
 

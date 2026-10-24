@@ -1,6 +1,6 @@
 ---
 title: git fetch / pull / push
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:22:01
 tags:
   - git
   - vcs
@@ -34,7 +34,7 @@ git fetch --dry-run           # 실제 다운로드 없이 동작 확인
 ### 2.2. refspec
 
 ```bash
-# +<src>:<dst> 형식 — + 는 fast-forward가 아니어도 강제 업데이트
+# +<src>:<dst> 형식. + 는 fast-forward가 아니어도 강제 업데이트
 git fetch origin main:refs/remotes/origin/main
 git fetch origin '+refs/heads/*:refs/remotes/origin/*'
 ```
@@ -52,7 +52,7 @@ git fetch --no-tags           # 태그 제외
 
 ```bash
 git fetch --prune             # 원격에서 삭제된 브랜치 ref 정리
-git fetch --prune-tags        # 원격에서 삭제된 태그도 정리
+git fetch --prune --prune-tags  # 원격에서 삭제된 태그도 정리 (--prune 활성화 필요)
 
 # 설정으로 기본값 변경
 git config --global fetch.prune true

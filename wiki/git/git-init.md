@@ -1,6 +1,6 @@
 ---
 title: git init
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -133,7 +133,7 @@ git init -q
 git config --global init.templateDir ~/.git-templates
 ```
 
-`~/.git-templates/` 에 `.gitignore`, hooks 등을 넣어두면 모든 신규 저장소에 자동 복사된다.
+템플릿 디렉터리에서 이름이 점으로 시작하지 않는 파일과 디렉터리는 새 저장소의 `$GIT_DIR`로 복사된다. `hooks/`, `info/exclude` 등을 넣어 두면 신규 저장소에 적용되지만, 작업 트리에 위치하는 `.gitignore`는 템플릿으로 배포할 수 없다.
 
 ---
 

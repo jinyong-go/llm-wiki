@@ -1,6 +1,6 @@
 ---
 title: git clone
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -61,7 +61,7 @@ git clone -b develop https://github.com/user/repo.git
 git clone -b release/1.2.0 https://github.com/user/repo.git
 ```
 
-브랜치명 대신 태그도 지정할 수 있다. 히스토리는 전체를 받지만 체크아웃 브랜치만 달라진다.
+브랜치명 대신 태그도 지정할 수 있으며 이 경우 해당 커밋에서 Detached HEAD 상태가 된다([[git-detached-head]]). 히스토리는 전체를 받고 체크아웃 대상만 달라진다.
 
 ### 4.3. `-o` / `--origin`
 

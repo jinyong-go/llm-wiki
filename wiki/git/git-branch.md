@@ -1,6 +1,6 @@
 ---
 title: git branch
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -91,7 +91,7 @@ git push origin --delete <name>
 
 병합 완료된 브랜치 일괄 삭제 패턴:
 ```bash
-git branch --merged main | grep -v '^\*\|main\|develop' | xargs git branch -d
+git branch --merged main | grep -vE '^\*|^[[:space:]]*(main|develop)$' | xargs git branch -d
 ```
 
 ---

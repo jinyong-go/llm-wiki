@@ -1,6 +1,6 @@
 ---
 title: git tag
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -59,7 +59,7 @@ git tag --merged main              # main에서 도달 가능한 태그
 git tag --list --sort=version:refname
 # v1.0.0
 # v1.2.0
-# v1.10.0   ← 사전순이면 v1.2.0 뒤에 오지만 버전순으로 올바르게 정렬됨
+# v1.10.0   ← 사전순(refname)이면 v1.2.0 앞에 온다
 
 git tag --list --sort=-version:refname  # 내림차순
 ```
@@ -113,7 +113,7 @@ git tag -a v1.9.0 abc1234 -m "Hotfix release"
 # 모든 태그 목록을 버전순으로 확인
 git tag -l --sort=-version:refname | head -5
 
-# 최신 태그 확인
+# HEAD에서 도달 가능한 가장 가까운 태그
 git describe --tags --abbrev=0
 
 # 태그 기준 diff
@@ -125,6 +125,8 @@ git log v1.0.0..v2.0.0 --oneline
 
 ## Sources
 - [git-tag](https://git-scm.com/docs/git-tag)
+- [git-push](https://git-scm.com/docs/git-push)
+- [git-describe](https://git-scm.com/docs/git-describe)
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: git config
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:20:53
 tags:
   - git
   - vcs
@@ -77,9 +77,10 @@ git config --global user.email "hong@personal.com"
 git config --local user.email "hong@company.com"
 ```
 
-`user.useConfigOnly = true`를 설정하면 user.name / user.email이 명시되지 않은 저장소에서 커밋 시도 시 오류를 발생시켜 실수로 잘못된 이메일이 커밋되는 것을 방지한다.
+`user.useConfigOnly = true`이면 Git이 user.name / user.email을 추측하지 않고 설정에서만 읽으므로, 값이 없는 저장소에서는 커밋 전에 설정을 요구한다. 저장소마다 이메일을 다르게 쓰려면 global에는 name만 두고 이 옵션을 켠다.
 
 ```bash
+git config --global --unset user.email   # global에는 name만 유지
 git config --global user.useConfigOnly true
 ```
 
@@ -159,7 +160,7 @@ Thumbs.db
 # macOS keychain 사용
 git config --global credential.helper osxkeychain
 
-# 메모리에 일정 시간 캐시 (Linux)
+# 메모리에 일정 시간 캐시 (기본 900초, Unix 도메인 소켓 사용)
 git config --global credential.helper "cache --timeout=3600"
 
 # 파일에 평문 저장 (비밀번호가 디스크에 평문으로 남음)
@@ -212,8 +213,8 @@ git difftool     # diff.tool로 비교
 # 전체 HTTP/HTTPS 트래픽에 프록시 (http.proxy가 HTTPS에도 적용)
 git config --global http.proxy http://proxy.company.com:3128
 
-# 특정 URL만 프록시 예외
-git config --global http.https://internal.company.com.proxy ""
+# 특정 원격만 프록시 해제 (빈 문자열)
+git config remote.internal.proxy ""
 
 # 프록시 해제
 git config --global --unset http.proxy
@@ -274,7 +275,7 @@ git config --global diff.algorithm histogram
 
 ---
 
-## 6. 환경 변수 오버라이드
+## 6. 일회성 설정
 
 설정 파일 없이 일회성으로 설정값을 주입할 때 사용한다. CI/CD 파이프라인에서 특히 유용하다.
 
@@ -302,6 +303,8 @@ GIT_CONFIG_NOSYSTEM=1 git config --list
 ## Sources
 - [git-config](https://git-scm.com/docs/git-config)
 - [Pro Git: Customizing Git Git Configuration](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
+- [gitcredentials](https://git-scm.com/docs/gitcredentials)
+- [git-credential-cache](https://git-scm.com/docs/git-credential-cache)
 
 ---
 

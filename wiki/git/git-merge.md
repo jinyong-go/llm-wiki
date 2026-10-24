@@ -1,6 +1,6 @@
 ---
 title: git merge
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -46,7 +46,7 @@ git merge -s octopus a b c       # 다수 브랜치 동시 병합
 git merge -X ours feature        # 충돌 시 현재 브랜치 우선
 git merge -X theirs feature      # 충돌 시 상대 브랜치 우선
 git merge -X ignore-space-change # 공백 변경 무시
-git merge -X patience            # patience 알고리즘으로 diff
+git merge -X diff-algorithm=patience  # patience 알고리즘으로 diff
 ```
 
 `-s ours`는 상대 브랜치의 변경을 모두 무시하고 현재 브랜치의 트리를 그대로 결과로 쓴다. `-X ours`는 충돌한 헝크만 현재 브랜치 쪽으로 해결하며 충돌하지 않는 상대 변경은 결과에 반영한다.
@@ -86,7 +86,8 @@ git merge --continue    # 또는 git commit
 ```
 <<<<<<< HEAD
 현재 내용
-||||||| 공통 조상 내용
+||||||| <공통 조상>
+공통 조상 내용
 =======
 상대 내용
 >>>>>>> feature/login
@@ -112,10 +113,12 @@ git log --merge -p src/UserService.java  # 양쪽 변경 이력
 ## 5. 머지 중단 / 재개
 
 ```bash
-git merge --abort     # 머지 전 상태로 완전 복구
+git merge --abort     # 머지 전 상태 복원 시도
 git merge --continue  # 충돌 해결 후 재개
 git merge --quit      # 머지 상태만 초기화 (워킹 트리 유지)
 ```
+
+머지 시작 시 커밋되지 않은 변경이 있었다면 `--abort`가 이를 복원하지 못할 수 있으므로 머지 전에 커밋하거나 stash한다.
 
 ---
 
@@ -153,6 +156,7 @@ git add src/config.yml
 
 ## Sources
 - [git-merge](https://git-scm.com/docs/git-merge)
+- [git-checkout](https://git-scm.com/docs/git-checkout)
 
 ---
 

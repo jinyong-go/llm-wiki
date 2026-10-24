@@ -1,6 +1,6 @@
 ---
 title: git log
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:20:53
 tags:
   - git
   - vcs
@@ -158,7 +158,6 @@ git log --date=unix        # Unix timestamp
 [[git-config]] §4.9의 alias로 자주 쓰는 형식을 등록한다.
 
 ```bash
-git config --global alias.lg "log --oneline --graph --all --decorate"
 git config --global alias.ll "log --pretty=format:'%h %as %an %s' --no-merges"
 git config --global alias.lf "log --pretty=fuller --stat"
 ```

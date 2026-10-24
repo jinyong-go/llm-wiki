@@ -1,6 +1,6 @@
 ---
 title: git rebase
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:22:01
 tags:
   - git
   - vcs
@@ -96,9 +96,9 @@ git config sequence.editor "code --wait"
 ```
 pick a1b2c3 feat: 로그인 API 추가
 squash d4e5f6 feat: 토큰 검증 로직 추가
-fixup  g7h8i9 fix: 오타 수정
-reword j0k1l2 refactor: 서비스 레이어 분리
-drop   m3n4o5 WIP: 임시 작업
+fixup  7f8e9a fix: 오타 수정
+reword 0b1c2d refactor: 서비스 레이어 분리
+drop   3e4f50 WIP: 임시 작업
 exec   make test
 ```
 

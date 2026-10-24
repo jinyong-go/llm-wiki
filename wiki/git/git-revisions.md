@@ -1,6 +1,6 @@
 ---
 title: Git 리비전
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -16,7 +16,7 @@ Git에서 특정 커밋, 트리, blob을 가리킬 때 사용하는 참조 문�
 
 ```bash
 git show dae86e1950b1277e545cee180551750029cfe735  # 전체 40자
-git show dae86e                                     # 앞 6~7자 (저장소 내 고유하면 OK)
+git show dae86e                                     # 앞부분 (저장소 내에서 고유한 경우)
 ```
 
 ---
@@ -147,8 +147,10 @@ git diff HEAD@{2} HEAD         # 2번 전과 현재 비교
 ```bash
 git show main@{yesterday}            # 어제의 main
 git show main@{"1 week ago"}         # 1주 전 main
-git log main@{"2026-01-01"}..main    # 올해 초 이후 main의 변경
+git log main@{"1 month ago"}..main   # 한 달 전 이후 main의 변경
 ```
+
+`@{date}`는 로컬 reflog에서 해당 시점의 ref 값을 찾으므로 reflog에 기록이 남아 있는 범위에서만 사용할 수 있다.
 
 ### 7.3. `@{-n}`
 
@@ -164,7 +166,7 @@ git log @{-1}..HEAD   # 직전 브랜치와 현재 브랜치의 차이
 @{push}                    # push 대상 브랜치
 
 git log @{u}..HEAD         # 아직 push 안 된 커밋 목록
-git diff @{u}              # push 안 된 변경 내용 전체
+git diff @{u}...HEAD       # push 안 된 커밋의 변경 내용
 ```
 
 ---

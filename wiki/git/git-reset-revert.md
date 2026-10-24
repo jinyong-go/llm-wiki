@@ -1,6 +1,6 @@
 ---
 title: git reset / revert
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:16:15
 tags:
   - git
   - vcs
@@ -71,7 +71,7 @@ HEAD는 이동하지 않고 인덱스만 변경한다.
 
 ```bash
 git reset -- src/User.java        # HEAD 기준으로 unstage
-git reset HEAD~1 -- src/User.java # 특정 커밋 기준으로 unstage
+git reset HEAD~1 -- src/User.java # 인덱스의 파일을 HEAD~1 버전으로 설정 (워킹 트리 불변)
 git reset -p                      # 헝크 단위 대화형 unstage
 ```
 
@@ -85,7 +85,7 @@ git reset -p                      # 헝크 단위 대화형 unstage
 
 ```bash
 git revert HEAD             # 직전 커밋 되돌리기
-git revert HEAD~2           # 3번째 전 커밋 되돌리기
+git revert HEAD~2           # 2개 전 커밋 되돌리기
 git revert abc1234          # 특정 SHA 되돌리기
 ```
 
@@ -138,6 +138,7 @@ git commit -m "revert: 결제 모듈 기능 롤백"
 ## Sources
 - [git-reset](https://git-scm.com/docs/git-reset)
 - [git-revert](https://git-scm.com/docs/git-revert)
+- [Git: How to revert a faulty merge](https://git-scm.com/docs/howto/revert-a-faulty-merge)
 
 ---
 

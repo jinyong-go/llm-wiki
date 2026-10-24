@@ -1,6 +1,6 @@
 ---
 title: Git 내부 구조
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:22:01
 tags:
   - git
   - vcs
@@ -101,7 +101,7 @@ blob <size>\0<content>
 tree
 ├── 100644 blob a1b2c3  README.md
 ├── 100644 blob d4e5f6  pom.xml
-└── 040000 tree g7h8i9  src/
+└── 040000 tree 7f8e9a  src/
 ```
 
 ### 5.3. commit
@@ -136,7 +136,7 @@ git cat-file -p 3a8f2c1d   # 내용 출력
 내용 기반 주소 지정의 특성은 다음과 같다.
 - 동일한 내용은 항상 동일한 SHA-1을 가지므로 중복 저장되지 않음
 - 내용이 1바이트라도 바뀌면 해시가 달라져 변조를 탐지할 수 있음
-- SHA-1 40자 중 앞 7~8자만으로도 저장소 내에서 고유하게 식별할 수 있음
+- 저장소 내에서 고유하다면 해시의 앞부분만으로도 객체를 식별할 수 있음
 
 `git init --object-format=sha256`으로 SHA-256을 쓰는 저장소를 만들 수 있다. 기본값은 SHA-1이며 현재 두 형식의 저장소는 상호 운용되지 않는다.
 
@@ -148,6 +148,7 @@ git cat-file -p 3a8f2c1d   # 내용 출력
 - [Pro Git: Git Internals Git Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
 - [Pro Git: Git Internals Git References](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
 - [git-init](https://git-scm.com/docs/git-init)
+- [gitrevisions](https://git-scm.com/docs/gitrevisions)
 
 ---
 
