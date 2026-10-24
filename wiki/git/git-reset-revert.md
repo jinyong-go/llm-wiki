@@ -1,6 +1,6 @@
 ---
 title: git reset / revert
-updated: 2026-10-24 23:16:15
+updated: 2026-10-24 23:26:53
 tags:
   - git
   - vcs
@@ -14,8 +14,8 @@ tags:
 |------|------|------|
 | 아직 push하지 않은 커밋 되돌리기 | `reset` | 이력 자체를 수정 |
 | 이미 push한 커밋 되돌리기 | `revert` | 새 커밋으로 역변환 생성 (이력 유지) |
-| 스테이지 취소 (unstage) | `reset HEAD <file>` 또는 `restore --staged` | 인덱스만 조작 |
-| 워킹 트리 파일 되돌리기 | `restore` | HEAD/커밋 기준 복원 |
+| 스테이지 취소 (unstage) | `reset HEAD <file>` 또는 `restore --staged` | 인덱스만 조작. `restore`의 대상별 동작은 [[git-switch-restore]] §3.1 참고 |
+| 워킹 트리 파일 되돌리기 | `restore` | HEAD/커밋 기준 복원. 옵션은 [[git-switch-restore]] §3 참고 |
 
 ---
 

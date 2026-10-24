@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-10-24 23:26:53
+
+- **수정**: Git 문서 6개 구성 개선. commit·stash·fetch/pull/push의 반복 예시를 줄이고 branch 설정을 git-config로 모았으며 reset과 restore의 설명 범위를 상호 참조로 정리. commit diff 비교 대상·pull 기본 동작 서술 정정
+
 ## 2026-10-24 23:20:53
 
 - **수정**: git 문서 4개 구성 개선(lint `report-20261024-git` 2단계). file-states 중복 상태 전환 표 삭제 및 다이어그램 보완, config useConfigOnly 예시 중복 정리·§6 제목 변경, log 중복 alias 제거, stash 중복 구분선 제거

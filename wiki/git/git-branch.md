@@ -1,6 +1,6 @@
 ---
 title: git branch
-updated: 2026-10-24 23:16:15
+updated: 2026-10-24 23:26:53
 tags:
   - git
   - vcs
@@ -139,13 +139,14 @@ git config branch.<name>.merge    # merge 대상 ref
 
 ---
 
-## 7. 주요 설정 (`git config`)
+## 7. 관련 설정
+
+브랜치 생성 시 upstream 자동 설정과 기본 정렬은 [[git-config]] §4.13에서 다룬다. 브랜치별 upstream 값은 `branch.<name>.remote`와 `branch.<name>.merge`에 저장된다.
+
+### 7.1. 브랜치별 설정 키
 
 | 설정 키 | 기본값 | 설명 |
 |---------|--------|------|
-| `branch.autoSetupMerge` | `true` | 원격 추적 브랜치 기점 시 upstream 자동 설정 |
-| `branch.autoSetupRebase` | `never` | 추적 브랜치 생성 시 pull을 rebase로 설정할지 여부 |
-| `branch.sort` | `refname` | 기본 정렬 기준 |
 | `branch.<name>.remote` | — | 해당 브랜치의 추적 원격 이름 |
 | `branch.<name>.merge` | — | 추적 대상 ref (예: `refs/heads/main`) |
 | `branch.<name>.rebase` | — | pull 시 rebase 여부 (`true`/`merges`/`interactive`) |
@@ -163,3 +164,4 @@ git config branch.<name>.merge    # merge 대상 ref
 - [[git-revisions]]
 - [[git-log]]
 - [[git-fetch-pull-push]]
+- [[git-config]]

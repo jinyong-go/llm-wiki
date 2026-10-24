@@ -1,6 +1,6 @@
 ---
 title: git fetch / pull / push
-updated: 2026-10-24 23:22:01
+updated: 2026-10-24 23:33:56
 tags:
   - git
   - vcs
@@ -12,9 +12,9 @@ tags:
 
 | 명령어 | 방향 | 로컬 변경 |
 |--------|------|----------|
-| `fetch` | 원격 → 로컬 | 원격 추적 브랜치만 갱신 (워킹 트리 불변) |
-| `pull` | 원격 → 로컬 | fetch + merge (또는 rebase) |
-| `push` | 로컬 → 원격 | 원격 ref 업데이트 |
+| `fetch` | 원격 → 로컬 | 원격 추적 브랜치 갱신. 워킹 트리는 유지 (§2) |
+| `pull` | 원격 → 로컬 | fetch 후 통합 (§3) |
+| `push` | 로컬 → 원격 | 원격 ref 갱신 (§4) |
 
 ---
 
@@ -78,8 +78,7 @@ git log FETCH_HEAD            # fetch한 이력 확인
 
 ## 3. git pull
 
-`git fetch` + `git merge` (또는 `git rebase`)를 순서대로 실행한다.
-조정 방식(`--rebase`, `--no-rebase` 또는 `pull.rebase`, `pull.ff` 설정)을 지정하지 않으면 fast-forward만 수행하며, 로컬과 원격이 diverged 상태면 실패한다.
+`git fetch` 후 `git merge` 또는 `git rebase`로 원격 변경을 현재 브랜치에 통합한다. 조정 방식은 `--rebase`, `--no-rebase` 또는 `pull.rebase`, `pull.ff` 설정으로 지정하며, 지정하지 않으면 fast-forward만 수행하고 로컬과 원격이 diverged 상태면 실패한다.
 
 ### 3.1. 기본 사용
 
@@ -116,21 +115,6 @@ diverged 상태에서 실수로 머지 커밋을 만드는 것을 방지한다.
 ```bash
 git pull --no-commit          # 머지까지만 하고 커밋은 직접 생성
 git pull --squash             # fetch한 커밋을 하나로 합쳐 스테이지에 올림
-```
-
-### 3.5. diverged 브랜치 처리
-
-로컬과 원격이 각각 커밋을 가진 경우:
-
-```bash
-# 방법 1: merge (머지 커밋 생성)
-git pull --no-rebase
-
-# 방법 2: rebase (선형 이력 유지)
-git pull --rebase
-
-# 방법 3: fast-forward만 허용 (조정 방식 미설정 시 기본 동작, diverged 시 실패)
-git pull --ff-only
 ```
 
 ---

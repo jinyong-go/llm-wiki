@@ -1,6 +1,6 @@
 ---
 title: git config
-updated: 2026-10-24 23:20:53
+updated: 2026-10-24 23:33:56
 tags:
   - git
   - vcs
@@ -233,7 +233,19 @@ git config --global color.ui auto
 git config --global diff.algorithm histogram
 ```
 
-명령별 설정(`commit.*`, `rebase.*`, `branch.*`)은 [[git-commit]], [[git-rebase]], [[git-branch]]에서 다룬다.
+명령별 설정(`commit.*`, `rebase.*`)은 [[git-commit]], [[git-rebase]]에서 다룬다.
+
+### 4.13. 브랜치 설정
+
+브랜치 생성 시 upstream 설정과 목록 정렬 기본값을 지정한다.
+
+| 설정 키 | 기본값 | 설명 |
+|---------|--------|------|
+| `branch.autoSetupMerge` | `true` | 원격 추적 브랜치에서 생성할 때 upstream을 자동 설정 |
+| `branch.autoSetupRebase` | `never` | 추적 브랜치에서 pull할 때 rebase 여부 |
+| `branch.sort` | `refname` | 브랜치 목록의 기본 정렬 기준 |
+
+브랜치별 upstream과 rebase 설정은 [[git-branch]] §6, §7.1에서 다룬다.
 
 ---
 

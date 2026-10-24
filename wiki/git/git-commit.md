@@ -1,6 +1,6 @@
 ---
 title: git commit
-updated: 2026-10-21 22:52:59
+updated: 2026-10-24 23:33:56
 tags:
   - git
   - vcs
@@ -104,21 +104,34 @@ git config commit.gpgSign true        # 모든 커밋 GPG 서명
 
 ---
 
-## 8. 실용 패턴
+## 8. 여러 명령을 조합하는 흐름
+
+일부 변경만 먼저 커밋하려면 변경 블록을 선택해 인덱스에 등록한다.
 
 ```bash
-# staged 내용 확인 후 커밋
-git diff --staged
+git add -p
 git commit -m "feat: 로그인 API 추가"
+```
 
-# 빠뜨린 파일 추가
+빠뜨린 파일을 직전 커밋에 포함하려면 amend를 사용한다. 동작은 §3.1에서 설명한다.
+
+```bash
 git add src/ForgottenFile.java
 git commit --amend --no-edit
+```
 
-# fixup 워크플로우
-git add -p                         # 일부만 스테이지
+fixup 커밋을 만들고 대화형 rebase에서 대상 커밋에 합친다. fixup 생성 옵션은 §4에서 설명한다.
+
+```bash
+git add -p
 git commit --fixup=abc1234
-git rebase -i --autosquash HEAD~5  # fixup 자동 정렬 + squash
+git rebase -i --autosquash HEAD~5
+```
+
+커밋할 내용을 확인하려면 인덱스와 HEAD의 차이를 조회한다.
+
+```bash
+git diff --staged
 ```
 
 ---

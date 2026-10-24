@@ -1,6 +1,6 @@
 ---
 title: git stash
-updated: 2026-10-24 23:20:53
+updated: 2026-10-24 23:26:53
 tags:
   - git
   - vcs
@@ -112,7 +112,7 @@ git stash branch feature/new-work stash@{1}
 
 ---
 
-## 8. 실용 패턴
+## 8. 브랜치 전환 중 변경 보관
 
 ```bash
 # 긴급 hotfix: 현재 작업 보관 → 전환 → 복귀
@@ -122,19 +122,9 @@ git switch -c hotfix/null-pointer
 # ... 수정 및 커밋 ...
 git switch feature/login
 git stash pop
-
-# dirty 상태에서 pull
-git stash
-git pull
-git stash pop
-
-# 보류할 변경만 스태시에 보관하고 나머지를 먼저 커밋
-git add -p                          # 보류할 변경만 스테이지
-git stash push --staged -m "보류분"
-git add -A
-git commit -m "우선 처리 건"
-git stash pop
 ```
+
+변경 일부만 보관하거나 스테이징된 변경만 저장하려면 §3.1의 `-p` 또는 `--staged`를 사용한다. 작업 트리가 깨끗하지 않은 상태에서 pull하는 흐름도 같은 방식으로 보관·복원할 수 있다.
 
 ---
 
