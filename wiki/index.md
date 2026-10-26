@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-21 16:21:56
+updated: 2026-10-26 15:27:25
 tags:
   - meta
 ---
@@ -288,6 +288,8 @@ tags:
 
 ## JavaScript
 
+### 공통
+
 - [[function-declaration]] — 자바스크립트 함수 선언: 함수 선언문/함수 표현식/화살표 함수 비교, 호이스팅, 기본·나머지 매개변수
 - [[promise]] — 자바스크립트 Promise: 상태, 생성과 소비, 체이닝(then/catch/finally), 동시성 정적 메서드(all/allSettled/race/any), Thenable
 - [[async-await]] — 자바스크립트 async/await: async 함수의 Promise 반환, await 동작, 순차/동시 실행, forEach·return await·처리되지 않은 거부 주의사항
@@ -301,20 +303,20 @@ tags:
 - [[variable-declaration]] — 자바스크립트 변수 선언: var/let/const 비교, 스코프, 호이스팅·TDZ, 재선언/재할당, 전역 객체 프로퍼티
 - [[lexical-scope]] — 자바스크립트 렉시컬 스코프: 스코프 체인, 환경 레코드, 클로저, this, with·eval 예외
 
-## TypeScript
+### TypeScript
 
 - [[typescript]] — TypeScript: 정적 타입, 컴파일러(tsc/TS 7.0 네이티브), 관련 도구, 장단점
 - [[tsconfig]] — tsconfig.json: 최상위 필드, compilerOptions 카테고리·주요 옵션, 프로젝트 참조
 - [[typescript-5.0]] — TypeScript 5.0: 추가된 옵션·언어 기능(Decorators 등), deprecated 옵션(TS 6.0에서 제거됨)
 - [[typescript-6.0]] — TypeScript 6.0: 추가된 옵션, 기본값 변경, 언어 기능, deprecated 옵션(TS 7.0에서 제거 예정)
 
-## Node.js
+### Node.js
 
 - [[npm]] — npm: package.json, semver 버전 범위, lockfile, scripts·라이프사이클, workspaces, 명령어
 - [[npx]] — npx: 로컬·원격 패키지 실행, bin 이름 추론, npm exec 차이, v7 변경사항
 - [[package-manager]] — Node 패키지 매니저 비교: node_modules 배치(hoisting/심볼릭 링크/PnP), lockfile, Corepack
 
-## NestJS
+### NestJS
 
 - [[nestjs]] — NestJS: Express/Fastify 플랫폼, 장단점, 설치, 프로젝트 구조, 스크립트, 데코레이터
 - [[nestjs-dependency-injection]] — NestJS 의존성 주입: 토큰, 커스텀 프로바이더, 순환 의존성, Spring DI 비교

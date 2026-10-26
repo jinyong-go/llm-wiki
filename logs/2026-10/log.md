@@ -2,6 +2,18 @@
 
 ---
 
+## 2026-10-26 15:27:25
+
+- **이동**: `wiki/javascript/`의 공통 문서 12개를 `wiki/javascript/common/`으로 이동
+- **수정**: `index.md` JavaScript 문서 목록을 공통 하위 절로 배치
+
+## 2026-10-26 15:25:46
+
+- **이동**: `wiki/typescript/` 문서 4개를 `wiki/javascript/typescript/`로 이동
+- **이동**: `wiki/node/` 문서 3개를 `wiki/javascript/node/`로 이동
+- **이동**: `wiki/nestjs/` 문서 13개를 `wiki/javascript/nestjs/`로 이동
+- **수정**: `index.md` TypeScript·Node.js·NestJS 섹션을 JavaScript 하위로 변경
+
 ## 2026-10-26 14:23:30
 
 - **수정**: `testcontainers.md` 실행 환경·의존성·설정을 환경 구성으로 묶고 Ryuk 정리를 생명주기로 이동, API 변경 표의 JUnit 4 항목 제거, FAQ(Docker 환경 감지·Docker 29 API 버전, Docker Hub 요청 제한, 컨테이너 내 실행, 시작 타임아웃, 연결 거부) 추가
