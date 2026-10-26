@@ -2,6 +2,20 @@
 
 ---
 
+## 2026-10-26 23:28:31
+
+- **수정**: `javascript/common` 문서 12개 lint 문체 정리. 대시 연결·본문 화살표·문서 내 앵커 링크 제거, 볼드를 정의형 목록 항목명으로 한정하고 장단점을 하위 절로 전환, 절 제목 영문 괄호 제거, 축약어 원어 병기, 표기·빈 줄 통일
+
+## 2026-10-26 23:24:43
+
+- **수정**: `javascript/common` 문서 12개 lint 구성 개선. Sources 형식 통일, Related pages 설명·관련성 낮은 링크 제거, commonjs·es-module·truthy-falsy 반복 서술 축약, 추론 각주 추가·근거 없는 장단점 항목 삭제, 문서·절 제목 간결화
+- **수정**: `index.md` JavaScript 공통 항목을 주제 수준 서술로 변경
+
+## 2026-10-26 23:21:36
+
+- **수정**: `javascript/common` 문서 10개 lint 사실 정정. conditional exports 매칭 순서, ESM 확장자·JSON import, CommonJS 트리쉐이킹, unhandled rejection 조건, `no-return-await` 현황, `document.all` falsy, 클로저 예시 메서드 수, 화살표 함수 괄호 생략 조건, `null == undefined` 동작, `AggregateError` 구조 등 정정, `??` 우선순위 출처 불일치 각주 추가
+- **수정**: `index.md` truthy-falsy 서술 정정
+
 ## 2026-10-26 17:59:20
 
 - **수정**: `dfs.md` 재귀·반복 구현과 복잡도 정리, 시간·간선·브리지·BFS 비교 설명 보완, 예시 변수명·주석 정리 및 Course Schedule II 코드 추가

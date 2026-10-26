@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 Promise
-updated: 2026-10-26 15:27:25
+updated: 2026-10-26 23:28:31
 tags:
   - javascript
   - async
@@ -9,11 +9,11 @@ tags:
 
 ## 1. 개요
 
-자바스크립트는 싱글 스레드다. I/O처럼 시간이 걸리는 작업을 동기적으로 기다리면 그동안 다른 코드가 전혀 실행되지 못한다. **비동기**는 이런 작업을 백그라운드에 맡기고, 결과가 준비되면 나중에 처리하도록 미루는 방식이다.
+자바스크립트는 싱글 스레드다. I/O처럼 시간이 걸리는 작업을 동기적으로 기다리면 그동안 다른 코드가 전혀 실행되지 못한다. 비동기는 이런 작업을 백그라운드에 맡기고, 결과가 준비되면 나중에 처리하도록 미루는 방식이다.
 
-콜백 → **Promise** → **async/await**([[async-await]]) 순으로 발전했다. 콜백은 중첩이 깊어질수록 가독성이 떨어지는 "콜백 지옥" 문제가 있었고, `Promise`는 이를 체이닝 가능한 객체로 표준화했다.
+콜백, Promise, async/await([[async-await]]) 순으로 발전했다. 콜백은 중첩이 깊어질수록 가독성이 떨어지는 "콜백 지옥" 문제가 있었고, `Promise`는 이를 체이닝 가능한 객체로 표준화했다.
 
-`Promise`는 비동기 작업의 **최종 완료(또는 실패)와 그 결과값**을 나타내는 객체다.
+`Promise`는 비동기 작업의 최종 완료(또는 실패)와 그 결과값을 나타내는 객체다.
 
 ---
 
@@ -25,9 +25,9 @@ tags:
 | `fulfilled` | 성공적으로 완료됨 |
 | `rejected` | 실패함 |
 
-`fulfilled`/`rejected`를 합쳐 **settled**(확정, **completed**라고도 함)라 한다 — pending을 벗어나 fulfilled나 rejected 중 하나로 정해진 상태다. 한 번 settled되면 상태는 바뀌지 않는다.
+`fulfilled`/`rejected`를 합쳐 settled(확정)라 하며, pending을 벗어나 fulfilled나 rejected 중 하나로 정해진 상태다. 한 번 settled되면 상태는 바뀌지 않는다.
 
-**resolved**는 settled(completed)됐거나, 다른 Promise의 상태를 따르도록 고정된 상태를 뜻한다. 고정 대상이 아직 pending이면 resolved이면서도 pending일 수 있다 — resolved가 곧 fulfilled를 뜻하지는 않는다.
+resolved는 settled됐거나 다른 Promise의 상태를 따르도록 고정된 상태를 뜻한다. 고정 대상이 아직 pending이면 resolved이면서도 pending일 수 있으므로 resolved가 곧 fulfilled를 뜻하지는 않는다.
 
 ```javascript
 const p = new Promise((resolve) => {
@@ -55,9 +55,9 @@ p.then(
 );
 ```
 
-`then(onFulfilled, onRejected)`으로 두 콜백을 등록한다. `catch(onRejected)`는 `then(undefined, onRejected)`의 축약이고, `finally(callback)`은 성공/실패 여부와 무관하게 실행된다. 세 메서드 모두 **새 Promise를 반환**하므로 체이닝할 수 있다.
+`then(onFulfilled, onRejected)`으로 두 콜백을 등록한다. `catch(onRejected)`는 `then(undefined, onRejected)`의 축약이고, `finally(callback)`은 성공/실패 여부와 무관하게 실행된다. 세 메서드 모두 새 Promise를 반환하므로 체이닝할 수 있다.
 
-`then()`의 두 번째 인자(`onRejected`)는 **그 `then()`이 호출된 Promise 자체가 rejected일 때만** 실행된다 — 첫 번째 인자(`onFulfilled`)가 실행되다 던진 에러는 잡지 못한다. 이 점이 `.then(a).catch(b)`처럼 뒤에 `catch()`를 체이닝하는 것과의 핵심 차이다.
+`then()`의 두 번째 인자(`onRejected`)는 그 `then()`이 호출된 Promise 자체가 rejected일 때만 실행되며, 첫 번째 인자(`onFulfilled`)가 실행되다 던진 에러는 잡지 못한다. 이 점이 `.then(a).catch(b)`처럼 뒤에 `catch()`를 체이닝하는 것과의 핵심 차이다.
 
 ```javascript
 p.then(
@@ -66,7 +66,7 @@ p.then(
 ).catch((err) => console.error("catch가 대신 잡음:", err));
 ```
 
-체이닝과 `catch()`의 정확한 동작은 [§4](#4-체이닝) 참고.
+체이닝과 `catch()`의 정확한 동작은 §4 참고.
 
 ---
 
@@ -91,7 +91,7 @@ fetchUser(id)
 
 ### 4.2. catch()
 
-`then(undefined, onRejected)`의 축약이다. 앞선 `then()`에 `onRejected`가 없으면, 에러는 그다음 `onRejected`가 있는 지점까지 그대로 전파된다 — 그래서 체인 끝에 `catch()` 하나만 두는 패턴이 흔하다.
+`then(undefined, onRejected)`의 축약이다. 앞선 `then()`에 `onRejected`가 없으면, 에러는 그다음 `onRejected`가 있는 지점까지 그대로 전파되므로 체인 끝에 `catch()` 하나만 두는 패턴이 흔하다.
 
 ```javascript
 fetchUser(id)
@@ -102,7 +102,7 @@ fetchUser(id)
 
 ### 4.3. finally()
 
-fulfilled/rejected 여부와 무관하게 실행된다. 콜백은 인자를 받지 않으며, 반환값도 무시된다 — 체인의 값/에러를 그대로 다음으로 통과시킨다(단, `finally` 콜백이 예외를 던지거나 rejected Promise를 반환하면 그 상태로 바뀐다).
+fulfilled/rejected 여부와 무관하게 실행된다. 콜백은 인자를 받지 않으며, 반환값도 무시되어 체인의 값/에러를 그대로 다음으로 통과시킨다. 단, `finally` 콜백이 예외를 던지거나 rejected Promise를 반환하면 그 상태로 바뀐다.
 
 ```javascript
 fetchUser(id)
@@ -127,7 +127,7 @@ const [user, posts] = await Promise.all([fetchUser(id), fetchPosts(id)]);
 
 ### 5.2. Promise.allSettled()
 
-성공/실패와 무관하게 **모든 Promise가 settled될 때까지 기다린다.** 항상 fulfilled되며, 각 원소는 `{ status: 'fulfilled', value }` 또는 `{ status: 'rejected', reason }` 형태다.
+성공/실패와 무관하게 모든 Promise가 settled될 때까지 기다린다. 항상 fulfilled되며, 각 원소는 `{ status: 'fulfilled', value }` 또는 `{ status: 'rejected', reason }` 형태다.
 
 ```javascript
 const results = await Promise.allSettled([fetchUser(id), fetchPosts(id)]);
@@ -149,7 +149,7 @@ const result = await Promise.race([
 
 ### 5.4. Promise.any()
 
-하나라도 fulfilled되면 그 즉시 그 값으로 fulfilled된다. **전부** rejected될 때만 `AggregateError`(각 실패 이유를 담은 배열)로 rejected된다.
+하나라도 fulfilled되면 그 즉시 그 값으로 fulfilled된다. 전부 rejected될 때만 `AggregateError`로 rejected되며, 각 실패 이유는 입력 순서대로 `errors` 프로퍼티 배열에 담긴다.
 
 ```javascript
 const first = await Promise.any([
@@ -164,7 +164,7 @@ const first = await Promise.any([
 
 ## 6. Thenable
 
-`then()` 메서드를 가진 객체는 네이티브 `Promise`가 아니어도 Promise처럼 취급된다(**thenable**). Promise가 언어 표준이 되기 전부터 존재하던 여러 Promise 구현체(jQuery Deferred, Bluebird 등)와 상호운용하기 위한 장치다. `Promise.resolve()`와 `await`는 thenable을 만나면 그 `then()`을 호출해 감싸인 값/에러를 그대로 따라간다.
+`then()` 메서드를 가진 객체는 네이티브 `Promise`가 아니어도 Promise처럼 취급된다(thenable). Promise가 언어 표준이 되기 전부터 존재하던 여러 Promise 구현체(jQuery Deferred, Bluebird 등)와 상호운용하기 위한 장치다. `Promise.resolve()`와 `await`는 thenable을 만나면 그 `then()`을 호출해 감싸인 값/에러를 그대로 따라간다.
 
 ```javascript
 const thenable = {
@@ -177,7 +177,7 @@ Promise.resolve(thenable).then((v) => console.log(v)); // 42 — thenable을 네
 await thenable; // 42 — await도 동일하게 동작
 ```
 
-네이티브 `Promise`도 thenable의 일종이다(`then()`을 가지므로). 반대로 모든 thenable이 `Promise`의 인스턴스인 것은 아니다 — `instanceof Promise`는 실패할 수 있다.
+네이티브 `Promise`도 `then()`을 가지므로 thenable의 일종이다. 반대로 모든 thenable이 `Promise`의 인스턴스인 것은 아니어서 `instanceof Promise`는 실패할 수 있다.
 
 ---
 
@@ -196,16 +196,17 @@ await thenable; // 42 — await도 동일하게 동작
 
 ## Sources
 
-- MDN — Promise: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-- MDN — Using promises: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
-- MDN — Fetch API: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-- MDN — import(): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import
+- [MDN: Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+- [MDN: Using promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises)
+- [MDN: Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [MDN: import()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import)
+- [MDN: Promise.any()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any)
 
 ---
 
 ## Related pages
 
-- [[async-await]] — Promise 기반 동기적 문법
-- [[lexical-scope]] — 클로저와 콜백
-- [[first-class-citizen]] — 함수를 값으로 다루는 콜백/핸들러 전달
+- [[async-await]]
+- [[lexical-scope]]
+- [[first-class-citizen]]
 - [[fetch-api]]

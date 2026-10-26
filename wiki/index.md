@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-10-26 15:27:25
+updated: 2026-10-26 23:24:43
 tags:
   - meta
 ---
@@ -290,18 +290,18 @@ tags:
 
 ### 공통
 
-- [[function-declaration]] — 자바스크립트 함수 선언: 함수 선언문/함수 표현식/화살표 함수 비교, 호이스팅, 기본·나머지 매개변수
-- [[promise]] — 자바스크립트 Promise: 상태, 생성과 소비, 체이닝(then/catch/finally), 동시성 정적 메서드(all/allSettled/race/any), Thenable
-- [[async-await]] — 자바스크립트 async/await: async 함수의 Promise 반환, await 동작, 순차/동시 실행, forEach·return await·처리되지 않은 거부 주의사항
-- [[null-operators]] — 자바스크립트 null 관련 연산자: 옵셔널 체이닝, 널 병합, 널 병합 할당
-- [[truthy-falsy]] — 자바스크립트 Truthy/Falsy: 8가지 falsy 값, truthy 값, nullish와의 관계
-- [[module-system]] — 자바스크립트 모듈 시스템: CommonJS vs ES Module 비교, package.json exports/imports
-- [[commonjs]] — CommonJS: require/module.exports 문법과 동작
-- [[es-module]] — ES Module: import/export 문법과 동작, 순환 참조, 브라우저 `<script type="module">`의 기본 defer 동작
-- [[template-literals]] — 템플릿 리터럴(백틱): 문자열 보간, 여러 줄 문자열, 중첩, tagged template, raw 문자열
-- [[fetch-api]] — Fetch API: 기본 사용법, 응답 상태 확인, 요청 옵션, 본문 읽기, 요청 취소, 리다이렉트·에러 처리
-- [[variable-declaration]] — 자바스크립트 변수 선언: var/let/const 비교, 스코프, 호이스팅·TDZ, 재선언/재할당, 전역 객체 프로퍼티
-- [[lexical-scope]] — 자바스크립트 렉시컬 스코프: 스코프 체인, 환경 레코드, 클로저, this, with·eval 예외
+- [[function-declaration]] — 함수 선언문·표현식·화살표 함수
+- [[promise]] — Promise 상태와 체이닝
+- [[async-await]] — async 함수와 await
+- [[null-operators]] — 옵셔널 체이닝과 널 병합 연산자
+- [[truthy-falsy]] — 불리언 컨텍스트의 암묵적 변환
+- [[module-system]] — CommonJS와 ES Module 비교
+- [[commonjs]] — CommonJS 모듈 시스템
+- [[es-module]] — ECMAScript 표준 모듈 시스템
+- [[template-literals]] — 템플릿 리터럴
+- [[fetch-api]] — HTTP 요청 인터페이스
+- [[variable-declaration]] — var·let·const 변수 선언
+- [[lexical-scope]] — 렉시컬 스코프와 클로저
 
 ### TypeScript
 

@@ -1,6 +1,6 @@
 ---
 title: 자바스크립트 변수 선언
-updated: 2026-10-26 15:27:25
+updated: 2026-10-26 23:28:31
 tags:
   - javascript
   - variable
@@ -16,7 +16,7 @@ tags:
 
 ## 2. 스코프
 
-### 2.1. var — 함수 스코프
+### 2.1. var
 
 `var`로 선언한 변수의 스코프는 자신을 감싸는 가장 가까운 함수 전체다. `if`/`for`/`{}` 같은 블록 구문은 스코프를 만들지 않으므로, 블록 안에서 선언해도 함수 어디서든 접근할 수 있고 같은 이름은 같은 변수를 가리킨다.
 
@@ -37,7 +37,7 @@ console.log(i); // 3
 
 함수 밖에서 선언하면 스크립트 또는 모듈 최상위가 스코프가 된다.
 
-### 2.2. let/const — 블록 스코프
+### 2.2. let/const
 
 `let`/`const`로 선언한 변수의 스코프는 자신을 감싸는 가장 가까운 블록이다. 블록 안팎의 같은 이름은 서로 다른 변수이며, 블록 밖에서는 접근할 수 없다.
 
@@ -60,7 +60,7 @@ console.log(i); // ReferenceError: i is not defined
 
 ## 3. 호이스팅과 TDZ
 
-셋 다 선언은 스코프 최상단으로 끌어올려지지만(호이스팅), 접근 가능 시점이 다르다. `var`는 선언 전 접근 시 `undefined`를 반환하는 반면, `let`/`const`는 선언 지점에 도달하기 전까지 **TDZ**(Temporal Dead Zone) 상태로 접근 시 `ReferenceError`가 발생한다.
+셋 다 선언은 스코프 최상단으로 끌어올려지지만(호이스팅), 접근 가능 시점이 다르다. `var`는 선언 전 접근 시 `undefined`를 반환하는 반면, `let`/`const`는 선언 지점에 도달하기 전까지 TDZ(Temporal Dead Zone) 상태로 접근 시 `ReferenceError`가 발생한다.
 
 ```javascript
 console.log(bar); // undefined
@@ -85,7 +85,7 @@ let b = 1; let b = 2; // SyntaxError
 const c = 1; c = 2;   // TypeError: Assignment to constant variable
 ```
 
-`const`는 값이 아니라 **바인딩(참조)**을 고정한다. 객체·배열을 가리키는 `const` 변수도 프로퍼티·요소 변경은 가능하다.
+`const`는 값이 아니라 바인딩(참조)을 고정한다. 객체·배열을 가리키는 `const` 변수도 프로퍼티·요소 변경은 가능하다.
 
 ```javascript
 const obj = { key: "value" };
@@ -117,13 +117,14 @@ console.log(globalThis.y); // undefined
 MDN을 포함한 다수 스타일 가이드는 재할당이 없는 변수에는 `const`를, 재할당이 필요한 경우에만 `let`을 권장한다. `var`는 스코프 문제(호이스팅, 함수 스코프)로 인한 버그 가능성 때문에 ES2015 이후 코드에서는 사용을 지양한다.
 
 ---
+
 ## Sources
-- [let — MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
-- [const — MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
-- [var — MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
+- [MDN: let](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
+- [MDN: const](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)
+- [MDN: var](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
 
 ---
 
 ## Related pages
-- [[lexical-scope]] — 스코프 체인, 환경 레코드, 클로저
+- [[lexical-scope]]
 - [[function-declaration]]
