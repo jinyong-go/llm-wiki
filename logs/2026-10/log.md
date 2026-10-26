@@ -2,6 +2,26 @@
 
 ---
 
+## 2026-10-26 14:23:30
+
+- **수정**: `testcontainers.md` 실행 환경·의존성·설정을 환경 구성으로 묶고 Ryuk 정리를 생명주기로 이동, API 변경 표의 JUnit 4 항목 제거, FAQ(Docker 환경 감지·Docker 29 API 버전, Docker Hub 요청 제한, 컨테이너 내 실행, 시작 타임아웃, 연결 거부) 추가
+
+## 2026-10-26 14:02:11
+
+- **수정**: `testcontainers.md` 생성자·중첩 클래스·JDBC URL·서비스 식별 설명 정정, 생명주기와 Spring 구성 재배치, 문장·예시·설정 표 정리
+
+## 2026-10-26 13:35:39
+
+- **생성**: `testcontainers.md` Testcontainers 2.x(JUnit 5 기준) 의존성, 컨테이너 정의, 네트워크, 대기 전략, JUnit 5 생명주기, 컨테이너 공유, JDBC URL, Spring Boot 연동, Ryuk·설정, 1.x 차이
+- **수정**: `java-testing-libraries.md` Testcontainers 항목에 [[testcontainers]] 링크 추가
+- **수정**: `index.md` 테스트 섹션에 [[testcontainers]] 추가
+
+## 2026-10-26 13:27:25
+
+- **생성**: `mockwebserver.md` OkHttp MockWebServer(mockwebserver3 5.x, JUnit 5 기준) 의존성, 생명주기, 응답·Dispatcher, 요청 검증, 4.x 차이, HTTPS, FAQ
+- **수정**: `java-testing-libraries.md` MockWebServer 항목에 [[mockwebserver]] 링크 추가
+- **수정**: `index.md` 테스트 섹션에 [[mockwebserver]] 추가
+
 ## 2026-10-24 23:26:53
 
 - **수정**: Git 문서 6개 구성 개선. commit·stash·fetch/pull/push의 반복 예시를 줄이고 branch 설정을 git-config로 모았으며 reset과 restore의 설명 범위를 상호 참조로 정리. commit diff 비교 대상·pull 기본 동작 서술 정정

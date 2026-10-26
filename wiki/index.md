@@ -139,6 +139,8 @@ tags:
 - [[junit-test-execution-order]] — JUnit 테스트 실행 순서
 - [[jacoco]] — JaCoCo 테스트 커버리지
 - [[mockserver]] — MockServer HTTP 목 서버
+- [[mockwebserver]] — OkHttp MockWebServer HTTP 목 서버
+- [[testcontainers]] — Docker 기반 통합 테스트 의존성
 
 ### Spring
 

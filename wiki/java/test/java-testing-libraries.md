@@ -1,6 +1,6 @@
 ---
 title: Java 테스트 라이브러리
-updated: 2026-10-22 23:09:21
+updated: 2026-10-26 13:35:39
 tags:
   - java
   - testing
@@ -61,10 +61,10 @@ Spring Boot의 `spring-boot-starter-test`는 JUnit·Spring Test·Spring Boot Tes
 
 실제 또는 그에 준하는 외부 시스템을 띄워 데이터 접근·통합 경로를 검증한다.
 
-- **Testcontainers**: Docker 컨테이너로 실제 DB·메시지 큐·브라우저 등의 일회성(throwaway) 인스턴스를 코드로 띄운다. mock이나 인메모리가 아닌 운영과 동일한 서비스로 테스트하며 매 실행이 알려진 상태에서 시작한다. DAO·애플리케이션 통합 테스트에 쓰이며 PostgreSQL·MySQL·Kafka 등 전용 모듈을 제공한다.
+- **Testcontainers**: Docker 컨테이너로 실제 DB·메시지 큐·브라우저 등의 일회성(throwaway) 인스턴스를 코드로 띄운다. mock이나 인메모리가 아닌 운영과 동일한 서비스로 테스트하며 매 실행이 알려진 상태에서 시작한다. DAO·애플리케이션 통합 테스트에 쓰이며 PostgreSQL·MySQL·Kafka 등 전용 모듈을 제공한다. 상세는 [[testcontainers]].
 - **WireMock**: 외부 HTTP API를 스텁·모킹한다. 응답·지연·실패 시나리오를 정의해 클라이언트 코드를 격리 테스트하며 독립 프로세스·JUnit 확장·컨테이너로 실행한다.
 - **MockServer**: 외부 HTTP API를 Expectation으로 모킹하고 수신 요청을 검증한다. JUnit 5 Extension과 Spring Test Listener를 제공하며 프록시로 실제 요청을 기록할 수 있다. 상세는 [[mockserver]].
-- **MockWebServer(OkHttp)**: 경량 HTTP 모킹 서버로, 단순 요청/응답 검증에 쓴다.
+- **MockWebServer(OkHttp)**: 경량 HTTP 모킹 서버로, 단순 요청/응답 검증에 쓴다. 상세는 [[mockwebserver]].
 - **임베디드 DB**: H2(인메모리 RDB), Embedded PostgreSQL 등이다. 빠르지만 운영 DB와 방언 차이가 있어 정합성은 Testcontainers가 우위다.[^2]
 - **Embedded Kafka, GreenMail**: 메시징·메일 등 특정 미들웨어를 임베디드로 대체한다.
 
