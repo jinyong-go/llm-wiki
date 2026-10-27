@@ -175,15 +175,15 @@ tags:
 - [[aop-transaction-order]] — AOP Advice 순서와 트랜잭션 경계: @Order·precedence, 위치별 실행 흐름, 예외 삼킴과 롤백
 - [[aspectj]] — AspectJ: 위빙 방식, Spring 통합, 선택 기준
 - [[forward-headers-proxy]] — 리버스 프록시 뒤 Forward Headers 처리
-- [[batch]] — Spring Batch 개념: Job, Step, Tasklet vs Chunk
-- [[batch-scope]] — Spring Batch StepScope·JobScope: Late Binding
-- [[batch-job-parameters]] — Spring Batch JobParameters: 타입, 전달, 사용
-- [[batch-tasklet]] — Spring Batch Tasklet: 개념과 사용 시점
-- [[batch-chunk]] — Spring Batch Chunk 지향 처리: Reader/Processor/Writer
-- [[batch-db-reader-writer]] — Spring Batch DB ItemReader/Writer: 커서 vs 페이징
+- [[batch]] — Spring Batch 도메인 모델과 처리 방식
+- [[batch-scope]] — Spring Batch StepScope·JobScope
+- [[batch-job-parameters]] — Spring Batch JobParameters
+- [[batch-tasklet]] — Spring Batch Tasklet
+- [[batch-chunk]] — Spring Batch Chunk 지향 처리
+- [[batch-db-reader-writer]] — Spring Batch DB ItemReader·ItemWriter
 - [[batch-fault-tolerance]] — Spring Batch 재시작, 스킵, 재시도
 - [[batch-flow]] — Spring Batch 조건별 플로우 제어
-- [[batch-testing]] — Spring Batch 테스트 방법과 유틸리티
+- [[batch-testing]] — Spring Batch 테스트
 
 ## Security
 

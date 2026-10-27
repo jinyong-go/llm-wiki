@@ -1,6 +1,6 @@
 ---
 title: Spring Batch JobParameters
-updated: 2026-10-27 22:42:29
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -42,7 +42,7 @@ JobParameters params = new JobParametersBuilder()
         .toJobParameters();
 ```
 
-> 같은 식별 파라미터로 이미 **완료된** 잡을 다시 실행하려 하면 새 `JobInstance`가 생기지 않아 재실행이 거부된다. 매번 새로 실행하려면 식별 파라미터(예: 타임스탬프)를 달리해야 한다.
+매번 새 `JobInstance`로 실행하려면 식별 파라미터(예: 타임스탬프)를 달리한다. 완료된 잡을 같은 식별 파라미터로 다시 실행할 때의 동작은 [[batch-fault-tolerance]] §2.2.
 
 ---
 
@@ -97,21 +97,7 @@ java -jar app.jar inputFile=data.csv baseDate=2026-06-26,java.time.LocalDate
 
 ### 5.1. 스코프 빈 + SpEL
 
-`@StepScope`/`@JobScope` 빈에서 SpEL로 주입한다. 실행 시점에 바인딩되므로 reader/writer/tasklet에 동적 입력을 줄 때 표준 방식이다.
-
-```java
-@Bean
-@StepScope
-public FlatFileItemReader<Foo> reader(
-        @Value("#{jobParameters['inputFile']}") String path) {
-    return new FlatFileItemReaderBuilder<Foo>()
-            .name("reader")
-            .resource(new FileSystemResource(path))
-            .build();
-}
-```
-
-상세: [[batch-scope]].
+`@StepScope`/`@JobScope` 빈에서 `@Value("#{jobParameters['inputFile']}")` 형태의 SpEL로 주입한다. 실행 시점에 바인딩되므로 reader/writer/tasklet에 동적 입력을 줄 때 표준 방식이다. 예시와 동작 원리는 [[batch-scope]] §2.1.
 
 ### 5.2. 실행 컨텍스트에서 직접 조회
 
@@ -130,19 +116,19 @@ public RepeatStatus execute(StepContribution contribution, ChunkContext chunkCon
 ---
 
 ## Sources
-- Spring Batch Reference (latest, 6.x) — Running a Job: https://docs.spring.io/spring-batch/reference/job/running.html
-- Spring Batch Reference (latest, 6.x) — Domain Language (JobParameters): https://docs.spring.io/spring-batch/reference/domain.html
-- What's New in Spring Batch 5.0 (JobParameters 타입 변경): https://docs.spring.io/spring-batch/docs/5.0.0/reference/html/whatsnew.html
-- Spring Boot How-to — Batch Applications: https://docs.spring.io/spring-boot/how-to/batch.html
-- DefaultJobParametersConverter / JsonJobParametersConverter API: https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/converter/JsonJobParametersConverter.html
+- [Spring: Spring Batch Reference, Running a Job](https://docs.spring.io/spring-batch/reference/job/running.html)
+- [Spring: Spring Batch Reference, Domain Language](https://docs.spring.io/spring-batch/reference/domain.html)
+- [Spring: What's New in Spring Batch 5.0](https://docs.spring.io/spring-batch/docs/5.0.0/reference/html/whatsnew.html)
+- [Spring: Spring Boot How-to, Batch Applications](https://docs.spring.io/spring-boot/how-to/batch.html)
+- [Spring: Spring Batch API, JsonJobParametersConverter](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/converter/JsonJobParametersConverter.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Job/JobInstance/JobExecution 도메인 모델
-- [[batch-scope]] — StepScope·JobScope에서 파라미터 Late Binding
-- [[batch-fault-tolerance]] — 식별 파라미터와 JobInstance 재시작 판정
-- [[jpa-transaction]] — 스텝 트랜잭션 경계
+- [[batch]]
+- [[batch-scope]]
+- [[batch-fault-tolerance]]
+- [[jpa-transaction]]
 
 ---
 

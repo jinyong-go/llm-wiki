@@ -2,6 +2,11 @@
 
 ---
 
+## 2026-10-27 22:48:33
+
+- **수정**: Spring Batch 문서 9개 구성 개선. Sources 형식 통일, Related pages 설명 제거, 문서 간 반복 제거(`batch.md` 구현체 절을 `batch-chunk.md`로, Tasklet·Chunk 비교를 `batch.md`로 일원화), 요약 절 삭제(`batch-fault-tolerance.md` 기능별 API, `batch-flow.md` 선택 기준, `batch-scope.md` 주의사항, `batch-db-reader-writer.md` 선택 기준 반복 항목), 절 제목 간결화
+- **수정**: `index.md` Spring Batch 항목을 주제 수준 서술로 변경
+
 ## 2026-10-27 22:42:29
 
 - **수정**: Spring Batch 문서 5개에 Batch 6 deprecated API 반영. `batch.md` 도메인 표를 `JobOperator` 기준으로 변경, `batch-job-parameters.md` 실행 API를 버전별로 구분, `batch-chunk.md` chunk 트랜잭션 매니저 지정 방식의 버전 차이 note 추가, `batch-fault-tolerance.md` 6.0+ 예시를 `chunk(int).transactionManager()` 형식으로 수정, `batch-scope.md` `JobLauncher` 언급 삭제

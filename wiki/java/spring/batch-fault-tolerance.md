@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 재시작·스킵·재시도
-updated: 2026-10-27 22:42:29
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -24,7 +24,7 @@ Spring Batch는 배치 처리의 실패에 대응하는 두 축을 제공한다.
 
 ---
 
-## 2. 재시작 — 잡(Job) 레벨
+## 2. 잡 재시작
 
 특정 `JobInstance`에 대해 이미 `JobExecution`이 존재하는 상태에서 잡을 다시 실행하면 그것이 **"재시작(restart)"** 이다. 잡은 **기본적으로 재시작 가능(restartable = true)** 하다.
 
@@ -51,7 +51,7 @@ public Job footballJob(JobRepository jobRepository) {
 
 ---
 
-## 3. 재시작 — 스텝(Step) 레벨
+## 3. 스텝 재시작
 
 재시작된 잡이 스텝들을 어떻게 처리할지는 스텝별로 설정한다.
 
@@ -61,7 +61,7 @@ public Job footballJob(JobRepository jobRepository) {
 | `allowStartIfComplete(true)` | false | 완료 여부와 무관하게 **항상 실행** |
 | `startLimit(n)` | `Integer.MAX_VALUE` | 스텝 시작 가능 횟수 제한. 초과 시 `StartLimitExceededException` |
 
-### 3.1. allowStartIfComplete — 완료 스텝 재실행
+### 3.1. allowStartIfComplete
 
 기본적으로 재시작 시 이미 완료된 스텝은 건너뛴다. 매 실행마다 반드시 수행해야 하는 검증·정리·리소스 준비 스텝은 `allowStartIfComplete(true)`로 강제 실행한다.
 
@@ -77,7 +77,7 @@ public Step gameLoad(JobRepository jobRepository, PlatformTransactionManager tx)
 }
 ```
 
-### 3.2. startLimit — 시작 횟수 제한
+### 3.2. startLimit
 
 수동 개입이 필요한 리소스를 무효화하는 스텝 등, 실행 횟수를 제한해야 할 때 사용한다.
 
@@ -101,11 +101,11 @@ chunk 지향 스텝은 커밋 시점마다 진행 위치를 `StepExecution`의 `
 
 ---
 
-## 4. 내결함성 — `faultTolerant()`
+## 4. 내결함성
 
-스텝에 skip·retry를 적용하려면 `StepBuilder`에서 `faultTolerant()`를 호출해 `FaultTolerantStepBuilder`로 전환해야 한다. **내결함성은 chunk 지향 스텝에만 적용**된다(Tasklet은 항목 단위 skip/retry 없음). [[batch-chunk]] §6 참고.
+스텝에 skip·retry를 적용하려면 `StepBuilder`에서 `faultTolerant()`를 호출해 `FaultTolerantStepBuilder`로 전환해야 한다. **내결함성은 chunk 지향 스텝에만 적용**된다(Tasklet은 항목 단위 skip/retry 없음). [[batch-tasklet]] §4.2 참고.
 
-### 4.1. Skip — 결정적 오류 건너뛰기
+### 4.1. Skip
 
 특정 레코드의 오류를 건너뛰고 처리를 계속한다. **read / process / write 세 단계 모두**에서 발생할 수 있다.
 
@@ -139,7 +139,7 @@ SkipPolicy skipPolicy = new LimitCheckingExceptionHierarchySkipPolicy(
 
 > Skip은 다시 시도해도 결과가 같은 **결정적 오류**(파싱 오류 등 비핵심 데이터)에 적합하다. 금융 레코드처럼 누락이 곧 정합성 손상인 핵심 데이터에는 부적합하다.
 
-### 4.2. Retry — 비결정적 오류 재시도
+### 4.2. Retry
 
 기다렸다 다시 시도하면 성공할 수 있는 **비결정적 오류**(락 경합 등)에 대해 **항목 단위로 재시도**한다.
 
@@ -205,41 +205,25 @@ chunk 1개는 트랜잭션 1개다([[batch-chunk]]). **write 도중 예외가 �
 
 ---
 
-## 6. 기능별 API
-
-| 기능 | 핵심 API | 기본값 | 적용 범위 |
-|------|----------|--------|-----------|
-| 잡 재시작 금지 | `preventRestart()` | restartable=true | Job |
-| 완료 스텝 재실행 | `allowStartIfComplete(true)` | 완료 스텝 skip | Step |
-| 스텝 시작 횟수 제한 | `startLimit(n)` | `Integer.MAX_VALUE` | Step |
-| 내결함성 활성화 | `faultTolerant()` | 비활성 | chunk Step |
-| 건너뛰기 | `skip(ex)` + `skipLimit(n)` / `skipPolicy` | 없음 | read/process/write |
-| 재시도 | (6.0+) `retryPolicy(RetryPolicy.builder()...)` / (~5.x) `retry(ex)`+`retryLimit(n)` | 없음 | process/write |
-| 롤백 제외 | `noRollback(ex)` | 예외 시 롤백 | read/process |
-
-관련 예외: `JobRestartException`(재시작 불가 잡 재시작), `JobInstanceAlreadyCompleteException`(완료 잡 재실행), `StartLimitExceededException`(스텝 시작 한도 초과).
-
----
-
 ## Sources
-- Spring Batch Reference (6.x) — Configuring Skip Logic: https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/configuring-skip.html
-- Spring Batch Reference (6.x) — Configuring Retry Logic: https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/retry-logic.html
-- Spring Batch Reference (6.x) — Configuring a Step for Restart: https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/restart.html
-- Spring Batch Reference (6.x) — Configuring a Job (restartability): https://docs.spring.io/spring-batch/reference/job/configuring-job.html
-- Spring Batch Reference (6.x) — Intercepting Step Execution (SkipListener/RetryListener): https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/intercepting-execution.html
-- SkipListener API: https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/SkipListener.html
-- FaultTolerantStepBuilder API (noRollback): https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/step/builder/FaultTolerantStepBuilder.html
+- [Spring: Spring Batch Reference, Configuring Skip Logic](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/configuring-skip.html)
+- [Spring: Spring Batch Reference, Configuring Retry Logic](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/retry-logic.html)
+- [Spring: Spring Batch Reference, Configuring a Step for Restart](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/restart.html)
+- [Spring: Spring Batch Reference, Configuring a Job](https://docs.spring.io/spring-batch/reference/job/configuring-job.html)
+- [Spring: Spring Batch Reference, Intercepting Step Execution](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/intercepting-execution.html)
+- [Spring: Spring Batch API, SkipListener](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/SkipListener.html)
+- [Spring: Spring Batch API, FaultTolerantStepBuilder](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/step/builder/FaultTolerantStepBuilder.html)
 
 ---
 
 ## Related pages
-- [[batch]] — 도메인 모델(JobInstance/JobExecution/ExecutionContext), Step 처리 방식
-- [[batch-chunk]] — chunk 트랜잭션 경계, ItemReader/Processor/Writer
-- [[batch-job-parameters]] — 식별 파라미터와 JobInstance 재시작 판정
-- [[batch-flow]] — 조건별 플로우, stopAndRestart·ExitStatus 분기
-- [[batch-tasklet]] — Tasklet은 항목 단위 내결함성 없음
-- [[jpa-transaction]] — 트랜잭션 경계·롤백 규칙
-- [[hikari-deadlock]] — 재시도 대상 데드락 예외의 근본 원인·해결
+- [[batch]]
+- [[batch-chunk]]
+- [[batch-job-parameters]]
+- [[batch-flow]]
+- [[batch-tasklet]]
+- [[jpa-transaction]]
+- [[hikari-deadlock]]
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Tasklet
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -9,7 +9,7 @@ tags:
   - tasklet
 ---
 
-## 1. Tasklet이란
+## 1. 개요
 
 `Tasklet`은 Spring Batch의 `Step`을 구성하는 두 처리 모델 중 하나로, **단일 작업을 수행**하는 방식이다(다른 하나는 Chunk 지향). 단일 메서드를 가진 함수형 인터페이스다.
 
@@ -29,7 +29,7 @@ public interface Tasklet {
 
 ---
 
-## 2. 언제 사용하는가
+## 2. 사용 시점
 
 read-process-write(다건 반복) 패턴에 맞지 않는 **단일·이산적 작업**에 사용한다.
 
@@ -39,7 +39,7 @@ read-process-write(다건 반복) 패턴에 맞지 않는 **단일·이산적 �
 - 셋업/클린업 (스텝 전후 리소스 초기화·정리)
 - 시스템 명령 실행
 
-> 반대로, 데이터를 한 건씩 읽어 변환·기록하는 대량 처리는 Chunk 지향이 적합하다. (§[[batch]] 처리 방식 비교)
+> 반대로, 데이터를 한 건씩 읽어 변환·기록하는 대량 처리는 Chunk 지향이 적합하다. 처리 방식 비교는 [[batch]] §5.
 
 ---
 
@@ -139,18 +139,18 @@ public MethodInvokingTaskletAdapter myTasklet() {
 ---
 
 ## Sources
-- Spring Batch Reference (latest, 6.x) — TaskletStep: https://docs.spring.io/spring-batch/reference/step/tasklet.html
-- Spring Batch Reference (latest, 6.x) — Configuring a Step: https://docs.spring.io/spring-batch/reference/step.html
+- [Spring: Spring Batch Reference, TaskletStep](https://docs.spring.io/spring-batch/reference/step/tasklet.html)
+- [Spring: Spring Batch Reference, Configuring a Step](https://docs.spring.io/spring-batch/reference/step.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Step·처리 방식(Tasklet vs Chunk) 개요
-- [[batch-chunk]] — Chunk 지향 처리(대량 반복), Tasklet과 비교
-- [[batch-scope]] — `@StepScope`로 Tasklet에 실행 시점 파라미터 주입
-- [[batch-job-parameters]] — Tasklet에서 JobParameters 사용
-- [[batch-fault-tolerance]] — 재시작/Skip/Retry (Tasklet은 항목 단위 내결함성 없음)
-- [[jpa-transaction]] — execute 호출의 트랜잭션 경계
+- [[batch]]
+- [[batch-chunk]]
+- [[batch-scope]]
+- [[batch-job-parameters]]
+- [[batch-fault-tolerance]]
+- [[jpa-transaction]]
 
 ---
 

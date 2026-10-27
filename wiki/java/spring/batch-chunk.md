@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Chunk 지향 처리
-updated: 2026-10-27 22:42:29
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -99,8 +99,7 @@ public interface ItemReader<T> {
 | | `RepositoryItemReader` | Spring Data Repository 사용 |
 | 메시징 | `KafkaItemReader`, `AmqpItemReader`, `JmsItemReader` 등 | 브로커에서 읽기 |
 
-> 커서 방식은 단일 커넥션으로 스트리밍해 메모리에 유리하나 커넥션을 길게 점유한다. 페이징 방식은 페이지마다 쿼리를 재실행하며 멀티스레드·재시작에 유리하다.[^1]
-
+DB 커서·페이징 방식의 차이는 [[batch-db-reader-writer]] §2.
 
 ---
 
@@ -159,58 +158,44 @@ public interface ItemWriter<T> {
 
 ---
 
-## 6. Tasklet과의 차이
+## 6. 장단점
 
-| 항목 | Chunk 지향 | Tasklet |
-|------|-----------|---------|
-| 처리 모델 | read → process → write 반복 | 단일 `execute()` |
-| 트랜잭션 경계 | chunk(다건) 단위 | execute 호출 단위 |
-| 구성요소 | `ItemReader`(+`ItemProcessor`)+`ItemWriter` | `Tasklet` |
-| 통계 | read/write/filter/skip count 집계 | 항목 단위 통계 없음 |
-| 내결함성 | skip/retry 항목 단위 지원 | 없음 |
-| 적합 작업 | 대량 반복 처리 | 단일 작업(프로시저·파일/시스템 등) |
+Tasklet과의 비교는 [[batch]] §5.
 
-상세: [[batch-tasklet]].
-
----
-
-## 7. 장단점
-
-### 7.1. 장점
+### 6.1. 장점
 - **메모리 효율** — 전체가 아닌 chunk 단위만 메모리에 적재. 대용량 처리에 적합.
 - **트랜잭션 관리** — chunk 단위 커밋으로 부분 진행·실패 격리.
 - **내결함성·재시작** — skip/retry와 `ExecutionContext` 기반 재시작으로 실패 지점부터 재개 가능.
 - **풍부한 구현체** — 파일·DB·메시징용 reader/writer를 조합만으로 구성. 통계 자동 집계.
 
-### 7.2. 단점
+### 6.2. 단점
 - **단일 작업엔 과함** — 단발성 작업은 [[batch-tasklet]]이 더 단순.
 - **chunk size 튜닝 필요** — 너무 크면 메모리·롤백 비용·락 점유 증가, 너무 작으면 커밋 오버헤드 증가.
-- **구성 복잡도** — reader/processor/writer 분리로 단순 로직 대비 보일러플레이트가 늘 수 있다.[^2]
+- **구성 복잡도** — reader/processor/writer 분리로 단순 로직 대비 보일러플레이트가 늘 수 있다.[^1]
 
 
 ---
 
 ## Sources
-- Spring Batch Reference (latest, 6.x) — Item Reader: https://docs.spring.io/spring-batch/reference/readers-and-writers/item-reader.html
-- Spring Batch Reference (latest, 6.x) — Item Writer: https://docs.spring.io/spring-batch/reference/readers-and-writers/item-writer.html
-- Spring Batch Reference (latest, 6.x) — Chunk-oriented Processing (Configuring a Step): https://docs.spring.io/spring-batch/reference/step.html
-- Spring Batch Reference (latest, 6.x) — ItemReaders and ItemWriters: https://docs.spring.io/spring-batch/reference/readersAndWriters.html
-- Spring Batch 6.0 deprecated list: https://docs.spring.io/spring-batch/docs/6.0.x/api/deprecated-list.html
+- [Spring: Spring Batch Reference, Item Reader](https://docs.spring.io/spring-batch/reference/readers-and-writers/item-reader.html)
+- [Spring: Spring Batch Reference, Item Writer](https://docs.spring.io/spring-batch/reference/readers-and-writers/item-writer.html)
+- [Spring: Spring Batch Reference, Configuring a Step](https://docs.spring.io/spring-batch/reference/step.html)
+- [Spring: Spring Batch Reference, ItemReaders and ItemWriters](https://docs.spring.io/spring-batch/reference/readersAndWriters.html)
+- [Spring: Spring Batch 6.0 API, Deprecated List](https://docs.spring.io/spring-batch/docs/6.0.x/api/deprecated-list.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Step·처리 방식 개요, 도메인 모델
-- [[batch-fault-tolerance]] — chunk 스텝의 Skip·Retry·롤백·재시작
-- [[batch-flow]] — ItemProcessor에서 ExitStatus 설정해 조건 분기
-- [[batch-tasklet]] — 단일 작업 처리 모델, Chunk와 비교
-- [[batch-db-reader-writer]] — DB reader/writer 카테고리별 상세(JDBC/JPA/Spring Data)
-- [[batch-scope]] — `@StepScope`로 reader/writer에 파라미터 주입
-- [[batch-job-parameters]] — 실행 파라미터 전달·사용
-- [[jpa-transaction]] — chunk 트랜잭션 경계, readOnly
-- [[jpa-n-plus-one]] — reader 단계 연관 조회 N+1 주의
+- [[batch]]
+- [[batch-fault-tolerance]]
+- [[batch-flow]]
+- [[batch-tasklet]]
+- [[batch-db-reader-writer]]
+- [[batch-scope]]
+- [[batch-job-parameters]]
+- [[jpa-transaction]]
+- [[jpa-n-plus-one]]
 
 ---
 
-[^1]: 출처의 직접 서술이 아니라 두 방식의 동작(단일 ResultSet 스트리밍 vs 페이지 쿼리 반복)으로부터 추론.
-[^2]: reader/processor/writer 3요소 분리 구조로부터 도출한 일반적 평가임.
+[^1]: reader/processor/writer 3요소 분리 구조로부터 도출한 일반적 평가임.

@@ -1,6 +1,6 @@
 ---
 title: Spring Batch StepScope·JobScope
-updated: 2026-10-27 22:42:29
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -22,7 +22,7 @@ tags:
 
 ---
 
-## 2. 동작 원리 — Late Binding과 프록시
+## 2. 동작 원리
 
 ### 2.1. Late Binding
 
@@ -99,6 +99,9 @@ public Step step(JobRepository jobRepository,
 }
 ```
 
+> [!warning] 멀티 스레드·파티션 스텝
+> 멀티 스레드·파티션 스텝에서는 JobScope 빈을 쓰지 않는다. 프레임워크가 생성하지 않은 스레드는 스코프 셋업을 관리할 수 없다. (출처: 공식 문서)
+
 ---
 
 ## 5. SpEL 표현식
@@ -115,32 +118,22 @@ public Step step(JobRepository jobRepository,
 
 ---
 
-## 6. 사용 이유·장점
+## 6. 상태 격리
 
-1. **JobParameter Late Binding** — 컨트롤러/서비스에서 실행 시점에 파라미터를 동적으로 넘기고, 그 값을 reader/writer 등에 바인딩할 수 있다. 외부 입력(요청 파라미터 등) 기반 배치에 필수.
-2. **Thread Safety / 상태 격리** — 실행마다 별도 인스턴스를 생성하므로, 멀티 스레드·병렬 스텝에서 상태를 공유하지 않아 동시성 문제가 줄어든다. (특히 `ItemReader`처럼 내부에 진행 상태를 가지는 컴포넌트에 중요)
+실행마다 별도 인스턴스를 생성하므로, 멀티 스레드·병렬 스텝에서 상태를 공유하지 않아 동시성 문제가 줄어든다. `ItemReader`처럼 내부에 진행 상태를 가지는 컴포넌트에 특히 중요하다. (출처: jojoldu)
 
-(출처: jojoldu)
-
----
-
-## 7. 주의사항
-
-- **Step 빈 자체에 `@StepScope` 금지** — 구성요소에만 적용(§3).
-- **프록시/반환 타입** — `ItemStream` 구현 컴포넌트는 구체 타입으로 선언(§2.2).
-- **멀티 스레드·파티션 스텝에서 JobScope 빈 사용 금지** — 프레임워크가 생성하지 않은 스레드는 스코프 셋업을 관리할 수 없다. (출처: 공식 문서)
 ---
 
 ## Sources
-- Spring Batch Reference (latest, 6.x) — Late Binding of Job and Step Attributes: https://docs.spring.io/spring-batch/reference/step/late-binding.html
-- jojoldu, "Spring Batch 가이드 - Spring Batch Scope & Job Parameter": https://jojoldu.tistory.com/330
-- Spring Boot Reference — Spring Batch: https://docs.spring.io/spring-boot/reference/io/spring-batch.html
+- [Spring: Spring Batch Reference, Late Binding of Job and Step Attributes](https://docs.spring.io/spring-batch/reference/step/late-binding.html)
+- [jojoldu: Spring Batch 가이드 - Spring Batch Scope & Job Parameter](https://jojoldu.tistory.com/330)
+- [Spring: Spring Boot Reference, Spring Batch](https://docs.spring.io/spring-boot/reference/io/spring-batch.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Job/Step/실행 도메인 모델, Chunk·Tasklet
-- [[batch-job-parameters]] — JobParameters: 타입·전달·사용 방법
-- [[jpa-transaction]] — 스텝 트랜잭션 경계
-- [[aop]] — 스코프 프록시의 기반인 스프링 프록시 메커니즘
-- [[batch-testing]] — `@StepScope` 빈 테스트(StepScopeTestUtils/StepScopeTestExecutionListener)
+- [[batch]]
+- [[batch-job-parameters]]
+- [[jpa-transaction]]
+- [[aop]]
+- [[batch-testing]]

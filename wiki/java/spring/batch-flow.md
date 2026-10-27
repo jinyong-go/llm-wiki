@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 조건별 플로우
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -50,7 +50,7 @@ public Job job(JobRepository jobRepository, Step stepA, Step stepB, Step stepC) 
 
 ---
 
-## 4. 조건 전이 — `on()` / `from()` / `to()`
+## 4. 조건 전이
 
 `on(pattern)`으로 exit code를 매칭하고 `to(step)`로 갈 스텝을 지정한다. 분기 시작점을 명시할 때는 `from(step).on(...).to(...)`를 쓴다.
 
@@ -81,7 +81,7 @@ public Job job(JobRepository jobRepository, Step stepA, Step stepB, Step stepC) 
 
 흐름을 데이터·결과에 따라 갈라야 하면 스텝의 exit code를 직접 바꾼다. 두 가지 위치가 있다.
 
-### 5.1. StepExecutionListener.afterStep — 스텝 통계 기반
+### 5.1. 스텝 통계 기반
 
 스텝 종료 후 통계(예: skip 수)를 보고 exit code를 바꾼다. 변경하지 않을 때는 `null`을 반환한다.
 
@@ -101,7 +101,7 @@ public class SkipCheckingListener implements StepExecutionListener {
 
 이후 `on("COMPLETED WITH SKIPS").to(...)`로 분기할 수 있다. skip 동작은 [[batch-fault-tolerance]] 참고.
 
-### 5.2. 처리 데이터 기반 — `StepExecution.setExitStatus()`
+### 5.2. 처리 데이터 기반
 
 배치 잡 내부 **데이터 값**에 따라 분기해야 하면 `ItemProcessor`(또는 reader/writer)에서 `StepExecution.setExitStatus()`로 exit code를 설정한다. 아래는 양수 측정값이 있으면 `NOTIFY`로 종료하는 예다.
 
@@ -142,7 +142,7 @@ new JobBuilder("number-generator", jobRepository)
 
 `@BeforeStep`으로 `StepExecution`을 주입받아 기본 exit code를 깔고, `afterProcess`에서 조건 충족 시 덮어쓴다. reader/writer에서도 동일하게 설정할 수 있다.
 
-### 5.3. 사용한 리스너 — StepExecutionListener / ItemListenerSupport
+### 5.3. 리스너
 
 위 두 방식이 사용하는 리스너를 정리한다. 둘 다 스텝 생명주기 콜백(`StepListener` 계열)이며, 인터페이스 구현 또는 어노테이션(`@BeforeStep` 등)으로 등록한다.
 
@@ -175,7 +175,7 @@ public interface StepExecutionListener extends StepListener {
 
 ---
 
-## 6. 종료 전이 — `end()` / `fail()` / `stopAndRestart()`
+## 6. 종료 전이
 
 특정 조건에서 잡을 끝내거나 멈추는 전이다.
 
@@ -205,7 +205,7 @@ new JobBuilder("job", jobRepository)
 
 ---
 
-## 7. 프로그래밍 분기 — `JobExecutionDecider`
+## 7. JobExecutionDecider
 
 스텝의 ExitStatus만으로 부족하고 **외부 요인**(설정값, 외부 시스템 상태 등)으로 분기해야 하면 `JobExecutionDecider`를 구현한다. `decide()`가 `FlowExecutionStatus`를 반환하고, 그 값이 `on()` 매칭 대상이 된다.
 
@@ -233,35 +233,27 @@ new JobBuilder("number-generator", jobRepository)
 
 ---
 
-## 8. 두 방식 선택 기준
-
-| 방식 | 분기 근거 | 적합 상황 |
-|------|-----------|-----------|
-| ExitStatus 커스터마이즈 (§5) | 스텝 처리 결과·통계·데이터 | 잡 내부 데이터로 분기가 결정될 때 |
-| `JobExecutionDecider` (§7) | 임의 로직(외부 요인 포함) | 스텝 결과 밖의 조건이 필요할 때 |
-
----
-
-## 9. 스텝 유일성 주의
+## 8. 스텝 유일성 주의
 
 플로우 정의에서 한 스텝이 **여러 전이(outcome)** 를 가지면, `start`/`from`/`to` 등에 **동일한 스텝 인스턴스**를 전달해야 한다. 의존성 주입은 유일성을 보장하지만, `@Bean` 메서드로 스텝을 만들 때는 빈 메서드 프록싱이 필요하다 — `@Configuration(proxyBeanMethods = false)`로 두면 매번 새 인스턴스가 생겨 플로우 정의가 깨진다. (출처: 공식 레퍼런스 주석)
 
 ---
 
 ## Sources
-- raw/java/spring/Conditional Flow in Spring Batch.md (Baeldung, https://www.baeldung.com/spring-batch-conditional-flow)
-- Spring Batch Reference (6.x) — Controlling Step Flow: https://docs.spring.io/spring-batch/reference/step/controlling-flow.html
-- Spring Batch Reference (6.x) — Intercepting Step Execution (StepExecutionListener/Item*Listener): https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/intercepting-execution.html
-- ItemListenerSupport API: https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/listener/ItemListenerSupport.html
+- [Baeldung: Conditional Flow in Spring Batch](https://www.baeldung.com/spring-batch-conditional-flow)
+- `raw/java/spring/Conditional Flow in Spring Batch.md`
+- [Spring: Spring Batch Reference, Controlling Step Flow](https://docs.spring.io/spring-batch/reference/step/controlling-flow.html)
+- [Spring: Spring Batch Reference, Intercepting Step Execution](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/intercepting-execution.html)
+- [Spring: Spring Batch API, ItemListenerSupport](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/listener/ItemListenerSupport.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Job/Step 도메인 모델, 흐름 제어(순차·분기·split) 개요
-- [[batch-fault-tolerance]] — `stopAndRestart`·재시작, skip 통계 기반 ExitStatus 분기
-- [[batch-testing]] — StepExecutionListener·ExitStatus 분기 단위 테스트
-- [[batch-chunk]] — ItemProcessor에서 ExitStatus 설정
-- [[batch-tasklet]] — 단일 작업 스텝의 흐름 연결
+- [[batch]]
+- [[batch-fault-tolerance]]
+- [[batch-testing]]
+- [[batch-chunk]]
+- [[batch-tasklet]]
 
 ---
 

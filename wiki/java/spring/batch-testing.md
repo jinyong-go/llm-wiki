@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 테스트
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -216,22 +216,22 @@ void testAfterStep() {
 ---
 
 ## Sources
-- raw/java/spring/Testing a Spring Batch Job.md (Baeldung, https://www.baeldung.com/spring-batch-testing-job)
-- Spring Batch Reference (6.x) — Unit Testing: https://docs.spring.io/spring-batch/reference/testing.html
-- JobLauncherTestUtils API (5.x): https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/test/JobLauncherTestUtils.html
-- Spring Boot Reference — Spring Batch: https://docs.spring.io/spring-boot/reference/io/spring-batch.html
-- Spring Batch 5.0 deprecated list (AssertFile): https://docs.spring.io/spring-batch/docs/5.0.2/api/deprecated-list.html
+- [Baeldung: Testing a Spring Batch Job](https://www.baeldung.com/spring-batch-testing-job)
+- `raw/java/spring/Testing a Spring Batch Job.md`
+- [Spring: Spring Batch Reference, Unit Testing](https://docs.spring.io/spring-batch/reference/testing.html)
+- [Spring: Spring Batch 5.2 API, JobLauncherTestUtils](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/test/JobLauncherTestUtils.html)
+- [Spring: Spring Boot Reference, Spring Batch](https://docs.spring.io/spring-boot/reference/io/spring-batch.html)
+- [Spring: Spring Batch 5.0 API, Deprecated List](https://docs.spring.io/spring-batch/docs/5.0.2/api/deprecated-list.html)
 
 ---
 
 ## Related pages
-- [[batch]] — Job/Step/JobExecution/StepExecution 도메인 모델
-- [[batch-scope]] — `@StepScope`/`@JobScope` Late Binding(테스트 대상 원리)
-- [[batch-job-parameters]] — 테스트에서 전달하는 JobParameters
-- [[batch-flow]] — StepExecutionListener·ExitStatus(리스너 단위 테스트)
-- [[batch-fault-tolerance]] — skip/retry 결과를 StepExecution 통계로 검증
-- [[batch-chunk]] — reader/writer 구현체(테스트 대상)
-- [[junit-parameterized-test]] — JUnit 매개변수화 테스트(여러 입력 반복 검증)
+- [[batch]]
+- [[batch-scope]]
+- [[batch-job-parameters]]
+- [[batch-flow]]
+- [[batch-fault-tolerance]]
+- [[batch-chunk]]
 
 ---
 

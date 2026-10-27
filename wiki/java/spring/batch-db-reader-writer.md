@@ -1,6 +1,6 @@
 ---
 title: Spring Batch DB ItemReader·ItemWriter
-updated: 2026-10-27 22:31:48
+updated: 2026-10-27 22:48:33
 tags:
   - java
   - spring
@@ -19,7 +19,7 @@ Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기�
 
 ---
 
-## 2. 읽기 방식 — 커서 vs 페이징
+## 2. 커서와 페이징
 
 | 항목 | 커서(Cursor) | 페이징(Paging) |
 |------|-------------|----------------|
@@ -199,16 +199,16 @@ public RepositoryItemReader<Customer> repositoryReader(CustomerRepository repo) 
 
 ---
 
-## 6. Offset 성능 이슈와 커스텀 리더
+## 6. Offset 페이징 성능
 
-### 6.1. Offset 페이징의 한계
+### 6.1. Offset 한계
 
 `JpaPagingItemReader`·`JdbcPagingItemReader`는 `LIMIT offset, size` 방식이라 **페이지가 뒤로 갈수록 급격히 느려진다.** DB가 건너뛸 offset만큼의 행을 매번 스캔한 뒤 버리기 때문이다. 예: `... limit 50000000, 100`은 5천만 행을 스캔한 뒤 100건만 취한다.
 
 - 카카오페이 사례: `JpaPagingItemReader`로 300만 건 처리 시 약 112분, 데이터가 늘수록 비선형으로 악화. (출처: 카카오페이 기술블로그)
 - 대량 처리에서 `JpaPagingItemReader`·`RepositoryItemReader`는 부적합. (출처: 카카오페이)
 
-### 6.2. No Offset (Zero Offset) 방식
+### 6.2. No Offset
 
 offset 대신 **마지막으로 읽은 PK를 조건으로** 다음 페이지를 조회한다. offset을 항상 0으로 유지하므로 데이터량과 무관하게 일정한 속도를 낸다.
 
@@ -222,7 +222,7 @@ select * from product where reg_date = :date and id > :lastId order by id limit 
 - 정렬·커서 키로 쓸 컬럼은 인덱스가 있어야 하고 정렬 순서가 보장돼야 한다.
 - 카카오페이는 `ZeroOffsetItemReader`(및 Kotlin Exposed 기반 `ExposedCursorItemReader`)로 300만 건을 약 4~5분에 처리(기존 112분 대비 8~13배). GC도 안정적. (출처: 카카오페이)
 
-### 6.3. QueryDSL 커스텀 리더
+### 6.3. QueryDSL 리더
 
 Spring Batch는 QueryDSL 전용 reader를 제공하지 않아, 보통 `AbstractPagingItemReader`를 상속해 `doReadPage()`를 QueryDSL로 구현한다. jojoldu의 `spring-batch-querydsl` 라이브러리가 이를 재사용 가능하게 제공한다.[^2] (출처: jojoldu)
 
@@ -261,35 +261,32 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 
 ---
 
-## 7. 선택 기준 / 주의
+## 7. 선택 기준
 
 - **대용량 + 단순 SQL**: JDBC 커서/페이징. 최고 성능, 매핑 직접.
 - **도메인 엔티티·연관 매핑 필요**: JPA 페이징 또는 Spring Data.
-- **멀티스레드/파티셔닝**: 페이징 계열(커서는 단일 스레드).
-- **초대용량 페이징**: 일반 offset 페이징은 뒤 페이지에서 급격히 느려지므로 **No Offset 방식**(또는 커서)을 고려(§6).
-- **정렬 키**: 페이징은 유니크 `sortKey`/`sorts` 필수(누락·중복 방지).
 - **쓰기 성능**: 대량 insert는 `JdbcBatchItemWriter`(batch update)가 일반적으로 우수. JPA writer는 영속성 컨텍스트·flush 비용 고려.
 - **skip/retry 정밀도**: 묶음 쓰기는 flush 시점에 오류가 드러나 단건 skip이 어렵다 → 내결함성이 중요하면 쓰기 단위·flush 전략을 점검. (출처: 공식 문서 권고)
 
 ---
 
 ## Sources
-- Spring Batch Reference (latest, 6.x) — Database (cursor/paging readers, DB writers): https://docs.spring.io/spring-batch/reference/readers-and-writers/database.html
-- Spring Batch Reference (latest, 6.x) — ItemReaders and ItemWriters: https://docs.spring.io/spring-batch/reference/readersAndWriters.html
-- JpaCursorItemReader API (5.2.x): https://docs.spring.io/spring-batch/docs/5.2.x/api/org/springframework/batch/item/database/JpaCursorItemReader.html
-- 카카오페이 기술블로그, "대용량 배치 성능 개선기 1편 - 데이터 읽기 편"(Offset 성능 이슈·No Offset/커서 리더): https://tech.kakaopay.com/post/ifkakao2022-batch-performance-read/
-- jojoldu, "Spring Batch에서 QueryDSL 사용하기"(QueryDSL 커스텀 리더): https://jojoldu.tistory.com/473
+- [Spring: Spring Batch Reference, Database](https://docs.spring.io/spring-batch/reference/readers-and-writers/database.html)
+- [Spring: Spring Batch Reference, ItemReaders and ItemWriters](https://docs.spring.io/spring-batch/reference/readersAndWriters.html)
+- [Spring: Spring Batch 5.2 API, JpaCursorItemReader](https://docs.spring.io/spring-batch/docs/5.2.x/api/org/springframework/batch/item/database/JpaCursorItemReader.html)
+- [카카오페이 기술블로그: 대용량 배치 성능 개선기 1편 - 데이터 읽기 편](https://tech.kakaopay.com/post/ifkakao2022-batch-performance-read/)
+- [jojoldu: Spring Batch에서 QueryDSL 사용하기](https://jojoldu.tistory.com/473)
 
 ---
 
 ## Related pages
-- [[batch-chunk]] — ItemReader/Processor/Writer 인터페이스·역할·전체 구현체
-- [[batch]] — Step·처리 방식 개요
-- [[batch-scope]] — `@StepScope`로 reader/writer에 파라미터 주입
-- [[jpa-transaction]] — 트랜잭션 경계·readOnly
-- [[jpa-n-plus-one]] — reader 연관 조회 N+1
-- [[mybatis]] — MyBatis 기반 reader/writer(`MyBatisCursorItemReader` 등) 대안
-- [[querydsl]] — QueryDSL 기본·설정(커스텀 리더의 쿼리 작성)
+- [[batch-chunk]]
+- [[batch]]
+- [[batch-scope]]
+- [[jpa-transaction]]
+- [[jpa-n-plus-one]]
+- [[mybatis]]
+- [[querydsl]]
 
 ---
 
