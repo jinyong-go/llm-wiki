@@ -1,6 +1,6 @@
 ---
 title: Spring Batch StepScope·JobScope
-updated: 2026-10-27 22:48:33
+updated: 2026-10-27 22:59:14
 tags:
   - java
   - spring
@@ -11,14 +11,12 @@ tags:
 
 ## 1. 개요
 
-`@StepScope`·`@JobScope`는 Spring Batch가 제공하는 **커스텀 빈 스코프**다. 기본 빈은 singleton이라 애플리케이션 기동 시 1회 생성되지만, 이 스코프를 적용하면 **빈 생성 시점을 Step/Job 실행 시점으로 지연**한다.
+`@StepScope`·`@JobScope`는 Spring Batch가 제공하는 커스텀 빈 스코프다. 기본 빈은 singleton이라 애플리케이션 기동 시 1회 생성되지만, 이 스코프를 적용하면 빈 생성 시점을 Step/Job 실행 시점으로 지연한다.
 
-- `@StepScope` — `StepExecution`마다 새 빈 인스턴스 생성
-- `@JobScope` — `JobExecution`마다 새 빈 인스턴스 생성
+- `@StepScope`: `StepExecution`마다 새 빈 인스턴스 생성
+- `@JobScope`: `JobExecution`마다 새 빈 인스턴스 생성
 
-이 지연 생성이 **Late Binding**(지연 바인딩)의 토대가 된다. 즉 실행 시점에야 알 수 있는 값(`JobParameters`, 실행 컨텍스트)을 빈에 주입할 수 있다.
-
-관련: [[batch]] — Job/Step/실행 도메인 모델.
+이 지연 생성이 Late Binding(지연 바인딩)의 토대가 된다. 즉 실행 시점에야 알 수 있는 값(`JobParameters`, 실행 컨텍스트)을 빈에 주입할 수 있다.
 
 ---
 
@@ -28,7 +26,7 @@ tags:
 
 `JobParameters`는 잡을 실행할 때 결정된다. 그러나 빈 설정은 기동 시점에 정의되므로, 일반 singleton 빈은 실행 시점 값에 접근할 수 없다.
 
-스코프 빈은 생성이 실행 시점까지 미뤄지므로, SpEL `#{...}`로 실행 시점 값을 주입받을 수 있다.
+스코프 빈은 생성이 실행 시점까지 미뤄지므로, SpEL(Spring Expression Language) `#{...}`로 실행 시점 값을 주입받을 수 있다.
 
 ```java
 @Bean
@@ -42,13 +40,13 @@ public FlatFileItemReader<Foo> reader(
 }
 ```
 
-> singleton 빈에서 `#{jobParameters[...]}`를 쓰면 `'jobParameters' cannot be found` 류 오류가 난다. `JobParameters`·실행 컨텍스트 SpEL은 **스코프 빈에서만** 유효하다. (출처: jojoldu)
+> singleton 빈에서 `#{jobParameters[...]}`를 쓰면 `'jobParameters' cannot be found` 류 오류가 난다. `JobParameters`·실행 컨텍스트 SpEL은 스코프 빈에서만 유효하다.[^1]
 
 ### 2.2. 프록시
 
-스코프 빈은 실제로는 **프록시 객체**로 주입된다. `@StepScope`/`@JobScope`는 내부적으로 `@Scope(value="step"|"job", proxyMode=TARGET_CLASS)`에 해당한다. 다른 빈(또는 Step 정의)은 프록시를 참조하고, 실제 대상 객체는 스코프가 활성화될 때(Step/Job 실행 시) 생성·바인딩된다.
+스코프 빈은 실제로는 프록시 객체로 주입된다. `@StepScope`/`@JobScope`는 내부적으로 `@Scope(value="step"|"job", proxyMode=TARGET_CLASS)`에 해당한다. 다른 빈(또는 Step 정의)은 프록시를 참조하고, 실제 대상 객체는 스코프가 활성화될 때(Step/Job 실행 시) 생성·바인딩된다.
 
-- `FlatFileItemReader`처럼 `ItemStream`을 구현한 컴포넌트는 반환 타입을 구체 타입으로 선언해야 프록시가 `open`/`update`/`close` 계약을 올바로 위임한다. (출처: 공식 문서)
+- `FlatFileItemReader`처럼 `ItemStream`을 구현한 컴포넌트는 반환 타입을 구체 타입으로 선언해야 프록시가 `open`/`update`/`close` 계약을 올바로 위임한다.
 
 ### 2.3. 스코프 등록
 
@@ -75,7 +73,7 @@ public Tasklet myTasklet(
 ```
 
 > [!warning] Step 자체에는 StepScope를 쓰지 않는다
-> `Step` 빈 본체를 step-scoped로 만들면 안 된다. 스코프는 스텝의 **구성요소**(reader/writer/tasklet)에만 적용한다. (출처: 공식 문서)
+> `Step` 빈 본체를 step-scoped로 만들면 안 된다. 스코프는 스텝의 구성요소(reader/writer/tasklet)에만 적용한다.
 
 ---
 
@@ -100,7 +98,7 @@ public Step step(JobRepository jobRepository,
 ```
 
 > [!warning] 멀티 스레드·파티션 스텝
-> 멀티 스레드·파티션 스텝에서는 JobScope 빈을 쓰지 않는다. 프레임워크가 생성하지 않은 스레드는 스코프 셋업을 관리할 수 없다. (출처: 공식 문서)
+> 멀티 스레드·파티션 스텝에서는 JobScope 빈을 쓰지 않는다. 프레임워크가 생성하지 않은 스레드는 스코프 셋업을 관리할 수 없다.
 
 ---
 
@@ -120,7 +118,7 @@ public Step step(JobRepository jobRepository,
 
 ## 6. 상태 격리
 
-실행마다 별도 인스턴스를 생성하므로, 멀티 스레드·병렬 스텝에서 상태를 공유하지 않아 동시성 문제가 줄어든다. `ItemReader`처럼 내부에 진행 상태를 가지는 컴포넌트에 특히 중요하다. (출처: jojoldu)
+실행마다 별도 인스턴스를 생성하므로, 멀티 스레드·병렬 스텝에서 상태를 공유하지 않아 동시성 문제가 줄어든다. `ItemReader`처럼 내부에 진행 상태를 가지는 컴포넌트에 특히 중요하다.[^2]
 
 ---
 
@@ -137,3 +135,8 @@ public Step step(JobRepository jobRepository,
 - [[jpa-transaction]]
 - [[aop]]
 - [[batch-testing]]
+
+---
+
+[^1]: jojoldu 글(Sources)의 설명.
+[^2]: jojoldu 글(Sources)의 설명.

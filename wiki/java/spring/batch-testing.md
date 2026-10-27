@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 테스트
-updated: 2026-10-27 22:48:33
+updated: 2026-10-27 22:59:14
 tags:
   - java
   - spring
@@ -48,9 +48,9 @@ tags:
 
 테스트 클래스에 붙이면 다음을 테스트 컨텍스트에 주입한다.
 
-- **`JobLauncherTestUtils`** (~5.x) / **`JobOperatorTestUtils`** (6.0+) — 잡·스텝 실행 트리거
-- **`JobRepositoryTestUtils`** — 메타데이터(`JobExecution`) 생성·정리
-- **`StepScopeTestExecutionListener`**, **`JobScopeTestExecutionListener`** — 스코프 빈 테스트용 실행 컨텍스트 제공
+- **`JobLauncherTestUtils`** (~5.x) / **`JobOperatorTestUtils`** (6.0+): 잡·스텝 실행 트리거
+- **`JobRepositoryTestUtils`**: 메타데이터(`JobExecution`) 생성·정리
+- **`StepScopeTestExecutionListener`**, **`JobScopeTestExecutionListener`**: 스코프 빈 테스트용 실행 컨텍스트 제공
 
 ```java
 @SpringBatchTest
@@ -75,10 +75,10 @@ class MyBatchTest {
 ```
 
 > [!note] 메타데이터 격리
-> Spring Boot 자동설정의 `JobRepository`는 메타데이터를 저장소에 기록한다. Boot 3은 `DataSource`를, Boot 4는 In-memory·JDBC·MongoDB 중 하나를 저장소로 쓴다.[^1] 같은 클래스에서 여러 테스트를 돌리면 `removeJobExecutions()`로 정리해야 하고, **여러 테스트 클래스**를 함께 돌리면 동일 데이터소스를 쓰는 `JobRepository`끼리 충돌하므로 `@DirtiesContext`로 컨텍스트를 무효화한다.
+> Spring Boot 자동설정의 `JobRepository`는 메타데이터를 저장소에 기록한다. Boot 3은 `DataSource`를, Boot 4는 In-memory·JDBC(Java Database Connectivity)·MongoDB 중 하나를 저장소로 쓴다.[^1] 같은 클래스에서 여러 테스트를 돌리면 `removeJobExecutions()`로 정리해야 하고, 여러 테스트 클래스를 함께 돌리면 동일 데이터소스를 쓰는 `JobRepository`끼리 충돌하므로 `@DirtiesContext`로 컨텍스트를 무효화한다.
 
 > [!note] 버전 차이 (6.0)
-> 6.0에서 `JobLauncher`→`JobOperator` 전환에 맞춰 테스트 유틸도 `JobLauncherTestUtils`→**`JobOperatorTestUtils`**, 메서드도 `launchJob/launchStep`→**`startJob/startStep`** 으로 변경되었다. 본 문서 예시는 5.x(`JobLauncherTestUtils`) 기준이며, 6.0에서는 명칭만 치환하면 된다.
+> 6.0에서 `JobLauncher`가 `JobOperator`로 대체되면서 테스트 유틸도 `JobLauncherTestUtils`에서 `JobOperatorTestUtils`로, 메서드도 `launchJob`/`launchStep`에서 `startJob`/`startStep`으로 바뀌었다. 본 문서 예시는 5.x(`JobLauncherTestUtils`) 기준이며, 6.0에서는 명칭만 치환하면 된다.
 
 ---
 
@@ -160,11 +160,11 @@ void whenReaderCalled_thenSuccess() throws Exception {
 }
 ```
 
-writer도 동일하게 `doInStepScope` 안에서 `open → write(items) → close` 후 출력 파일을 비교한다.
+writer도 동일하게 `doInStepScope` 안에서 `open`, `write(items)`, `close` 순으로 호출한 뒤 출력 파일을 비교한다.
 
 ### 6.2. StepScopeTestExecutionListener
 
-`@SpringBatchTest`가 등록하는 리스너 방식. 테스트에 **`StepExecution`을 반환하는 팩토리 메서드**를 두면 리스너가 시그니처로 감지해 스코프 컨텍스트로 사용한다.
+`@SpringBatchTest`가 등록하는 리스너 방식. 테스트에 `StepExecution`을 반환하는 팩토리 메서드를 두면 리스너가 시그니처로 감지해 스코프 컨텍스트로 사용한다.
 
 ```java
 public StepExecution getStepExecution() {
@@ -181,9 +181,9 @@ void testReader() { assertNotNull(reader.read()); }
 
 ---
 
-## 7. 도메인 객체 목킹 — `MetaDataInstanceFactory`
+## 7. 도메인 객체 목킹
 
-`StepExecution → JobExecution → JobInstance + JobParameters` 계층 의존 때문에 수동 생성이 번거롭다. 팩토리가 유효한 스텁을 간단히 만들어 준다.
+`StepExecution`이 `JobExecution`을, `JobExecution`이 `JobInstance`와 `JobParameters`를 참조하는 계층 의존 때문에 수동 생성이 번거롭다. 팩토리가 유효한 스텁을 간단히 만들어 준다.
 
 ```java
 StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution();

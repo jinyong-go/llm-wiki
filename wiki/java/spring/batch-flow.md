@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 조건별 플로우
-updated: 2026-10-27 22:48:33
+updated: 2026-10-27 22:59:14
 tags:
   - java
   - spring
@@ -11,10 +11,10 @@ tags:
 
 ## 1. 개요
 
-잡(Job)은 여러 `Step`을 조합한다. 스텝들이 분기(`if`처럼 여러 경로)를 가지면 그 흐름을 **조건부 플로우(conditional flow)** 라 한다. Spring Batch는 두 가지 분기 방법을 제공한다.
+잡(Job)은 여러 `Step`을 조합한다. 스텝들이 분기(`if`처럼 여러 경로)를 가지면 그 흐름을 조건부 플로우(conditional flow)라 한다. Spring Batch는 두 가지 분기 방법을 제공한다.
 
-- **ExitStatus 기반 전이** — 스텝 종료 시의 exit code를 패턴 매칭해 다음 스텝을 선택.
-- **`JobExecutionDecider`** — 스텝 상태 밖의 외부 요인까지 반영하는 프로그래밍 분기.
+- **ExitStatus 기반 전이**: 스텝 종료 시의 exit code를 패턴 매칭해 다음 스텝을 선택.
+- **`JobExecutionDecider`**: 스텝 상태 밖의 외부 요인까지 반영하는 프로그래밍 분기.
 
 관련: [[batch]] §3.2(흐름 제어), [[batch-fault-tolerance]](`stopAndRestart`·재시작 연계).
 
@@ -22,14 +22,14 @@ tags:
 
 ## 2. BatchStatus vs ExitStatus
 
-조건 전이는 `BatchStatus`가 아니라 **`ExitStatus`(exit code)** 로 동작한다. 둘을 구분해야 한다.
+조건 전이는 `BatchStatus`가 아니라 `ExitStatus`(exit code)로 동작한다. 둘을 구분해야 한다.
 
 | 구분 | 의미 | 값/타입 |
 |------|------|---------|
-| `BatchStatus` | `JobExecution`/`StepExecution`의 상태. 프레임워크 **내부**에서 사용하는 enum | `ABANDONED`, `COMPLETED`, `FAILED`, `STARTED`, `STARTING`, `STOPPED`, `STOPPING`, `UNKNOWN` |
-| `ExitStatus` | 스텝 실행 **완료 후** 상태. **조건 흐름 결정에 사용** | exit code 문자열(커스텀 가능) |
+| `BatchStatus` | `JobExecution`/`StepExecution`의 상태. 프레임워크 내부에서 사용하는 enum | `ABANDONED`, `COMPLETED`, `FAILED`, `STARTED`, `STARTING`, `STOPPED`, `STOPPING`, `UNKNOWN` |
+| `ExitStatus` | 스텝 실행 완료 후 상태. 조건 흐름 결정에 사용 | exit code 문자열(커스텀 가능) |
 
-기본적으로 스텝/잡의 `ExitStatus`는 그 `BatchStatus`와 **같다**(예: 정상 종료 시 `COMPLETED`). 흐름을 세분화하려면 커스텀 `ExitStatus`를 설정한다(§5).
+기본적으로 스텝/잡의 `ExitStatus`는 그 `BatchStatus`와 같다(예: 정상 종료 시 `COMPLETED`). 흐름을 세분화하려면 커스텀 `ExitStatus`를 설정한다(§5).
 
 ---
 
@@ -68,12 +68,12 @@ public Job job(JobRepository jobRepository, Step stepA, Step stepB, Step stepC) 
 
 ### 4.1. 와일드카드
 
-`on()` 패턴에 쓸 수 있는 특수문자는 **두 개뿐**이다.
+`on()` 패턴에 쓸 수 있는 특수문자는 두 개뿐이다.
 
-- `*` — 0개 이상의 문자
-- `?` — 정확히 1개의 문자
+- `*`: 0개 이상의 문자
+- `?`: 정확히 1개의 문자
 
-예: `c*t`는 `cat`·`count` 매칭, `c?t`는 `cat`만 매칭. 프레임워크가 전이를 **가장 구체적 → 가장 덜 구체적** 순으로 자동 정렬해 평가하므로, 위 예에서 `FAILED`는 `*`보다 우선 매칭된다.
+예: `c*t`는 `cat`·`count` 매칭, `c?t`는 `cat`만 매칭. 프레임워크가 전이를 가장 구체적인 것부터 덜 구체적인 것 순으로 자동 정렬해 평가하므로, 위 예에서 `FAILED`는 `*`보다 우선 매칭된다.
 
 ---
 
@@ -103,7 +103,7 @@ public class SkipCheckingListener implements StepExecutionListener {
 
 ### 5.2. 처리 데이터 기반
 
-배치 잡 내부 **데이터 값**에 따라 분기해야 하면 `ItemProcessor`(또는 reader/writer)에서 `StepExecution.setExitStatus()`로 exit code를 설정한다. 아래는 양수 측정값이 있으면 `NOTIFY`로 종료하는 예다.
+배치 잡 내부 데이터 값에 따라 분기해야 하면 `ItemProcessor`(또는 reader/writer)에서 `StepExecution.setExitStatus()`로 exit code를 설정한다. 아래는 양수 측정값이 있으면 `NOTIFY`로 종료하는 예다.
 
 ```java
 public class NumberInfoClassifier extends ItemListenerSupport<NumberInfo, Integer>
@@ -146,7 +146,7 @@ new JobBuilder("number-generator", jobRepository)
 
 위 두 방식이 사용하는 리스너를 정리한다. 둘 다 스텝 생명주기 콜백(`StepListener` 계열)이며, 인터페이스 구현 또는 어노테이션(`@BeforeStep` 등)으로 등록한다.
 
-**StepExecutionListener** — 스텝 실행 1회를 감싸는 가장 일반적인 리스너. §5.1이 이 리스너의 `afterStep` 반환값으로 분기한다.
+`StepExecutionListener`는 스텝 실행 1회를 감싸는 가장 일반적인 리스너다. §5.1이 이 리스너의 `afterStep` 반환값으로 분기한다.
 
 ```java
 public interface StepExecutionListener extends StepListener {
@@ -155,12 +155,12 @@ public interface StepExecutionListener extends StepListener {
 }
 ```
 
-- `beforeStep` — 스텝 시작 직전. `afterStep` — 종료 후 호출되며, 반환한 `ExitStatus`로 exit code를 바꾼다(변경 없으면 `null`). 스텝이 정상 종료했든 실패했든 호출된다.
+- `beforeStep`은 스텝 시작 직전, `afterStep`은 종료 후 호출된다. `afterStep`은 반환한 `ExitStatus`로 exit code를 바꾼다(변경 없으면 `null`). 스텝이 정상 종료했든 실패했든 호출된다.
 - 어노테이션: `@BeforeStep` / `@AfterStep`.
-- 인터페이스 메서드가 default(no-op)라 **필요한 메서드만** 구현하면 된다.[^1]
+- 인터페이스 메서드가 default(no-op)라 필요한 메서드만 구현하면 된다.[^1]
 
 
-**ItemListenerSupport** — chunk 처리의 단계별 리스너 3종을 한꺼번에 no-op으로 구현해 둔 보조 추상 클래스. 필요한 콜백만 골라 오버라이드한다. §5.2의 `NumberInfoClassifier`가 이를 상속해 `afterProcess`만 재정의했다.
+`ItemListenerSupport`는 chunk 처리의 단계별 리스너 3종을 한꺼번에 no-op으로 구현해 둔 보조 추상 클래스다. 필요한 콜백만 골라 오버라이드한다. §5.2의 `NumberInfoClassifier`가 이를 상속해 `afterProcess`만 재정의했다.
 
 | 인터페이스 | 메서드 | 어노테이션 |
 |------------|--------|-----------|
@@ -207,7 +207,7 @@ new JobBuilder("job", jobRepository)
 
 ## 7. JobExecutionDecider
 
-스텝의 ExitStatus만으로 부족하고 **외부 요인**(설정값, 외부 시스템 상태 등)으로 분기해야 하면 `JobExecutionDecider`를 구현한다. `decide()`가 `FlowExecutionStatus`를 반환하고, 그 값이 `on()` 매칭 대상이 된다.
+스텝의 ExitStatus만으로 부족하고 외부 요인(설정값, 외부 시스템 상태 등)으로 분기해야 하면 `JobExecutionDecider`를 구현한다. `decide()`가 `FlowExecutionStatus`를 반환하고, 그 값이 `on()` 매칭 대상이 된다.
 
 ```java
 public class NumberInfoDecider implements JobExecutionDecider {
@@ -235,7 +235,7 @@ new JobBuilder("number-generator", jobRepository)
 
 ## 8. 스텝 유일성 주의
 
-플로우 정의에서 한 스텝이 **여러 전이(outcome)** 를 가지면, `start`/`from`/`to` 등에 **동일한 스텝 인스턴스**를 전달해야 한다. 의존성 주입은 유일성을 보장하지만, `@Bean` 메서드로 스텝을 만들 때는 빈 메서드 프록싱이 필요하다 — `@Configuration(proxyBeanMethods = false)`로 두면 매번 새 인스턴스가 생겨 플로우 정의가 깨진다. (출처: 공식 레퍼런스 주석)
+플로우 정의에서 한 스텝이 여러 전이(outcome)를 가지면, `start`/`from`/`to` 등에 동일한 스텝 인스턴스를 전달해야 한다. 의존성 주입은 유일성을 보장하지만, `@Bean` 메서드로 스텝을 만들 때는 빈 메서드 프록싱이 필요하다. `@Configuration(proxyBeanMethods = false)`로 두면 매번 새 인스턴스가 생겨 플로우 정의가 깨진다.
 
 ---
 

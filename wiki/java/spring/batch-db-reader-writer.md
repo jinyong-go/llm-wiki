@@ -1,6 +1,6 @@
 ---
 title: Spring Batch DB ItemReader·ItemWriter
-updated: 2026-10-27 22:48:33
+updated: 2026-10-27 22:59:14
 tags:
   - java
   - spring
@@ -12,10 +12,10 @@ tags:
 
 ## 1. 개요
 
-Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기술별 카테고리로 정리한다. 읽기는 **커서(cursor)** 와 **페이징(paging)** 두 방식이 있고, 쓰기는 묶음(batch) 단위로 기록한다.
+Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기술별 카테고리로 정리한다. 읽기는 커서(cursor)와 페이징(paging) 두 방식이 있고, 쓰기는 묶음(batch) 단위로 기록한다.
 
-- 카테고리: **JDBC**, **JPA**, **Spring Data**
-- 기반 개념: [[batch-chunk]] — ItemReader/Processor/Writer 인터페이스·역할
+- **카테고리**: JDBC(Java Database Connectivity), JPA(Jakarta Persistence API), Spring Data
+- **기반 개념**: [[batch-chunk]]의 ItemReader·ItemProcessor·ItemWriter
 
 ---
 
@@ -33,7 +33,7 @@ Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기�
 > 멀티스레드 스텝·파티셔닝에서는 페이징 reader가 적합하다. 커서 reader는 `ResultSet`을 공유할 수 없어 단일 스레드에 쓴다.[^1]
 
 
-정렬 키 주의: 페이징 reader는 페이지 간 누락/중복을 막기 위해 **유니크한 정렬 키**(`sortKey`)가 필요하다.
+정렬 키 주의: 페이징 reader는 페이지 간 누락/중복을 막기 위해 유니크한 정렬 키(`sortKey`)가 필요하다.
 
 ---
 
@@ -63,7 +63,7 @@ public JdbcCursorItemReader<Customer> jdbcCursorReader(DataSource dataSource) {
 `PagingQueryProvider`가 페이지 단위 SQL을 생성한다.
 
 - 주요 속성: `dataSource`, `queryProvider`, `pageSize`, `rowMapper`, `parameterValues`.
-- `SqlPagingQueryProviderFactoryBean`으로 `selectClause`/`fromClause`/`whereClause`/`sortKey`를 지정. **`sortKey`는 유니크해야 한다.**
+- `SqlPagingQueryProviderFactoryBean`으로 `selectClause`/`fromClause`/`whereClause`/`sortKey`를 지정. `sortKey`는 유니크해야 한다.
 
 ```java
 @Bean
@@ -99,9 +99,9 @@ public SqlPagingQueryProviderFactoryBean queryProvider(DataSource dataSource) {
 
 ### 3.4. JdbcBatchItemWriter
 
-파라미터 바인딩 SQL을 **JDBC batch update**로 일괄 실행한다.
+파라미터 바인딩 SQL을 JDBC batch update로 일괄 실행한다.
 
-- 주요 속성: `dataSource`, `sql`, `itemSqlParameterSourceProvider`(아이템→파라미터 매핑) 또는 빈 프로퍼티 매핑, `assertUpdates`(true면 갱신 행 0건일 때 예외).
+- 주요 속성: `dataSource`, `sql`, `itemSqlParameterSourceProvider`(아이템을 파라미터로 매핑) 또는 빈 프로퍼티 매핑, `assertUpdates`(true면 갱신 행 0건일 때 예외).
 
 ```java
 @Bean
@@ -121,7 +121,7 @@ public JdbcBatchItemWriter<Customer> jdbcBatchWriter(DataSource dataSource) {
 
 ### 4.1. JpaCursorItemReader
 
-JPQL을 초기화 시점에 실행하고 `Query.getResultStream()` 결과를 `read()`마다 한 건씩 반환한다. 스레드 안전하지 않다.
+JPQL(Java Persistence Query Language)을 초기화 시점에 실행하고 `Query.getResultStream()` 결과를 `read()`마다 한 건씩 반환한다. 스레드 안전하지 않다.
 
 - 주요 속성: `entityManagerFactory`, `queryString`(또는 `queryProvider`), `parameterValues`, `hintValues`.
 
@@ -172,7 +172,7 @@ public JpaItemWriter<Customer> jpaWriter(EntityManagerFactory emf) {
 }
 ```
 
-관련: [[jpa-transaction]], [[jpa-n-plus-one]] — reader 단계 연관 로딩 주의.
+reader 단계에서 연관 엔티티를 로딩할 때는 N+1 문제에 주의한다([[jpa-n-plus-one]]).
 
 ---
 
@@ -180,8 +180,8 @@ public JpaItemWriter<Customer> jpaWriter(EntityManagerFactory emf) {
 
 기존 Spring Data 리포지토리를 그대로 활용한다(별도 DAO 불필요).
 
-- **RepositoryItemReader** — 리포지토리의 페이징 메서드를 호출해 읽는다. 주요 속성: `repository`, `methodName`, `arguments`, `sorts`(정렬 필수), `pageSize`.
-- **RepositoryItemWriter** — 리포지토리 `save`로 기록. 주요 속성: `repository`, `methodName`(기본 `save`).
+- **RepositoryItemReader**: 리포지토리의 페이징 메서드를 호출해 읽는다. 주요 속성: `repository`, `methodName`, `arguments`, `sorts`(정렬 필수), `pageSize`.
+- **RepositoryItemWriter**: 리포지토리 `save`로 기록. 주요 속성: `repository`, `methodName`(기본 `save`).
 
 ```java
 @Bean
@@ -203,14 +203,14 @@ public RepositoryItemReader<Customer> repositoryReader(CustomerRepository repo) 
 
 ### 6.1. Offset 한계
 
-`JpaPagingItemReader`·`JdbcPagingItemReader`는 `LIMIT offset, size` 방식이라 **페이지가 뒤로 갈수록 급격히 느려진다.** DB가 건너뛸 offset만큼의 행을 매번 스캔한 뒤 버리기 때문이다. 예: `... limit 50000000, 100`은 5천만 행을 스캔한 뒤 100건만 취한다.
+`JpaPagingItemReader`·`JdbcPagingItemReader`는 `LIMIT offset, size` 방식이라 페이지가 뒤로 갈수록 급격히 느려진다. DB가 건너뛸 offset만큼의 행을 매번 스캔한 뒤 버리기 때문이다. 예: `... limit 50000000, 100`은 5천만 행을 스캔한 뒤 100건만 취한다.
 
-- 카카오페이 사례: `JpaPagingItemReader`로 300만 건 처리 시 약 112분, 데이터가 늘수록 비선형으로 악화. (출처: 카카오페이 기술블로그)
-- 대량 처리에서 `JpaPagingItemReader`·`RepositoryItemReader`는 부적합. (출처: 카카오페이)
+- 카카오페이 사례: `JpaPagingItemReader`로 300만 건 처리 시 약 112분, 데이터가 늘수록 비선형으로 악화.
+- 카카오페이는 대량 처리에서 `JpaPagingItemReader`·`RepositoryItemReader`가 부적합하다고 평가했다.
 
 ### 6.2. No Offset
 
-offset 대신 **마지막으로 읽은 PK를 조건으로** 다음 페이지를 조회한다. offset을 항상 0으로 유지하므로 데이터량과 무관하게 일정한 속도를 낸다.
+offset 대신 마지막으로 읽은 PK(Primary Key)를 조건으로 다음 페이지를 조회한다. offset을 항상 0으로 유지하므로 데이터량과 무관하게 일정한 속도를 낸다.
 
 ```sql
 -- offset 페이징 (느림)
@@ -220,13 +220,13 @@ select * from product where reg_date = :date and id > :lastId order by id limit 
 ```
 
 - 정렬·커서 키로 쓸 컬럼은 인덱스가 있어야 하고 정렬 순서가 보장돼야 한다.
-- 카카오페이는 `ZeroOffsetItemReader`(및 Kotlin Exposed 기반 `ExposedCursorItemReader`)로 300만 건을 약 4~5분에 처리(기존 112분 대비 8~13배). GC도 안정적. (출처: 카카오페이)
+- 카카오페이는 `ZeroOffsetItemReader`(및 Kotlin Exposed 기반 `ExposedCursorItemReader`)로 300만 건을 약 4~5분에 처리(기존 112분 대비 8~13배). GC(Garbage Collection)도 안정적.
 
 ### 6.3. QueryDSL 리더
 
-Spring Batch는 QueryDSL 전용 reader를 제공하지 않아, 보통 `AbstractPagingItemReader`를 상속해 `doReadPage()`를 QueryDSL로 구현한다. jojoldu의 `spring-batch-querydsl` 라이브러리가 이를 재사용 가능하게 제공한다.[^2] (출처: jojoldu)
+Spring Batch는 QueryDSL 전용 reader를 제공하지 않아, 보통 `AbstractPagingItemReader`를 상속해 `doReadPage()`를 QueryDSL로 구현한다. jojoldu의 `spring-batch-querydsl` 라이브러리가 이를 재사용 가능하게 제공한다.[^2]
 
-- **`QuerydslPagingItemReader`** — offset 기반. 쿼리를 `Function<JPAQueryFactory, JPAQuery<T>>` 람다로 주입해 타입 안전하게 작성.
+- **`QuerydslPagingItemReader`**: offset 기반. 쿼리를 `Function<JPAQueryFactory, JPAQuery<T>>` 람다로 주입해 타입 안전하게 작성.
 
 ```java
 @Bean
@@ -238,7 +238,7 @@ public QuerydslPagingItemReader<Product> reader(EntityManagerFactory emf) {
 }
 ```
 
-- **`QuerydslNoOffsetPagingItemReader`** — §6.2의 No Offset을 QueryDSL로 구현. `QuerydslNoOffsetNumberOptions`(숫자 키)/`QuerydslNoOffsetStringOptions`(문자 키)에 정렬 기준 QClass 필드를 지정하면 마지막 ID를 캐시해 `where id > :lastId` 조건을 자동 추가. 대용량에서도 마지막 페이지까지 일정 속도.
+- **`QuerydslNoOffsetPagingItemReader`**: §6.2의 No Offset을 QueryDSL로 구현. `QuerydslNoOffsetNumberOptions`(숫자 키)/`QuerydslNoOffsetStringOptions`(문자 키)에 정렬 기준 QClass 필드를 지정하면 마지막 ID를 캐시해 `where id > :lastId` 조건을 자동 추가. 대용량에서도 마지막 페이지까지 일정 속도.
 
 ```java
 @Bean
@@ -254,10 +254,9 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 
 - 장점: 타입 안전(QClass), Job 설정에서 람다로 간결히 생성, No Offset 성능, 보일러플레이트 제거.
 
-관련: [[querydsl]] — QueryDSL 기본·설정.
 
 > [!note] 라이브러리/구현체 표기
-> `ZeroOffsetItemReader`·`ExposedCursorItemReader`(카카오페이), `Querydsl(NoOffset)PagingItemReader`(jojoldu `spring-batch-querydsl`)는 **Spring Batch 기본 제공이 아닌 외부/커스텀 구현체**다. No Offset은 구현 방식의 명칭이다.
+> `ZeroOffsetItemReader`·`ExposedCursorItemReader`(카카오페이), `Querydsl(NoOffset)PagingItemReader`(jojoldu `spring-batch-querydsl`)는 Spring Batch 기본 제공이 아닌 외부/커스텀 구현체다. No Offset은 구현 방식의 명칭이다.
 
 ---
 
@@ -266,7 +265,7 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 - **대용량 + 단순 SQL**: JDBC 커서/페이징. 최고 성능, 매핑 직접.
 - **도메인 엔티티·연관 매핑 필요**: JPA 페이징 또는 Spring Data.
 - **쓰기 성능**: 대량 insert는 `JdbcBatchItemWriter`(batch update)가 일반적으로 우수. JPA writer는 영속성 컨텍스트·flush 비용 고려.
-- **skip/retry 정밀도**: 묶음 쓰기는 flush 시점에 오류가 드러나 단건 skip이 어렵다 → 내결함성이 중요하면 쓰기 단위·flush 전략을 점검. (출처: 공식 문서 권고)
+- **skip/retry 정밀도**: 묶음 쓰기는 flush 시점에 오류가 드러나 단건 skip이 어렵다. 내결함성이 중요하면 쓰기 단위와 flush 전략을 점검한다.
 
 ---
 

@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-10-27 22:59:14
+
+- **수정**: Spring Batch 문서 9개 문체 정리. 정의형 목록을 콜론 형식으로 통일, 대시 연결·본문 화살표 제거, 볼드를 정의형 목록 항목명으로 한정, 본문 "관련:" 줄과 인라인 출처 표기 정리(웹 일반 출처 주장은 각주로 전환), 축약어 원어 병기, 절 제목 간결화
+
 ## 2026-10-27 22:48:33
 
 - **수정**: Spring Batch 문서 9개 구성 개선. Sources 형식 통일, Related pages 설명 제거, 문서 간 반복 제거(`batch.md` 구현체 절을 `batch-chunk.md`로, Tasklet·Chunk 비교를 `batch.md`로 일원화), 요약 절 삭제(`batch-fault-tolerance.md` 기능별 API, `batch-flow.md` 선택 기준, `batch-scope.md` 주의사항, `batch-db-reader-writer.md` 선택 기준 반복 항목), 절 제목 간결화

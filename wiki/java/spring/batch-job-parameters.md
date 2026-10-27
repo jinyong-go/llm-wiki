@@ -1,6 +1,6 @@
 ---
 title: Spring Batch JobParameters
-updated: 2026-10-27 22:48:33
+updated: 2026-10-27 22:59:14
 tags:
   - java
   - spring
@@ -11,18 +11,16 @@ tags:
 
 ## 1. 개요
 
-`JobParameters`는 배치 잡을 실행할 때 전달하는 **키/값 집합**이다. 두 가지 역할을 한다.
+`JobParameters`는 배치 잡을 실행할 때 전달하는 키/값 집합이다. 두 가지 역할을 한다.
 
-- **식별(identification)** — `JobInstance = Job 이름 + 식별 JobParameters`. 식별 파라미터가 같으면 같은 `JobInstance`(재시작), 다르면 새 `JobInstance`.
-- **참조 데이터(reference data)** — 실행 중 비즈니스 로직에서 사용하는 입력값(파일 경로, 기준일자 등).
-
-관련: [[batch]] — JobInstance/JobExecution 도메인 모델, [[batch-scope]] — 스코프 빈에서의 파라미터 Late Binding.
+- **식별(identification)**: `JobInstance = Job 이름 + 식별 JobParameters`. 식별 파라미터가 같으면 같은 `JobInstance`(재시작), 다르면 새 `JobInstance`.
+- **참조 데이터(reference data)**: 실행 중 비즈니스 로직에서 사용하는 입력값(파일 경로, 기준일자 등).
 
 ---
 
 ## 2. 지원 타입
 
-`JobParameter<T>`는 임의 타입을 지원한다. 타입의 FQN(정규화 이름)과 값을 문자열로 영속화하고, 읽을 때 Spring `ConversionService`로 대상 타입으로 변환한다. 메타데이터 테이블에는 `PARAMETER_NAME`/`PARAMETER_TYPE`/`PARAMETER_VALUE` 컬럼으로 저장된다.
+`JobParameter<T>`는 임의 타입을 지원한다. 타입의 FQN(Fully Qualified Name)과 값을 문자열로 영속화하고, 읽을 때 Spring `ConversionService`로 대상 타입으로 변환한다. 메타데이터 테이블에는 `PARAMETER_NAME`/`PARAMETER_TYPE`/`PARAMETER_VALUE` 컬럼으로 저장된다.
 
 `JobParametersBuilder`는 `addString`·`addLong`·`addDouble`·`addDate` 외에 `addLocalDate`·`addLocalDateTime`·`addLocalTime`, 임의 타입용 `addJobParameter`를 제공한다. 임의 타입을 쓰려면 해당 타입에 대한 변환기(Converter)가 `ConversionService`에 등록되어 있어야 한다.[^1]
 
@@ -30,9 +28,9 @@ tags:
 
 ## 3. 식별 / 비식별 파라미터
 
-각 파라미터는 **식별 여부(identifying flag)** 를 가진다.
+각 파라미터는 식별 여부(identifying flag)를 가진다.
 
-- 기본값은 **식별(identifying = true)** — `JobInstance` 동일성 판단에 포함.
+- 기본값은 식별(identifying = true)이며 `JobInstance` 동일성 판단에 포함된다.
 - 비식별로 지정하면 실행 시 전달되지만 `JobInstance` 식별에는 영향을 주지 않는다(순수 참조 데이터, 예: 재시작 시 달라지는 부가 정보).
 
 ```java
@@ -97,7 +95,7 @@ java -jar app.jar inputFile=data.csv baseDate=2026-06-26,java.time.LocalDate
 
 ### 5.1. 스코프 빈 + SpEL
 
-`@StepScope`/`@JobScope` 빈에서 `@Value("#{jobParameters['inputFile']}")` 형태의 SpEL로 주입한다. 실행 시점에 바인딩되므로 reader/writer/tasklet에 동적 입력을 줄 때 표준 방식이다. 예시와 동작 원리는 [[batch-scope]] §2.1.
+`@StepScope`/`@JobScope` 빈에서 `@Value("#{jobParameters['inputFile']}")` 형태의 SpEL(Spring Expression Language)로 주입한다. 실행 시점에 바인딩되므로 reader/writer/tasklet에 동적 입력을 줄 때 표준 방식이다. 예시와 동작 원리는 [[batch-scope]] §2.1.
 
 ### 5.2. 실행 컨텍스트에서 직접 조회
 
