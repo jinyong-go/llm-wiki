@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Chunk 지향 처리
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -84,7 +84,7 @@ public interface ItemReader<T> {
 | | `JsonItemReader` | JSON 배열 매핑(Jackson/Gson) |
 | | `MultiResourceItemReader` | 여러 파일을 순차 처리하도록 위임 |
 | DB(커서) | `JdbcCursorItemReader` | JDBC `ResultSet` 커서 스트리밍 |
-| | `HibernateCursorItemReader` | Hibernate HQL + `StatelessSession` |
+| | `JpaCursorItemReader` | JPQL + `Query.getResultStream()` 스트리밍 |
 | DB(페이징) | `JdbcPagingItemReader` | `PagingQueryProvider`로 페이지 조회 |
 | | `JpaPagingItemReader` | JPQL + `EntityManagerFactory` |
 | | `RepositoryItemReader` | Spring Data Repository 사용 |
@@ -134,9 +134,6 @@ public interface ItemWriter<T> {
 - **묶음 처리**: 항목 하나가 아니라 chunk를 받으므로, JDBC batch처럼 일괄 처리에 최적화할 수 있다.
 - **빈 chunk 처리**: 프로세서가 전부 필터링하거나 내결함성 스텝에서 모두 skip되면 빈 chunk가 올 수 있으므로 구현은 이를 안전하게 처리해야 한다.
 
-> [!note] 버전 차이 (시그니처)
-> `write` 인자가 Spring Batch 4.x의 `List<? extends T>`에서 **5.0부터 `Chunk<? extends T>`** 로 변경되었다. 커스텀 writer를 5.x로 올릴 때 시그니처를 바꿔야 한다.
-
 ### 5.1. 자주 쓰는 구현체
 
 | 분류 | 구현체 | 설명 |
@@ -146,7 +143,6 @@ public interface ItemWriter<T> {
 | | `JsonFileItemWriter` | JSON 출력 |
 | DB | `JdbcBatchItemWriter` | JDBC batch update로 일괄 기록 |
 | | `JpaItemWriter` | JPA merge/persist |
-| | `HibernateItemWriter` | Hibernate Session save/update |
 | | `RepositoryItemWriter` | Spring Data Repository 사용 |
 | 메시징 | `KafkaItemWriter`, `AmqpItemWriter`, `JmsItemWriter` 등 | 대상으로 전송 |
 | 조합 | `CompositeItemWriter` | 여러 writer에 위임 |
@@ -198,7 +194,7 @@ public interface ItemWriter<T> {
 - [[batch-fault-tolerance]] — chunk 스텝의 Skip·Retry·롤백·재시작
 - [[batch-flow]] — ItemProcessor에서 ExitStatus 설정해 조건 분기
 - [[batch-tasklet]] — 단일 작업 처리 모델, Chunk와 비교
-- [[batch-db-reader-writer]] — DB reader/writer 카테고리별 상세(JDBC/JPA/Hibernate/Spring Data)
+- [[batch-db-reader-writer]] — DB reader/writer 카테고리별 상세(JDBC/JPA/Spring Data)
 - [[batch-scope]] — `@StepScope`로 reader/writer에 파라미터 주입
 - [[batch-job-parameters]] — 실행 파라미터 전달·사용
 - [[jpa-transaction]] — chunk 트랜잭션 경계, readOnly

@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 재시작·스킵·재시도
-updated: 2026-10-20 17:54:47
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -20,7 +20,7 @@ Spring Batch는 배치 처리의 실패에 대응하는 두 축을 제공한다.
 이 둘은 모두 `JobRepository`가 실행 상태와 `ExecutionContext`(체크포인트)를 메타데이터 테이블에 영속화하기 때문에 가능하다. 관련: [[batch]] — 도메인 모델, [[batch-chunk]] — chunk 트랜잭션 경계.
 
 > [!note] 버전
-> 개념은 Spring Batch 4~6에서 동일하다(Boot 2→Batch 4, Boot 3→Batch 5, Boot 4→Batch 6). **재시도 설정 API는 6.0에서 변경**되었다(§4.2). 본 문서는 6.x 레퍼런스를 기준으로 하고 버전 차이를 함께 표시한다.
+> 개념은 Spring Batch 5~6에서 동일하다(Boot 3은 Batch 5, Boot 4는 Batch 6). **재시도 설정 API는 6.0에서 변경**되었다(§4.2). 본 문서는 6.x 레퍼런스를 기준으로 하고 버전 차이를 함께 표시한다.
 
 ---
 

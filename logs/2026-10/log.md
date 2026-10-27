@@ -2,6 +2,20 @@
 
 ---
 
+## 2026-10-27 22:36:39
+
+- **수정**: Spring Batch 문서 7개에서 Batch 4.x(Boot 2) 내용 제거. 버전 범위를 Batch 5~6(Boot 3~4)으로 변경, `batch-job-parameters.md` 지원 타입·커맨드라인 표기를 현재 동작 기준으로 재작성, `List`→`Chunk` 마이그레이션 note 삭제, 불필요한 버전 표기 정리
+- **수정**: `batch-flow.md` `ItemListenerSupport` deprecated 서술 정정
+- **수정**: `batch-testing.md` §6.1 단정문을 AssertJ로 통일
+
+## 2026-10-27 22:31:48
+
+- **수정**: `batch.md`·`batch-chunk.md` 5.2에서 제거된 Hibernate reader/writer를 표에서 삭제하고 `JpaCursorItemReader` 추가
+- **수정**: `batch-db-reader-writer.md` Hibernate 절 삭제, `JpaCursorItemReader` 절 추가, JPA 커서 reader 미제공 서술 정정, QueryDSL 라이브러리 Boot 2 기준 각주 추가
+- **수정**: `batch-scope.md` 스코프 등록 주체를 Boot 자동설정(`DefaultBatchConfiguration`) 기준으로 정정
+- **수정**: `batch-testing.md` 제거된 `AssertFile`을 AssertJ로 교체, JobRepository 저장소·`spring.batch.job.*` 속성 서술 정정
+- **수정**: `batch-job-parameters.md` Boot 잡 파라미터 전달을 `--` 없는 `key=value` 형식으로 정정
+
 ## 2026-10-26 23:28:31
 
 - **수정**: `javascript/common` 문서 12개 lint 문체 정리. 대시 연결·본문 화살표·문서 내 앵커 링크 제거, 볼드를 정의형 목록 항목명으로 한정하고 장단점을 하위 절로 전환, 절 제목 영문 괄호 제거, 축약어 원어 병기, 표기·빈 줄 통일

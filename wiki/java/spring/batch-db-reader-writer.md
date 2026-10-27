@@ -1,6 +1,6 @@
 ---
 title: Spring Batch DB ItemReader·ItemWriter
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:31:48
 tags:
   - java
   - spring
@@ -14,7 +14,7 @@ tags:
 
 Chunk 지향 처리에서 DB를 입출력으로 쓰는 대표 구현체를 기술별 카테고리로 정리한다. 읽기는 **커서(cursor)** 와 **페이징(paging)** 두 방식이 있고, 쓰기는 묶음(batch) 단위로 기록한다.
 
-- 카테고리: **JDBC**, **JPA**, **Hibernate**, **Spring Data**
+- 카테고리: **JDBC**, **JPA**, **Spring Data**
 - 기반 개념: [[batch-chunk]] — ItemReader/Processor/Writer 인터페이스·역할
 
 ---
@@ -119,7 +119,25 @@ public JdbcBatchItemWriter<Customer> jdbcBatchWriter(DataSource dataSource) {
 
 ## 4. JPA
 
-### 4.1. JpaPagingItemReader
+### 4.1. JpaCursorItemReader
+
+JPQL을 초기화 시점에 실행하고 `Query.getResultStream()` 결과를 `read()`마다 한 건씩 반환한다. 스레드 안전하지 않다.
+
+- 주요 속성: `entityManagerFactory`, `queryString`(또는 `queryProvider`), `parameterValues`, `hintValues`.
+
+```java
+@Bean
+public JpaCursorItemReader<Customer> jpaCursorReader(EntityManagerFactory emf) {
+    return new JpaCursorItemReaderBuilder<Customer>()
+            .name("jpaCursorReader")
+            .entityManagerFactory(emf)
+            .queryString("select c from Customer c where c.status = :status")
+            .parameterValues(Map.of("status", "NEW"))
+            .build();
+}
+```
+
+### 4.2. JpaPagingItemReader
 
 JPQL + `EntityManager`로 페이지 단위 조회. 페이지마다 영속성 컨텍스트를 clear해 메모리를 관리한다.
 
@@ -138,10 +156,7 @@ public JpaPagingItemReader<Customer> jpaPagingReader(EntityManagerFactory emf) {
 }
 ```
 
-> JPA는 커서 reader를 기본 제공하지 않는다. 대용량을 단일 커넥션 스트리밍하려면 Hibernate 커서 reader를 쓴다.[^2]
-
-
-### 4.2. JpaItemWriter
+### 4.3. JpaItemWriter
 
 `EntityManager`로 영속화한다.
 
@@ -161,16 +176,7 @@ public JpaItemWriter<Customer> jpaWriter(EntityManagerFactory emf) {
 
 ---
 
-## 5. Hibernate
-
-- **HibernateCursorItemReader** — HQL + `StatelessSession`으로 커서 스트리밍(대용량). **HibernatePagingItemReader** — 페이지 단위.
-- **HibernateItemWriter** — Hibernate `Session`의 save/update. JPA writer보다 세션 동작을 세밀히 제어. (현재는 JPA 사용이 일반적)
-
-주요 속성: `sessionFactory`, `queryString`(또는 `queryName`), `fetchSize`(커서), `pageSize`(페이징).
-
----
-
-## 6. Spring Data
+## 5. Spring Data
 
 기존 Spring Data 리포지토리를 그대로 활용한다(별도 DAO 불필요).
 
@@ -193,16 +199,16 @@ public RepositoryItemReader<Customer> repositoryReader(CustomerRepository repo) 
 
 ---
 
-## 7. Offset 성능 이슈와 커스텀 리더
+## 6. Offset 성능 이슈와 커스텀 리더
 
-### 7.1. Offset 페이징의 한계
+### 6.1. Offset 페이징의 한계
 
 `JpaPagingItemReader`·`JdbcPagingItemReader`는 `LIMIT offset, size` 방식이라 **페이지가 뒤로 갈수록 급격히 느려진다.** DB가 건너뛸 offset만큼의 행을 매번 스캔한 뒤 버리기 때문이다. 예: `... limit 50000000, 100`은 5천만 행을 스캔한 뒤 100건만 취한다.
 
 - 카카오페이 사례: `JpaPagingItemReader`로 300만 건 처리 시 약 112분, 데이터가 늘수록 비선형으로 악화. (출처: 카카오페이 기술블로그)
 - 대량 처리에서 `JpaPagingItemReader`·`RepositoryItemReader`는 부적합. (출처: 카카오페이)
 
-### 7.2. No Offset (Zero Offset) 방식
+### 6.2. No Offset (Zero Offset) 방식
 
 offset 대신 **마지막으로 읽은 PK를 조건으로** 다음 페이지를 조회한다. offset을 항상 0으로 유지하므로 데이터량과 무관하게 일정한 속도를 낸다.
 
@@ -216,9 +222,9 @@ select * from product where reg_date = :date and id > :lastId order by id limit 
 - 정렬·커서 키로 쓸 컬럼은 인덱스가 있어야 하고 정렬 순서가 보장돼야 한다.
 - 카카오페이는 `ZeroOffsetItemReader`(및 Kotlin Exposed 기반 `ExposedCursorItemReader`)로 300만 건을 약 4~5분에 처리(기존 112분 대비 8~13배). GC도 안정적. (출처: 카카오페이)
 
-### 7.3. QueryDSL 커스텀 리더
+### 6.3. QueryDSL 커스텀 리더
 
-Spring Batch는 QueryDSL 전용 reader를 제공하지 않아, 보통 `AbstractPagingItemReader`를 상속해 `doReadPage()`를 QueryDSL로 구현한다. jojoldu의 `spring-batch-querydsl` 라이브러리가 이를 재사용 가능하게 제공한다. (출처: jojoldu)
+Spring Batch는 QueryDSL 전용 reader를 제공하지 않아, 보통 `AbstractPagingItemReader`를 상속해 `doReadPage()`를 QueryDSL로 구현한다. jojoldu의 `spring-batch-querydsl` 라이브러리가 이를 재사용 가능하게 제공한다.[^2] (출처: jojoldu)
 
 - **`QuerydslPagingItemReader`** — offset 기반. 쿼리를 `Function<JPAQueryFactory, JPAQuery<T>>` 람다로 주입해 타입 안전하게 작성.
 
@@ -232,7 +238,7 @@ public QuerydslPagingItemReader<Product> reader(EntityManagerFactory emf) {
 }
 ```
 
-- **`QuerydslNoOffsetPagingItemReader`** — §7.2의 No Offset을 QueryDSL로 구현. `QuerydslNoOffsetNumberOptions`(숫자 키)/`QuerydslNoOffsetStringOptions`(문자 키)에 정렬 기준 QClass 필드를 지정하면 마지막 ID를 캐시해 `where id > :lastId` 조건을 자동 추가. 대용량에서도 마지막 페이지까지 일정 속도.
+- **`QuerydslNoOffsetPagingItemReader`** — §6.2의 No Offset을 QueryDSL로 구현. `QuerydslNoOffsetNumberOptions`(숫자 키)/`QuerydslNoOffsetStringOptions`(문자 키)에 정렬 기준 QClass 필드를 지정하면 마지막 ID를 캐시해 `where id > :lastId` 조건을 자동 추가. 대용량에서도 마지막 페이지까지 일정 속도.
 
 ```java
 @Bean
@@ -255,12 +261,12 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 
 ---
 
-## 8. 선택 기준 / 주의
+## 7. 선택 기준 / 주의
 
 - **대용량 + 단순 SQL**: JDBC 커서/페이징. 최고 성능, 매핑 직접.
 - **도메인 엔티티·연관 매핑 필요**: JPA 페이징 또는 Spring Data.
 - **멀티스레드/파티셔닝**: 페이징 계열(커서는 단일 스레드).
-- **초대용량 페이징**: 일반 offset 페이징은 뒤 페이지에서 급격히 느려지므로 **No Offset 방식**(또는 커서)을 고려(§7).
+- **초대용량 페이징**: 일반 offset 페이징은 뒤 페이지에서 급격히 느려지므로 **No Offset 방식**(또는 커서)을 고려(§6).
 - **정렬 키**: 페이징은 유니크 `sortKey`/`sorts` 필수(누락·중복 방지).
 - **쓰기 성능**: 대량 insert는 `JdbcBatchItemWriter`(batch update)가 일반적으로 우수. JPA writer는 영속성 컨텍스트·flush 비용 고려.
 - **skip/retry 정밀도**: 묶음 쓰기는 flush 시점에 오류가 드러나 단건 skip이 어렵다 → 내결함성이 중요하면 쓰기 단위·flush 전략을 점검. (출처: 공식 문서 권고)
@@ -270,6 +276,7 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 ## Sources
 - Spring Batch Reference (latest, 6.x) — Database (cursor/paging readers, DB writers): https://docs.spring.io/spring-batch/reference/readers-and-writers/database.html
 - Spring Batch Reference (latest, 6.x) — ItemReaders and ItemWriters: https://docs.spring.io/spring-batch/reference/readersAndWriters.html
+- JpaCursorItemReader API (5.2.x): https://docs.spring.io/spring-batch/docs/5.2.x/api/org/springframework/batch/item/database/JpaCursorItemReader.html
 - 카카오페이 기술블로그, "대용량 배치 성능 개선기 1편 - 데이터 읽기 편"(Offset 성능 이슈·No Offset/커서 리더): https://tech.kakaopay.com/post/ifkakao2022-batch-performance-read/
 - jojoldu, "Spring Batch에서 QueryDSL 사용하기"(QueryDSL 커스텀 리더): https://jojoldu.tistory.com/473
 
@@ -287,4 +294,4 @@ public QuerydslNoOffsetPagingItemReader<Product> reader(EntityManagerFactory emf
 ---
 
 [^1]: 커서 reader가 스텝 내내 하나의 ResultSet을 유지한다는 동작(§2 표)으로부터 추론.
-[^2]: Spring Batch 제공 reader 목록에 JPA 커서 reader가 없다는 사실로부터 추론.
+[^2]: `spring-batch-querydsl` 저장소의 `build.gradle`은 Spring Boot 2.3.8 기준이며, Spring Boot 3 이상과의 호환 여부는 확인되지 않았다.

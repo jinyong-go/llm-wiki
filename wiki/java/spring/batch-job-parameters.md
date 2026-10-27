@@ -1,6 +1,6 @@
 ---
 title: Spring Batch JobParameters
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -20,23 +20,11 @@ tags:
 
 ---
 
-## 2. 지원 타입과 버전 차이
+## 2. 지원 타입
 
-JobParameter가 지원하는 타입은 **Spring Batch 5.0에서 크게 바뀌었다.**
+`JobParameter<T>`는 임의 타입을 지원한다. 타입의 FQN(정규화 이름)과 값을 문자열로 영속화하고, 읽을 때 Spring `ConversionService`로 대상 타입으로 변환한다. 메타데이터 테이블에는 `PARAMETER_NAME`/`PARAMETER_TYPE`/`PARAMETER_VALUE` 컬럼으로 저장된다.
 
-| 버전 | 지원 타입 | 비고 |
-|------|-----------|------|
-| ~4.3.x | `String`, `Long`, `Double`, `Date`(`java.util.Date`) — **4개 고정 타입** | 메타데이터에 타입별 컬럼(`STRING_VAL`/`LONG_VAL`/`DOUBLE_VAL`/`DATE_VAL`)로 저장 |
-| 5.0+ (~6.x) | **임의 타입** (`JobParameter<T>`) | 타입의 FQN(정규화 이름)을 문자열로 영속화하고, 문자열 리터럴을 Spring `ConversionService`로 대상 타입으로 변환 |
-
-### 2.1. 주요 변경
-- 4개 고정 타입 → **모든 타입 사용 가능**. 파라미터 타입의 FQN과 값을 함께 저장한다.
-- 메타데이터 스키마 변경: 타입별 4개 컬럼이 사라지고 `PARAMETER_NAME`/`PARAMETER_TYPE`/`PARAMETER_VALUE` 구조로 단순화.
-- `JobParametersBuilder`에 시간 타입 메서드 추가: `addLocalDate`, `addLocalDateTime`, `addLocalTime`, 그리고 임의 타입용 `addJobParameter`.
-
-> [!note] 호환성
-> 4.x의 `addDate(java.util.Date)`는 5.x에서도 존재하지만, 5.x부터는 `java.time` 타입(`LocalDate` 등)을 직접 쓸 수 있다. 임의 타입을 쓰려면 해당 타입에 대한 변환기(Converter)가 `ConversionService`에 등록되어 있어야 한다.[^1]
-
+`JobParametersBuilder`는 `addString`·`addLong`·`addDouble`·`addDate` 외에 `addLocalDate`·`addLocalDateTime`·`addLocalTime`, 임의 타입용 `addJobParameter`를 제공한다. 임의 타입을 쓰려면 해당 타입에 대한 변환기(Converter)가 `ConversionService`에 등록되어 있어야 한다.[^1]
 
 ---
 
@@ -76,17 +64,12 @@ jobLauncher.run(job, params);
 
 ### 4.2. 커맨드라인 실행
 
-커맨드라인 실행기(버전에 따라 `CommandLineJobRunner` 또는 `CommandLineJobOperator`)로 파라미터를 인자로 넘긴다. **표기법이 버전별로 다르다.**
+커맨드라인 실행기(Batch 5는 `CommandLineJobRunner`, Batch 6은 `CommandLineJobOperator`)로 파라미터를 `name=value,type,identifying` 형식(콤마 구분, type은 FQN)으로 넘긴다. 예: `schedule.date=2026-06-26,java.time.LocalDate,true`.
 
-| 버전 | 표기법 | 예시 |
-|------|--------|------|
-| ~4.x | `name(type)=value`, 식별 여부는 `+`/`-` 접두 | `+schedule.date(date)=2007/05/05 -vendor.id(long)=123` |
-| 5.0+ | `name=value,type,identifying` (콤마 구분, type은 FQN) | `schedule.date=2026-06-26,java.time.LocalDate,true` |
-
-5.0+ 기본 변환기 `DefaultJobParametersConverter`는 type·identifying 생략 시 각각 `String`·식별로 처리한다.
+기본 변환기 `DefaultJobParametersConverter`는 type·identifying 생략 시 각각 `String`·식별로 처리한다.
 
 ```bash
-# 5.0+ DefaultJobParametersConverter (type 생략 시 String)
+# Batch 6 CommandLineJobOperator (type 생략 시 String)
 java CommandLineJobOperator io.spring.MyJobConfig start myJob \
     inputFile=data.csv \
     baseDate=2026-06-26,java.time.LocalDate
@@ -100,11 +83,13 @@ inputFile='{"value":"a,b,c.csv","type":"java.lang.String","identifying":"true"}'
 
 ### 4.3. Spring Boot
 
-Spring Boot는 `JobLauncherApplicationRunner`로 기동 시 잡을 자동 실행하며, **커맨드라인 인자(`--key=value`)를 잡 파라미터로 전달**한다.
+Spring Boot는 `JobLauncherApplicationRunner`로 기동 시 잡을 자동 실행한다. 잡 파라미터는 `--` 없이 `key=value` 형식의 커맨드라인 인자로 전달한다. `--`로 시작하는 인자는 Spring `Environment` 속성으로 변환되므로 잡 파라미터 전달에 쓰지 않는다.
 
 ```bash
-java -jar app.jar --inputFile=data.csv --baseDate=2026-06-26
+java -jar app.jar inputFile=data.csv baseDate=2026-06-26,java.time.LocalDate
 ```
+
+실패한 잡을 재시작할 때는 식별·비식별 파라미터를 모두 다시 지정해야 한다. 비식별 파라미터는 이전 실행에서 복사되지 않는다.
 
 ---
 
@@ -137,7 +122,7 @@ public RepeatStatus execute(StepContribution contribution, ChunkContext chunkCon
     JobParameters params = chunkContext.getStepContext().getStepExecution()
             .getJobParameters();
     String inputFile = params.getString("inputFile");
-    LocalDate baseDate = params.getLocalDate("baseDate");   // 5.0+ 타입 접근자
+    LocalDate baseDate = params.getLocalDate("baseDate");
     ...
 }
 ```
@@ -148,6 +133,7 @@ public RepeatStatus execute(StepContribution contribution, ChunkContext chunkCon
 - Spring Batch Reference (latest, 6.x) — Running a Job: https://docs.spring.io/spring-batch/reference/job/running.html
 - Spring Batch Reference (latest, 6.x) — Domain Language (JobParameters): https://docs.spring.io/spring-batch/reference/domain.html
 - What's New in Spring Batch 5.0 (JobParameters 타입 변경): https://docs.spring.io/spring-batch/docs/5.0.0/reference/html/whatsnew.html
+- Spring Boot How-to — Batch Applications: https://docs.spring.io/spring-boot/how-to/batch.html
 - DefaultJobParametersConverter / JsonJobParametersConverter API: https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/converter/JsonJobParametersConverter.html
 
 ---
@@ -160,4 +146,4 @@ public RepeatStatus execute(StepContribution contribution, ChunkContext chunkCon
 
 ---
 
-[^1]: 5.x가 임의 타입 파라미터를 문자열로 영속화하고 ConversionService로 변환한다는 방식(§2 표)으로부터 추론.
+[^1]: 임의 타입 파라미터를 문자열로 영속화하고 ConversionService로 변환한다는 방식(§2)으로부터 추론.

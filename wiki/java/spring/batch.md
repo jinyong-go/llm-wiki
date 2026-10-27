@@ -1,6 +1,6 @@
 ---
 title: Spring Batch
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -21,7 +21,7 @@ Spring Batch는 대용량 데이터의 **일괄(batch) 처리**를 위한 프레
 - 처리 통계(read/write/skip/commit count 등)
 
 > [!note] 버전과 개념
-> 개념·도메인 모델·처리 방식은 Spring Batch 4~6에서 동일하다(Spring Boot 2→Batch 4, Boot 3→Batch 5, Boot 4→Batch 6). 차이는 주로 설정 API·자동설정·메타데이터 스키마 컬럼 등 구현 레벨이며 별도 문서로 분리한다. 본 문서는 버전 무관 개념을 다루며, 출처는 최신 레퍼런스(6.x)를 따른다.
+> 개념·도메인 모델·처리 방식은 Spring Batch 5~6에서 동일하다(Spring Boot 3은 Batch 5, Boot 4는 Batch 6). 차이는 주로 설정 API·자동설정·메타데이터 스키마 컬럼 등 구현 레벨이며 별도 문서로 분리한다. 본 문서는 버전 무관 개념을 다루며, 출처는 최신 레퍼런스(6.x)를 따른다.
 > 재실행·상태·제어, 메타데이터 스키마 상세는 별도 문서로 분리 예정.
 > Spring Batch 6.0부터 XML 네임스페이스 설정은 deprecated이며 Java 설정이 권장된다.
 
@@ -157,7 +157,7 @@ JobInstance (Job이름 + 식별 파라미터)
 | | `JsonItemReader` | JSON 배열을 객체로 매핑(Jackson/Gson) |
 | | `MultiResourceItemReader` | 여러 파일을 순차 처리하도록 다른 reader에 위임 |
 | DB(커서) | `JdbcCursorItemReader` | JDBC `ResultSet` 커서를 스트리밍 |
-| | `HibernateCursorItemReader` | Hibernate HQL + `StatelessSession` 스트리밍 |
+| | `JpaCursorItemReader` | JPQL 결과를 `Query.getResultStream()`으로 스트리밍 |
 | | `StoredProcedureItemReader` | 커서를 반환하는 저장 프로시저 |
 | DB(페이징) | `JdbcPagingItemReader` | `PagingQueryProvider`로 페이지 단위 조회 |
 | | `JpaPagingItemReader` | JPQL + `EntityManagerFactory`로 페이지 단위 조회 |
@@ -185,7 +185,6 @@ JobInstance (Job이름 + 식별 파라미터)
 | | `JsonFileItemWriter` | JSON 출력(Jackson/Gson) |
 | DB | `JdbcBatchItemWriter` | JDBC batch update로 일괄 기록 |
 | | `JpaItemWriter` | JPA merge/persist |
-| | `HibernateItemWriter` | Hibernate Session save/update |
 | | `RepositoryItemWriter` | Spring Data Repository 사용 |
 | 메시징/기타 | `KafkaItemWriter`, `AmqpItemWriter`, `JmsItemWriter`, `MongoItemWriter`, `SimpleMailMessageItemWriter` 등 | 각 대상으로 전송 |
 | 조합/데코레이터 | `CompositeItemWriter` | 여러 writer에 위임 |
@@ -210,7 +209,7 @@ JobInstance (Job이름 + 식별 파라미터)
 - [[batch-fault-tolerance]] — 재시작(Restart)·Skip·Retry 내결함성
 - [[batch-flow]] — 조건별 플로우: on/from/to·ExitStatus·JobExecutionDecider
 - [[batch-testing]] — 테스트: @SpringBatchTest, 잡/스텝 실행, 스코프 빈, 도메인 목킹
-- [[batch-db-reader-writer]] — DB reader/writer 카테고리별(JDBC/JPA/Hibernate/Spring Data)
+- [[batch-db-reader-writer]] — DB reader/writer 카테고리별(JDBC/JPA/Spring Data)
 - [[jpa-transaction]] — 청크 처리 트랜잭션 경계, 롤백·readOnly
 - [[mybatis]] — MyBatis 기반 reader/writer 연동
 - [[excel]] — 대용량 엑셀 스트리밍 입출력

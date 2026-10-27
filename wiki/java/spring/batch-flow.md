@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 조건별 플로우
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -157,7 +157,7 @@ public interface StepExecutionListener extends StepListener {
 
 - `beforeStep` — 스텝 시작 직전. `afterStep` — 종료 후 호출되며, 반환한 `ExitStatus`로 exit code를 바꾼다(변경 없으면 `null`). 스텝이 정상 종료했든 실패했든 호출된다.
 - 어노테이션: `@BeforeStep` / `@AfterStep`.
-- Spring Batch 5.x부터 인터페이스 메서드가 default(no-op)라 **필요한 메서드만** 구현하면 된다.[^1]
+- 인터페이스 메서드가 default(no-op)라 **필요한 메서드만** 구현하면 된다.[^1]
 
 
 **ItemListenerSupport** — chunk 처리의 단계별 리스너 3종을 한꺼번에 no-op으로 구현해 둔 보조 추상 클래스. 필요한 콜백만 골라 오버라이드한다. §5.2의 `NumberInfoClassifier`가 이를 상속해 `afterProcess`만 재정의했다.
@@ -168,9 +168,8 @@ public interface StepExecutionListener extends StepListener {
 | `ItemProcessListener<I,O>` | `beforeProcess(I)` / `afterProcess(I, O)` / `onProcessError(I, Exception)` | `@BeforeProcess`/`@AfterProcess`/`@OnProcessError` |
 | `ItemWriteListener<S>` | `beforeWrite(chunk)` / `afterWrite(chunk)` / `onWriteError(Exception, chunk)` | `@BeforeWrite`/`@AfterWrite`/`@OnWriteError` |
 
-> [!note] 버전
-> - `ItemListenerSupport`는 **Spring Batch 5.0에서 deprecated**되었다. 세 리스너 인터페이스가 default(no-op) 메서드를 갖게 되어 보조 클래스가 불필요해졌기 때문이다. **5.0+에서는 필요한 리스너 인터페이스를 직접 구현**(또는 어노테이션 사용)하는 것이 권장된다.
-> - write 콜백 인자는 4.x의 `List<? extends S>`에서 **5.0부터 `Chunk<? extends S>`** 로 변경되었다([[batch-chunk]] §5와 동일).
+> [!note] `ItemListenerSupport`
+> 세 리스너 인터페이스의 메서드도 default(no-op)로 선언되어 있어, 필요한 인터페이스만 직접 구현하거나 어노테이션을 써도 된다. `ItemListenerSupport`는 5.2·6.0 API에서 deprecated로 표시되어 있지 않다.
 
 > 내결함성 단계의 `SkipListener`·`RetryListener`는 [[batch-fault-tolerance]] §5.2 참고.
 
@@ -253,7 +252,7 @@ new JobBuilder("number-generator", jobRepository)
 - raw/java/spring/Conditional Flow in Spring Batch.md (Baeldung, https://www.baeldung.com/spring-batch-conditional-flow)
 - Spring Batch Reference (6.x) — Controlling Step Flow: https://docs.spring.io/spring-batch/reference/step/controlling-flow.html
 - Spring Batch Reference (6.x) — Intercepting Step Execution (StepExecutionListener/Item*Listener): https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing/intercepting-execution.html
-- ItemListenerSupport API (deprecated as of 5.0): https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/listener/ItemListenerSupport.html
+- ItemListenerSupport API: https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/core/listener/ItemListenerSupport.html
 
 ---
 

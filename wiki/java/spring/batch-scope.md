@@ -1,6 +1,6 @@
 ---
 title: Spring Batch StepScope·JobScope
-updated: 2026-09-01 11:43:12
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -14,7 +14,7 @@ tags:
 `@StepScope`·`@JobScope`는 Spring Batch가 제공하는 **커스텀 빈 스코프**다. 기본 빈은 singleton이라 애플리케이션 기동 시 1회 생성되지만, 이 스코프를 적용하면 **빈 생성 시점을 Step/Job 실행 시점으로 지연**한다.
 
 - `@StepScope` — `StepExecution`마다 새 빈 인스턴스 생성
-- `@JobScope` — `JobExecution`마다 새 빈 인스턴스 생성 (Spring Batch 3.0 도입)
+- `@JobScope` — `JobExecution`마다 새 빈 인스턴스 생성
 
 이 지연 생성이 **Late Binding**(지연 바인딩)의 토대가 된다. 즉 실행 시점에야 알 수 있는 값(`JobParameters`, 실행 컨텍스트)을 빈에 주입할 수 있다.
 
@@ -52,7 +52,7 @@ public FlatFileItemReader<Foo> reader(
 
 ### 2.3. 스코프 등록
 
-`StepScope`·`JobScope`는 스프링 컨테이너에 등록되어 있어야 한다. `@EnableBatchProcessing`(또는 XML `batch` 네임스페이스, 명시적 스코프 빈 정의)로 자동 등록된다.
+`StepScope`·`JobScope`는 스프링 컨테이너에 등록되어 있어야 한다. Spring Boot 배치 자동설정이 사용하는 `DefaultBatchConfiguration`이 `ScopeConfiguration`을 import하므로 별도 설정 없이 등록된다. `@EnableBatchProcessing`을 붙이거나 `DefaultBatchConfiguration`을 상속하면 Boot 배치 자동설정은 비활성화되지만, 두 방식 모두 `ScopeConfiguration`을 import하므로 스코프는 그대로 등록된다.
 
 ---
 
@@ -129,13 +129,12 @@ public Step step(JobRepository jobRepository,
 - **Step 빈 자체에 `@StepScope` 금지** — 구성요소에만 적용(§3).
 - **프록시/반환 타입** — `ItemStream` 구현 컴포넌트는 구체 타입으로 선언(§2.2).
 - **멀티 스레드·파티션 스텝에서 JobScope 빈 사용 금지** — 프레임워크가 생성하지 않은 스레드는 스코프 셋업을 관리할 수 없다. (출처: 공식 문서)
-- **스코프 등록 필요** — `@EnableBatchProcessing` 등으로 스코프가 등록되어 있어야 동작.
-
 ---
 
 ## Sources
 - Spring Batch Reference (latest, 6.x) — Late Binding of Job and Step Attributes: https://docs.spring.io/spring-batch/reference/step/late-binding.html
 - jojoldu, "Spring Batch 가이드 - Spring Batch Scope & Job Parameter": https://jojoldu.tistory.com/330
+- Spring Boot Reference — Spring Batch: https://docs.spring.io/spring-boot/reference/io/spring-batch.html
 
 ---
 

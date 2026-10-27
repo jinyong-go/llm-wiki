@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 테스트
-updated: 2026-10-20 17:46:04
+updated: 2026-10-27 22:36:39
 tags:
   - java
   - spring
@@ -50,7 +50,7 @@ tags:
 
 - **`JobLauncherTestUtils`** (~5.x) / **`JobOperatorTestUtils`** (6.0+) — 잡·스텝 실행 트리거
 - **`JobRepositoryTestUtils`** — 메타데이터(`JobExecution`) 생성·정리
-- **`StepScopeTestExecutionListener`**, **`JobScopeTestExecutionListener`** (4.1+) — 스코프 빈 테스트용 실행 컨텍스트 제공
+- **`StepScopeTestExecutionListener`**, **`JobScopeTestExecutionListener`** — 스코프 빈 테스트용 실행 컨텍스트 제공
 
 ```java
 @SpringBatchTest
@@ -75,7 +75,7 @@ class MyBatchTest {
 ```
 
 > [!note] 메타데이터 격리
-> Spring Boot 자동설정은 기본 **인메모리 `JobRepository`** 를 쓴다. 같은 클래스에서 여러 테스트를 돌리면 `removeJobExecutions()`로 정리해야 하고, **여러 테스트 클래스**를 함께 돌리면 동일 데이터소스를 쓰는 `JobRepository`끼리 충돌하므로 `@DirtiesContext`로 컨텍스트를 무효화한다.
+> Spring Boot 자동설정의 `JobRepository`는 메타데이터를 저장소에 기록한다. Boot 3은 `DataSource`를, Boot 4는 In-memory·JDBC·MongoDB 중 하나를 저장소로 쓴다.[^1] 같은 클래스에서 여러 테스트를 돌리면 `removeJobExecutions()`로 정리해야 하고, **여러 테스트 클래스**를 함께 돌리면 동일 데이터소스를 쓰는 `JobRepository`끼리 충돌하므로 `@DirtiesContext`로 컨텍스트를 무효화한다.
 
 > [!note] 버전 차이 (6.0)
 > 6.0에서 `JobLauncher`→`JobOperator` 전환에 맞춰 테스트 유틸도 `JobLauncherTestUtils`→**`JobOperatorTestUtils`**, 메서드도 `launchJob/launchStep`→**`startJob/startStep`** 으로 변경되었다. 본 문서 예시는 5.x(`JobLauncherTestUtils`) 기준이며, 6.0에서는 명칭만 치환하면 된다.
@@ -94,16 +94,15 @@ void givenReferenceOutput_whenJobExecuted_thenSuccess() throws Exception {
     assertEquals("transformBooksRecords", jobExecution.getJobInstance().getJobName());
     assertEquals("COMPLETED", jobExecution.getExitStatus().getExitCode());
 
-    // 파일 출력 비교 — spring-batch-test 제공 헬퍼
-    AssertFile.assertFileEquals(
-            new FileSystemResource(EXPECTED_OUTPUT),
-            new FileSystemResource(TEST_OUTPUT));
+    // 파일 출력 비교 (AssertJ)
+    assertThat(new File(TEST_OUTPUT))
+            .hasSameTextualContentAs(new File(EXPECTED_OUTPUT));
 }
 ```
 
 - `launchJob()`은 기본 파라미터로, `launchJob(JobParameters)`는 지정 파라미터로 실행한다.
 - `JobExecution`의 `ExitStatus`(exit code) / `BatchStatus` / write count 등을 검증한다.
-- **`AssertFile`** 클래스가 실제 출력 파일과 기대 파일을 비교하는 단정 메서드(`assertFileEquals`)를 제공한다.
+- 출력 파일 비교는 AssertJ의 `hasSameTextualContentAs`를 쓴다. `spring-batch-test`의 `AssertFile`은 5.0에서 deprecated되었고 5.2에서 제거되었다.
 
 ---
 
@@ -131,7 +130,7 @@ void whenStep2Executed_thenSuccess() {
 }
 ```
 
-스텝 출력 파일을 `AssertFile`로 비교하거나, `StepExecution`의 `getWriteCount()`/`getReadCount()`/`getSkipCount()` 등 통계로 검증한다.
+스텝 출력 파일을 §4와 같이 비교하거나, `StepExecution`의 `getWriteCount()`/`getReadCount()`/`getSkipCount()` 등 통계로 검증한다.
 
 ---
 
@@ -154,14 +153,14 @@ void whenReaderCalled_thenSuccess() throws Exception {
     StepScopeTestUtils.doInStepScope(stepExecution, () -> {
         itemReader.open(stepExecution.getExecutionContext());
         BookRecord r = itemReader.read();
-        assertThat(r.getBookName(), is("Foundation"));
+        assertThat(r.getBookName()).isEqualTo("Foundation");
         itemReader.close();
         return null;
     });
 }
 ```
 
-writer도 동일하게 `doInStepScope` 안에서 `open → write(items) → close` 후 `AssertFile`로 출력 검증한다.
+writer도 동일하게 `doInStepScope` 안에서 `open → write(items) → close` 후 출력 파일을 비교한다.
 
 ### 6.2. StepScopeTestExecutionListener
 
@@ -210,7 +209,7 @@ void testAfterStep() {
 
 ## 8. 보조 설정
 
-- **자동 실행 비활성화**: 테스트에서 잡이 부팅 시 자동 실행되지 않도록 `spring.batch.job.enabled=false`(Boot 3.x는 `spring.batch.job.name`을 비워 두는 방식 등 버전별 차이 있음[^1]) 설정.
+- **자동 실행 비활성화**: 테스트에서 잡이 부팅 시 자동 실행되지 않도록 `spring.batch.job.enabled=false`로 설정한다. `spring.batch.job.name`은 `Job` 빈이 여러 개일 때 기동 시 실행할 잡을 지정하는 속성이다.
 - 테스트 입력 파일은 `@StepScope` reader에 `@Value("#{jobParameters['file.input']}")`로 주입하므로, 테스트는 `JobParameters`만 바꿔 다른 입력으로 재사용할 수 있다.
 
 
@@ -220,6 +219,8 @@ void testAfterStep() {
 - raw/java/spring/Testing a Spring Batch Job.md (Baeldung, https://www.baeldung.com/spring-batch-testing-job)
 - Spring Batch Reference (6.x) — Unit Testing: https://docs.spring.io/spring-batch/reference/testing.html
 - JobLauncherTestUtils API (5.x): https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/test/JobLauncherTestUtils.html
+- Spring Boot Reference — Spring Batch: https://docs.spring.io/spring-boot/reference/io/spring-batch.html
+- Spring Batch 5.0 deprecated list (AssertFile): https://docs.spring.io/spring-batch/docs/5.0.2/api/deprecated-list.html
 
 ---
 
@@ -234,4 +235,4 @@ void testAfterStep() {
 
 ---
 
-[^1]: 버전별 차이는 Boot 3.x에서 실행 잡 지정이 spring.batch.job.name 프로퍼티로 바뀐 사실로부터 추론.
+[^1]: raw 출처(Baeldung)는 "in-memory JobRepository"로 서술하지만, Boot 3 배치 자동설정은 `DataSource` 빈이 있을 때만 활성화되고(`@ConditionalOnBean(DataSource.class)`), Boot 4 레퍼런스는 In-memory·JDBC·MongoDB 저장소를 자동설정 대상으로 명시한다. Baeldung의 서술은 임베디드 DB(H2 등) 사용을 가리킨 것으로 보인다.
