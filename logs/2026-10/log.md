@@ -2,6 +2,10 @@
 
 ---
 
+## 2026-10-27 22:42:29
+
+- **수정**: Spring Batch 문서 5개에 Batch 6 deprecated API 반영. `batch.md` 도메인 표를 `JobOperator` 기준으로 변경, `batch-job-parameters.md` 실행 API를 버전별로 구분, `batch-chunk.md` chunk 트랜잭션 매니저 지정 방식의 버전 차이 note 추가, `batch-fault-tolerance.md` 6.0+ 예시를 `chunk(int).transactionManager()` 형식으로 수정, `batch-scope.md` `JobLauncher` 언급 삭제
+
 ## 2026-10-27 22:36:39
 
 - **수정**: Spring Batch 문서 7개에서 Batch 4.x(Boot 2) 내용 제거. 버전 범위를 Batch 5~6(Boot 3~4)으로 변경, `batch-job-parameters.md` 지원 타입·커맨드라인 표기를 현재 동작 기준으로 재작성, `List`→`Chunk` 마이그레이션 note 삭제, 불필요한 버전 표기 정리

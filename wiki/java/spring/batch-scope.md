@@ -1,6 +1,6 @@
 ---
 title: Spring Batch StepScope·JobScope
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:42:29
 tags:
   - java
   - spring
@@ -26,7 +26,7 @@ tags:
 
 ### 2.1. Late Binding
 
-`JobParameters`는 잡을 실행할 때(`JobLauncher.run(job, params)`) 결정된다. 그러나 빈 설정은 기동 시점에 정의되므로, 일반 singleton 빈은 실행 시점 값에 접근할 수 없다.
+`JobParameters`는 잡을 실행할 때 결정된다. 그러나 빈 설정은 기동 시점에 정의되므로, 일반 singleton 빈은 실행 시점 값에 접근할 수 없다.
 
 스코프 빈은 생성이 실행 시점까지 미뤄지므로, SpEL `#{...}`로 실행 시점 값을 주입받을 수 있다.
 

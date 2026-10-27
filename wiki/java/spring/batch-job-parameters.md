@@ -1,6 +1,6 @@
 ---
 title: Spring Batch JobParameters
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:42:29
 tags:
   - java
   - spring
@@ -50,7 +50,7 @@ JobParameters params = new JobParametersBuilder()
 
 ### 4.1. 코드에서 직접 실행
 
-`JobParametersBuilder`로 만들고 `JobLauncher.run(job, params)`(또는 `JobOperator.start`)로 전달한다.
+`JobParametersBuilder`로 만들고 Batch 5는 `JobLauncher.run(job, params)`, Batch 6은 `JobOperator.start(job, params)`로 전달한다. 6.0에서 `JobLauncher`는 deprecated되었다.
 
 ```java
 JobParameters params = new JobParametersBuilder()
@@ -59,7 +59,7 @@ JobParameters params = new JobParametersBuilder()
         .addLong("time", System.currentTimeMillis())   // 매 실행 새 JobInstance 유도
         .toJobParameters();
 
-jobLauncher.run(job, params);
+jobLauncher.run(job, params);        // Batch 6: jobOperator.start(job, params)
 ```
 
 ### 4.2. 커맨드라인 실행

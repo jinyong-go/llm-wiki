@@ -1,6 +1,6 @@
 ---
 title: Spring Batch
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:42:29
 tags:
   - java
   - spring
@@ -41,7 +41,7 @@ Spring Batch는 대용량 데이터의 **일괄(batch) 처리**를 위한 프레
 | `StepExecution` | `Step`의 실행 1회 시도. read/write/skip/commit count 등 통계 보유 |
 | `ExecutionContext` | 재시작용 상태 저장소(key/value). `JobExecution`·`StepExecution` 각각에 별도로 존재 |
 | `JobRepository` | 위 도메인 객체의 영속화(CRUD) 담당. 실행 이력·상태를 메타데이터 테이블에 기록하여 중복 실행 방지·재시작·통계 조회의 근거가 됨 |
-| `JobLauncher` | `Job`과 `JobParameters`를 받아 실행을 시작하는 진입점 |
+| `JobOperator` | 잡의 시작·중지·재시작을 제어하는 진입점. Batch 5는 실행 시작을 `JobLauncher`가 담당하며, 6.0에서 `JobOperator`가 `JobLauncher`를 확장하면서 `JobLauncher`는 deprecated되었다 |
 
 관계 요약:
 

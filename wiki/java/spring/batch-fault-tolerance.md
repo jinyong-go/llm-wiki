@@ -1,6 +1,6 @@
 ---
 title: Spring Batch 재시작·스킵·재시도
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:42:29
 tags:
   - java
   - spring
@@ -165,7 +165,7 @@ RetryPolicy retryPolicy = RetryPolicy.builder()
         .build();
 
 return new StepBuilder("step1", jobRepository)
-        .<String, String>chunk(2, tx)
+        .<String, String>chunk(2).transactionManager(tx)
         .reader(itemReader()).writer(itemWriter())
         .faultTolerant()
         .retryPolicy(retryPolicy)

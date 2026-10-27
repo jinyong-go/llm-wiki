@@ -1,6 +1,6 @@
 ---
 title: Spring Batch Chunk 지향 처리
-updated: 2026-10-27 22:36:39
+updated: 2026-10-27 22:42:29
 tags:
   - java
   - spring
@@ -58,6 +58,15 @@ public Step chunkStep(JobRepository jobRepository,
 
 - `chunk(100, tx)`: 100건마다 커밋. 제네릭 `<I, O>`는 reader 입력 타입과 writer 출력 타입.
 - `processor`는 생략 가능(reader→writer 직결).
+
+> [!note] 트랜잭션 매니저 지정
+> Batch 5는 `chunk(int, PlatformTransactionManager)`를 쓰고 `chunk(int)`는 deprecated다. Batch 6은 반대로 `chunk(int)` 뒤에 `transactionManager(tx)`를 지정하며, `chunk(int, PlatformTransactionManager)`는 deprecated(7.0 제거 예정)다. 위키의 chunk 예시는 Batch 5 형식이다.
+
+```java
+// Batch 6
+new StepBuilder("chunkStep", jobRepository)
+        .<Member, MemberDto>chunk(100).transactionManager(tx)
+```
 
 ---
 
@@ -186,6 +195,7 @@ public interface ItemWriter<T> {
 - Spring Batch Reference (latest, 6.x) — Item Writer: https://docs.spring.io/spring-batch/reference/readers-and-writers/item-writer.html
 - Spring Batch Reference (latest, 6.x) — Chunk-oriented Processing (Configuring a Step): https://docs.spring.io/spring-batch/reference/step.html
 - Spring Batch Reference (latest, 6.x) — ItemReaders and ItemWriters: https://docs.spring.io/spring-batch/reference/readersAndWriters.html
+- Spring Batch 6.0 deprecated list: https://docs.spring.io/spring-batch/docs/6.0.x/api/deprecated-list.html
 
 ---
 
