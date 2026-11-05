@@ -243,6 +243,9 @@ tags:
 - [[llm-wiki]] — LLM Wiki 패턴: 구조와 워크플로우
 - [[ai-agent-schema]] — AI 에이전트 스키마 파일 (CLAUDE.md, AGENTS.md 등)
 - [[ai-agent-skill]] — AI 에이전트 스킬 파일: 구조와 작성
+- [[ai-agent]] — AI 에이전트의 구성, 동작 방식, 적용 기준
+- [[context-engineering]] — 컨텍스트 엔지니어링: LLM 컨텍스트 구성과 관리
+- [[harness-engineering]] — 하네스 엔지니어링: 에이전트를 둘러싼 실행 환경과 제어 설계
 
 ## Docker
 
