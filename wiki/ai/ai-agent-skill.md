@@ -1,6 +1,6 @@
 ---
 title: AI 에이전트 스킬 파일
-updated: 2026-07-08 10:32:15
+updated: 2026-11-09 22:51:54
 tags:
   - ai
   - agent
@@ -75,16 +75,17 @@ skills/
 
 ```yaml
 ---
-name: deploy                 # (필수) 스킬 식별자
-description: 스테이징/프로덕션 배포 시 사용. "배포", "deploy", "릴리즈" 요청에 활성화.  # (필수) 자동 호출 트리거 조건
-version: 1.0.0               # (선택) 버전
-license: MIT                 # (선택) 라이선스
+name: deploy                 # (선택) 명령어 이름. 생략 시 디렉터리 이름
+description: 스테이징/프로덕션 배포 시 사용. "배포", "deploy", "릴리즈" 요청에 활성화.  # (권장) 자동 호출 판단 근거
+license: MIT                 # (선택) 라이선스. Claude Code는 동작에 사용하지 않음
 ---
 ```
 
 `description`은 에이전트가 **언제 이 스킬을 자동으로 호출할지** 판단하는 근거다. 사용자가 말할 법한 트리거 문구·키워드·대상 주제를 구체적으로 기술할수록 적절한 시점에 활성화된다. 다른 스킬과 트리거 조건이 겹치지 않게 작성한다.
 
-> 레거시 `commands/<name>.md` 형식은 frontmatter 필드가 다르다: `description`, `argument-hint`(인자 힌트), `allowed-tools`(사전 허용 도구로 권한 프롬프트 감소), `model`(모델 오버라이드). 본문에서 `$ARGUMENTS`로 사용자 입력을 참조한다.
+모든 필드는 선택 사항이며 `description`만 권장된다. `description`을 생략하면 본문의 첫 번째 비어 있지 않은 줄을 사용한다. Claude Code는 인식하지 못한 필드를 오류 없이 무시하므로 필드 이름은 공식 목록과 정확히 일치해야 한다.
+
+> 레거시 `commands/<name>.md` 형식도 `name`, `paths`를 제외한 같은 frontmatter 필드를 지원한다. 예를 들어 `argument-hint`는 인자 힌트를, `allowed-tools`는 사전 허용 도구를, `model`은 사용할 모델을 지정한다. 본문에서는 `$ARGUMENTS`로 사용자 입력을 참조한다.
 
 ### 4.2. 기본 형식
 

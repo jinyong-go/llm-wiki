@@ -1,6 +1,6 @@
 ---
 title: 컨텍스트 엔지니어링
-updated: 2026-11-05 23:10:07
+updated: 2026-11-09 13:50:24
 tags:
   - ai
   - agent
@@ -115,6 +115,7 @@ tags:
 - [[ai-agent-schema]]
 - [[ai-agent-skill]]
 - [[harness-engineering]]
+- [[multi-agent]]
 
 ---
 

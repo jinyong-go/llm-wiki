@@ -1,6 +1,6 @@
 ---
 title: AI 에이전트 스키마 파일
-updated: 2026-10-20 17:54:47
+updated: 2026-11-09 22:49:18
 tags:
   - ai
   - agent
@@ -15,17 +15,17 @@ AI 에이전트 스키마 파일(또는 instruction 파일)은 에이전트가 �
 
 ## 2. 에이전트별 파일명
 
-에이전트마다 읽는 파일명이 다르다. 동일 저장소에서 여러 에이전트를 지원하려면 파일을 병렬로 두거나, 하나에서 다른 파일을 위임(`read AGENTS.md`)하는 방식을 사용한다.
+에이전트마다 읽는 파일명이 다르다. 동일 저장소에서 여러 에이전트를 지원하려면 파일을 병렬로 두거나, 한 파일에서 다른 파일을 가져오는 방식을 사용한다. Claude Code는 `CLAUDE.md`에 `@AGENTS.md`처럼 `@경로`를 적어 다른 파일을 가져온다.
 
 | 에이전트 | 스키마 파일 | 비고 |
 | :--- | :--- | :--- |
 | Claude Code | `CLAUDE.md` | 프로젝트 루트 또는 서브디렉터리 |
-| OpenAI Codex / OpenCode | `AGENTS.md` | |
-| Gemini CLI | `GEMINI.md` | |
+| OpenAI Codex / OpenCode | `AGENTS.md` | 전역 또는 프로젝트 루트부터 작업 디렉터리까지 |
+| Gemini CLI | `GEMINI.md` | 전역, 워크스페이스, 하위 디렉터리 |
 | Cursor | `.cursor/rules/*.mdc` | 룰셋 파일 분리 가능 |
-| GitHub Copilot | `.github/copilot-instructions.md` | |
+| GitHub Copilot | `.github/copilot-instructions.md` | 경로별 `.github/instructions/*.instructions.md`, `AGENTS.md` |
 
-Claude Code는 프로젝트 루트 `CLAUDE.md` 외에도 서브디렉터리의 `CLAUDE.md`를 계층적으로 읽는다. 글로벌 설정은 `~/.claude/CLAUDE.md`에 둔다.
+여러 위치의 파일을 합치는 방식은 §6에서 다룬다.
 
 ## 3. 스키마에 포함되는 내용
 
@@ -154,7 +154,7 @@ Anthropic 문서에서 제시하는 일반 프로젝트용 CLAUDE.md 권장 내�
 
 ### 6.1. Claude Code
 
-Claude Code는 세 레벨의 `CLAUDE.md`를 모두 로드한다.
+Claude Code는 세 레벨의 `CLAUDE.md`를 읽는다.
 
 | 레벨 | 경로 | 적용 범위 |
 | :--- | :--- | :--- |
@@ -162,7 +162,7 @@ Claude Code는 세 레벨의 `CLAUDE.md`를 모두 로드한다.
 | 프로젝트 루트 | `<프로젝트 루트>/CLAUDE.md` | 해당 프로젝트에 적용 |
 | 서브디렉터리 | `<작업 디렉터리>/CLAUDE.md` | 해당 디렉터리 내 작업 시 추가 적용 |
 
-**동작 방식: 누적(additive) 로드** 세 파일이 모두 컨텍스트에 포함된다. 나중에 로드된 파일이 앞 파일을 덮어쓰지 않는다. 서브디렉터리의 `CLAUDE.md`는 글로벌·루트 규칙을 대체하는 것이 아니라 **추가**한다.
+글로벌 파일과 작업 디렉터리 및 그 상위 디렉터리의 `CLAUDE.md`는 세션 시작 시 로드한다. 작업 디렉터리 아래 서브디렉터리의 `CLAUDE.md`는 해당 디렉터리의 파일을 읽거나 수정할 때 로드한다. 로드된 파일은 앞 파일을 덮어쓰지 않고 컨텍스트에 추가된다.
 
 충돌이 발생할 경우, 언어 모델의 instruction following 특성상 컨텍스트에서 더 뒤에 나오는(더 구체적인) 규칙이 우선 적용되는 경향이 있다. 그러나 이는 모델의 판단에 의존하는 부분이며, 명시적으로 override를 보장하는 메커니즘은 없다.
 
@@ -171,7 +171,7 @@ Claude Code는 세 레벨의 `CLAUDE.md`를 모두 로드한다.
 - 루트 `CLAUDE.md` → 프로젝트 컨텍스트, 빌드 명령, 아키텍처 개요
 - 서브디렉터리 `CLAUDE.md` → 특정 모듈(예: `frontend/`, `ml/`)에만 적용되는 세부 규칙
 
-위임 패턴: 루트 `CLAUDE.md`에서 `read ./AGENTS.md`처럼 다른 파일을 명시적으로 참조해 내용을 가져올 수도 있다.
+`CLAUDE.md`는 `@경로` 문법으로 다른 파일을 가져올 수 있다. 상대 경로는 가져오는 파일 기준으로 해석하고, 가져온 파일이 다시 다른 파일을 가져오는 것은 4단계까지 허용된다. 코드 블록과 인라인 코드 안의 `@경로`는 가져오지 않는다.
 
 ### 6.2. Cursor
 
@@ -187,7 +187,9 @@ Cursor는 `.cursor/rules/` 디렉터리 내 여러 `.mdc` 파일을 지원하며
 
 ### 6.3. 기타 에이전트
 
-OpenAI Codex(`AGENTS.md`), Gemini CLI(`GEMINI.md`), GitHub Copilot(`.github/copilot-instructions.md`)은 공식적으로 멀티레벨 계층을 지원하지 않는다. 프로젝트당 하나의 파일이 단일 진입점이다.
+- **OpenAI Codex**: 전역 `~/.codex/AGENTS.md`를 읽은 뒤 프로젝트 루트부터 작업 디렉터리까지 내려가며 디렉터리마다 `AGENTS.override.md` 또는 `AGENTS.md`를 하나씩 읽는다. 루트부터 순서대로 이어 붙이므로 작업 디렉터리에 가까운 파일이 뒤에 놓여 앞의 지침보다 우선한다. 합친 크기는 기본 32 KiB로 제한된다.
+- **Gemini CLI**: 전역 `~/.gemini/GEMINI.md`, 워크스페이스 디렉터리와 상위 디렉터리의 `GEMINI.md`를 이어 붙여 매 프롬프트에 포함한다. 도구가 파일이나 디렉터리에 접근하면 해당 경로와 상위 경로의 `GEMINI.md`를 추가로 로드한다.
+- **GitHub Copilot**: 저장소 전체에 적용되는 `.github/copilot-instructions.md`와 함께, `applyTo` glob으로 대상 경로를 지정하는 `.github/instructions/*.instructions.md`를 지원한다. 저장소 안 어디에나 `AGENTS.md`를 둘 수 있으며, 디렉터리 트리에서 가장 가까운 파일이 우선한다.
 
 ---
 
@@ -196,6 +198,10 @@ OpenAI Codex(`AGENTS.md`), Gemini CLI(`GEMINI.md`), GitHub Copilot(`.github/copi
 - [SamurAIGPT/llm-wiki-agent](https://github.com/SamurAIGPT/llm-wiki-agent)
 - [LLM Wiki v2 — rohitg00](https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2)
 - [Karpathy's Pattern for an LLM Wiki in Production — Aaron Fulkerson](https://aaronfulkerson.com/2026/04/12/karpathys-pattern-for-an-llm-wiki-in-production/)
+- [Anthropic: Claude Code memory](https://code.claude.com/docs/en/memory)
+- [OpenAI: Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
+- [Google: Provide context with GEMINI.md files](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md)
+- [GitHub: Adding repository custom instructions for GitHub Copilot](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions)
 
 ---
 

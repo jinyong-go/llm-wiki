@@ -1,6 +1,6 @@
 ---
 title: AI 에이전트
-updated: 2026-11-05 23:05:18
+updated: 2026-11-09 22:49:18
 tags:
   - ai
   - agent
@@ -153,7 +153,7 @@ sequenceDiagram
 
 ### 7.5. 비용과 상태 관리
 
-모델 호출과 도구 실행이 늘어나면 비용과 지연 시간이 증가한다. 긴 대화나 큰 도구 결과는 처리할 정보량도 늘린다. 필요한 정보만 다음 단계로 전달하고 호출 횟수와 실행 시간에 한도를 둔다. 긴 작업에서는 진행 상태를 요약하거나 필요한 정보를 별도로 저장해 대화가 불필요하게 커지지 않도록 한다. 자세한 컨텍스트 관리 방법은 [[context-engineering]] §6을 참고한다.
+모델 호출과 도구 실행이 늘어나면 비용과 지연 시간이 증가한다. 긴 대화나 큰 도구 결과는 처리할 정보량도 늘린다. 필요한 정보만 다음 단계로 전달하고 호출 횟수와 실행 시간에 한도를 둔다. 긴 작업에서는 진행 상태를 요약하거나 필요한 정보를 별도로 저장해 대화가 불필요하게 커지지 않도록 한다. 자세한 컨텍스트 관리 방법은 [[context-engineering]] §5를 참고한다.
 
 ### 7.6. 모니터링과 점진적 배포
 
@@ -164,7 +164,7 @@ sequenceDiagram
 ---
 
 ## Sources
-- [OpenAI: A practical guide to building agents](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/)
+- [OpenAI: A practical guide to building agents](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
 - [Anthropic: Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)
 - [OWASP: LLM06:2025 Excessive Agency](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
 
@@ -176,3 +176,4 @@ sequenceDiagram
 - [[context-engineering]]
 - [[harness-engineering]]
 - [[llm-wiki]]
+- [[multi-agent]]

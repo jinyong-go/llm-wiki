@@ -246,6 +246,7 @@ tags:
 - [[ai-agent]] — AI 에이전트의 구성, 동작 방식, 적용 기준
 - [[context-engineering]] — 컨텍스트 엔지니어링: LLM 컨텍스트 구성과 관리
 - [[harness-engineering]] — 하네스 엔지니어링: 에이전트를 둘러싼 실행 환경과 제어 설계
+- [[multi-agent]] — 멀티 에이전트: 구조와 적용 기준
 
 ## Docker
 
