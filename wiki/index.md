@@ -239,7 +239,7 @@ tags:
 
 ## AI
 
-- [[okf]] — Open Knowledge Format: 마크다운 기반 지식 표현 포맷
+- [[okf]] — 마크다운 기반 지식 표현 형식과 메타데이터
 - [[llm-wiki]] — LLM Wiki 패턴: 구조와 워크플로우
 - [[ai-agent-schema]] — AI 에이전트 스키마 파일 (CLAUDE.md, AGENTS.md 등)
 - [[ai-agent-skill]] — AI 에이전트 스킬 파일: 구조와 작성
