@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-11-02 22:49:38
+updated: 2026-11-17 15:39:35
 tags:
   - meta
 ---
@@ -247,6 +247,7 @@ tags:
 - [[context-engineering]] — 컨텍스트 엔지니어링: LLM 컨텍스트 구성과 관리
 - [[harness-engineering]] — 하네스 엔지니어링: 에이전트를 둘러싼 실행 환경과 제어 설계
 - [[multi-agent]] — 멀티 에이전트: 구조와 적용 기준
+- [[herdr]] — AI 코딩 에이전트용 터미널 멀티플렉서
 
 ## Docker
 
