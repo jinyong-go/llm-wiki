@@ -2,6 +2,11 @@
 
 ---
 
+## 2026-11-23 22:23:21
+
+- **생성**: `test-strategy.md` 테스트 작성 대상 선정, 목적별 테스트 분류, 협력 객체 선택 기준, Java·Spring 구현 기법 정리
+- **수정**: `good-test-practices.md`, `test-double.md` Related pages에 `test-strategy` 추가
+
 ## 2026-11-18 09:42:29
 
 - **수정**: `herdr.md`에 패널 위치 교환 단축키와 CLI 이동 예시 추가

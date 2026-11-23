@@ -1,6 +1,6 @@
 ---
 title: 테스트 더블
-updated: 2026-10-22 23:09:21
+updated: 2026-11-23 22:23:21
 tags:
   - java
   - testing
@@ -125,6 +125,7 @@ Mockito의 `mock()` 객체는 스터빙만 하면 Stub 역할을, `verify()`로 
 - [[java-testing-libraries]]
 - [[mockito-doreturn-vs-when]]
 - [[mockito-void-methods]]
+- [[test-strategy]]
 
 ---
 

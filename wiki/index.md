@@ -1,6 +1,6 @@
 ---
 title: index
-updated: 2026-11-17 15:39:35
+updated: 2026-11-23 22:23:21
 tags:
   - meta
 ---
@@ -132,6 +132,7 @@ tags:
 - [[mockito-void-methods]] — Mockito void 메서드 모킹
 - [[inverse-operation-testing]] — 역연산 함수 테스트 전략
 - [[good-test-practices]] — 좋은 테스트 코드 작성법
+- [[test-strategy]] — 테스트 작성 대상 선정과 목적별 테스트 구현
 - [[test-double]] — 테스트 더블 분류와 검증 방식
 - [[spock]] — Groovy 기반 Spock 테스트 프레임워크
 - [[junit-test-suite]] — JUnit 테스트 스위트와 태그 필터링

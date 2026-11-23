@@ -1,6 +1,6 @@
 ---
 title: 좋은 테스트 코드
-updated: 2026-10-22 23:09:21
+updated: 2026-11-23 22:23:21
 tags:
   - java
   - testing
@@ -188,6 +188,7 @@ Fowler는 컴파일할 가치가 있는 코드가 생기면 1분에도 몇 번�
 ## Related pages
 - [[inverse-operation-testing]]
 - [[test-double]]
+- [[test-strategy]]
 - [[spock]]
 - [[java-testing-libraries]]
 
