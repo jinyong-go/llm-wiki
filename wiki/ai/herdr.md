@@ -1,6 +1,6 @@
 ---
 title: Herdr
-updated: 2026-11-17 15:47:06
+updated: 2026-11-18 09:42:29
 tags:
   - ai
   - agent
@@ -98,6 +98,26 @@ Go To 선택기인 `prefix g`는 에이전트와 터미널을 워크스페이스
 | `a` | 모든 터미널 표시 |
 | `Enter` | 선택한 에이전트 또는 터미널로 이동 |
 | `Esc` | 닫기 |
+
+### 4.4. 패널 배치
+
+`prefix Shift+h/j/k/l`은 현재 패널을 왼쪽/아래/위/오른쪽 패널과 교환한다. `prefix h/j/k/l`이 포커스만 옮기는 것과 달리 패널 자체의 위치가 바뀐다.
+
+CLI로 패널 위치를 교환하거나 새 탭·워크스페이스로 옮길 수도 있다. 다음 명령은 Herdr 패널 안에서 실행한다.
+
+```sh
+# 오른쪽 패널과 위치 교환
+herdr pane swap --current --direction right
+
+# 지정한 두 패널의 위치 교환
+herdr pane swap --source-pane <패널_ID> --target-pane <패널_ID>
+
+# 현재 패널을 새 탭으로 이동
+herdr pane move "$HERDR_PANE_ID" --new-tab
+
+# 현재 패널을 새 워크스페이스로 이동
+herdr pane move "$HERDR_PANE_ID" --new-workspace
+```
 
 ## 5. 에이전트
 
